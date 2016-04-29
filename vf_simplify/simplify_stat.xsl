@@ -28,312 +28,219 @@
 
     <xsl:template match="vf:VymennyFormat">
         <!--  hlavicka zahozena-->
-        <vf:VymennyFormat>
+        <VymennyFormat>
             <xsl:apply-templates select="vf:Data"/>
-        </vf:VymennyFormat>
+        </VymennyFormat>
     </xsl:template>
 
 
     <xsl:template match="vf:Data">
-        <vf:Staty>
-            <xsl:apply-templates select="vf:Staty"/>
-        </vf:Staty>
-        <vf:RegionySoudrznosti>
-            <xsl:apply-templates select="vf:RegionySoudrznosti"/>
-        </vf:RegionySoudrznosti>
-        <vf:Kraje>
-            <xsl:apply-templates select="vf:Kraje"/>
-        </vf:Kraje>
-        <vf:Vusc>
-            <xsl:apply-templates select="vf:Vusc"/>
-        </vf:Vusc>
-        <vf:Okresy>
-            <xsl:apply-templates select="vf:Okresy"/>
-        </vf:Okresy>
-        <vf:Orp>
-            <xsl:apply-templates select="vf:Orp"/>
-        </vf:Orp>
-        <vf:Pou>
-            <xsl:apply-templates select="vf:Pou"/>
-        </vf:Pou>
-        <vf:Obce>
-            <xsl:apply-templates select="vf:Obce"/>
-        </vf:Obce>
-        <vf:SpravniObvody>
-            <xsl:apply-templates select="vf:SpravniObvody"/>
-        </vf:SpravniObvody>
-        <vf:Mop>
-            <xsl:apply-templates select="vf:Mop"/>
-        </vf:Mop>
-        <vf:Momc>
-            <xsl:apply-templates select="vf:Momc"/>
-        </vf:Momc>
-        <vf:CastiObci>
-            <xsl:apply-templates select="vf:CastiObci"/>
-        </vf:CastiObci>
-        <vf:KatastralniUzemi>
-            <xsl:apply-templates select="vf:KatastralniUzemi"/>
-        </vf:KatastralniUzemi>
-        <vf:Zsj>
-            <xsl:apply-templates select="vf:Zsj"/>
-        </vf:Zsj>
+        <Data>
+            <Staty>
+                <xsl:apply-templates select="vf:Staty"/>
+            </Staty>
+            <RegionySoudrznosti>
+                <xsl:apply-templates select="vf:RegionySoudrznosti"/>
+            </RegionySoudrznosti>
+            <Kraje>
+                <xsl:apply-templates select="vf:Kraje"/>
+            </Kraje>
+            <Vusc>
+                <xsl:apply-templates select="vf:Vusc"/>
+            </Vusc>
+            <Okresy>
+                <xsl:apply-templates select="vf:Okresy"/>
+            </Okresy>
+            <Orp>
+                <xsl:apply-templates select="vf:Orp"/>
+            </Orp>
+            <Pou>
+                <xsl:apply-templates select="vf:Pou"/>
+            </Pou>
+            <Obce>
+                <xsl:apply-templates select="vf:Obce"/>
+            </Obce>
+            <SpravniObvody>
+                <xsl:apply-templates select="vf:SpravniObvody"/>
+            </SpravniObvody>
+            <Mop>
+                <xsl:apply-templates select="vf:Mop"/>
+            </Mop>
+            <Momc>
+                <xsl:apply-templates select="vf:Momc"/>
+            </Momc>
+            <!--CastiObci>
+                <xsl:apply-templates select="vf:CastiObci"/>
+            </CastiObci -->
+            <KatastralniUzemi>
+                <xsl:apply-templates select="vf:KatastralniUzemi"/>
+            </KatastralniUzemi>
+            <!--Zsj>
+                <xsl:apply-templates select="vf:Zsj"/>
+            </Zsj -->
+        </Data>
     </xsl:template>
 
     <xsl:template match="vf:Staty">
         <xsl:for-each select="vf:Stat">
-            <vf:Stat>
-                <sti:Kod>
-                    <xsl:value-of select="sti:Kod"/>
-                </sti:Kod>
-                <sti:Nazev>
+            <Stat kod="{sti:Kod}">
+                <Nazev>
                     <xsl:value-of select="sti:Nazev"/>
-                </sti:Nazev>
-            </vf:Stat>
+                </Nazev>
+            </Stat>
         </xsl:for-each>
 
     </xsl:template>
 
     <xsl:template match="vf:RegionySoudrznosti">
         <xsl:for-each select="vf:RegionSoudrznosti">
-            <vf:RegionSoudrznosti>
-                <rsi:Kod>
-                    <xsl:value-of select="rsi:Kod"/>
-                </rsi:Kod>
-                <rsi:Nazev>
+            <RegionSoudrznosti kod="{rsi:Kod}">
+                <Nazev>
                     <xsl:value-of select="rsi:Nazev"/>
-                </rsi:Nazev>
-            </vf:RegionSoudrznosti>
+                </Nazev>
+            </RegionSoudrznosti>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Kraje">
         <xsl:for-each select="vf:Kraj">
-            <vf:Kraj>
-                <kri:Kod>
-                    <xsl:value-of select="kri:Kod"/>
-                </kri:Kod>
-                <kri:Nazev>
+            <Kraj kod="{kri:Kod}">
+                <Nazev>
                     <xsl:value-of select="kri:Nazev"/>
-                </kri:Nazev>
-            </vf:Kraj>
+                </Nazev>
+            </Kraj>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Vusc">
         <xsl:for-each select="vf:Vusc">
-            <vf:Vusc>
-                <vci:Kod>
-                    <xsl:value-of select="vci:Kod"/>
-                </vci:Kod>
-                <kri:Nazev>
-                    <xsl:value-of select="kri:Nazev"/>
-                </kri:Nazev>
-            </vf:Vusc>
+            <Vusc kod="{vci:Kod}">
+                <Nazev>
+                    <xsl:value-of select="vci:Nazev"/>
+                </Nazev>
+            </Vusc>
         </xsl:for-each>
     </xsl:template>
 
 
     <xsl:template match="vf:Okresy">
         <xsl:for-each select="vf:Okres">
-            <vf:Okres>
-                <oki:Kod>
-                    <xsl:value-of select="oki:Kod"/>
-                </oki:Kod>
-                <oki:Nazev>
+            <Okres kod="{oki:Kod}">
+                <Nazev>
                     <xsl:value-of select="oki:Nazev"/>
-                </oki:Nazev>
-            </vf:Okres>
+                </Nazev>
+            </Okres>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Orp">
         <xsl:for-each select="vf:Orp">
-            <vf:Orp>
-                <opi:Kod>
-                    <xsl:value-of select="opi:Kod"/>
-                </opi:Kod>
-                <opi:Nazev>
+            <Orp kod="{opi:Kod}"
+                 spravniobec="{opi:SpravniObecKod}"
+                 vusc="{opi:Vusc/vci:Kod}">
+                <Nazev>
                     <xsl:value-of select="opi:Nazev"/>
-                </opi:Nazev>
-                <opi:SpravniObecKod>
-                    <xsl:value-of select="opi:SpravniObecKod"/>
-                </opi:SpravniObecKod>
-                <opi:Vusc>
-                    <vci:Kod>
-                        <xsl:value-of select="opi:Vusc/vci:Kod"/>
-                    </vci:Kod>
-                </opi:Vusc>
-            </vf:Orp>
+                </Nazev>
+            </Orp>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Pou">
         <xsl:for-each select="vf:Pou">
-            <vf:Pou>
-                <pui:Kod>
-                    <xsl:value-of select="pui:Kod"/>
-                </pui:Kod>
-                <pui:Nazev>
+            <Pou kod="{pui:Kod}"
+                 spravniobec="{pui:SpravniObecKod}"
+                 opr="{pui:Orp/opi:Kod}">
+                <Nazev>
                     <xsl:value-of select="pui:Nazev"/>
-                </pui:Nazev>
-                <pui:SpravniObecKod>
-                    <xsl:value-of select="pui:SpravniObecKod"/>
-                </pui:SpravniObecKod>
-                <pui:Orp>
-                    <opi:Kod>
-                        <xsl:value-of select="pui:Orp/opi:Kod"/>
-                    </opi:Kod>
-                </pui:Orp>
-            </vf:Pou>
+                </Nazev>
+            </Pou>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Obce">
         <xsl:for-each select="vf:Obec">
-            <vf:Obec>
-                <obi:Kod>
-                    <xsl:value-of select="obi:Kod"/>
-                </obi:Kod>
-                <obi:Nazev>
+            <Obec kod="{obi:Kod}"
+                  okres="{obi:Okres//oki:Kod}"
+                  pou="{obi:Pou//pui:Kod}">
+                <Nazev>
                     <xsl:value-of select="obi:Nazev"/>
-                </obi:Nazev>
+                </Nazev>
                 <obi:StatusKod>
                     <xsl:value-of select="obi:StatusKod"/>
                 </obi:StatusKod>
-                <obi:Okres>
-                    <oki:Kod>
-                        <xsl:value-of select="obi:Okres/oki:Kod"/>
-                    </oki:Kod>
-                </obi:Okres>
-                <obi:Pou>
-                    <pui:Kod>
-                        <xsl:value-of select="obi:Pou/pui:Kod"/>
-                    </pui:Kod>
-                </obi:Pou>
-            </vf:Obec>
+            </Obec>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:SpravniObvody">
         <xsl:for-each select="vf:SpravniObvod">
-            <vf:SpravniObvod>
-                <spi:Kod>
-                    <xsl:value-of select="spi:Kod"/>
-                </spi:Kod>
-                <spi:Nazev>
+            <SpravniObvod kod="{spi:Kod}"
+                          momc="{spi:SpravniMomcKod}"
+                          obec="{spi:Obec/obi:Kod}">
+                <Nazev>
                     <xsl:value-of select="spi:Nazev"/>
-                </spi:Nazev>
-                <spi:SpravniMomcKod>
-                    <xsl:value-of select="spi:SpravniMomcKod"/>
-                </spi:SpravniMomcKod>
-                <spi:Obec>
-                    <obi:Kod>
-                        <xsl:value-of select="spi:Obec/obi:Kod"/>
-                    </obi:Kod>
-                </spi:Obec>
-            </vf:SpravniObvod>
+                </Nazev>
+            </SpravniObvod>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Mop">
         <xsl:for-each select="vf:Mop">
-            <vf:Mop>
-                <mpi:Kod>
-                    <xsl:value-of select="mpi:Kod"/>
-                </mpi:Kod>
-                <mpi:Nazev>
+            <Mop kod="{mpi:Kod}"
+                 obec="{spi:Obec/obi:Kod}">
+                <Nazev>
                     <xsl:value-of select="mpi:Nazev"/>
-                </mpi:Nazev>
-                <mpi:Obec>
-                    <obi:Kod>
-                        <xsl:value-of select="mpi:Obec/obi:Kod"/>
-                    </obi:Kod>
-                </mpi:Obec>
-            </vf:Mop>
+                </Nazev>
+            </Mop>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:Momc">
         <xsl:for-each select="vf:Momc">
-            <vf:Momc>
-                <mci:Kod>
-                    <xsl:value-of select="mci:Kod"/>
-                </mci:Kod>
-                <mci:Nazev>
+            <Momc kod="{mci:Kod}"
+                  mop="{mci:Mop/mpi:Kod}"
+                  obec="{mci:Obec/obi:Kod}"
+                  spravniobvod="{mci:SpravniObvod/spi:Kod}">
+                <Nazev>
                     <xsl:value-of select="mci:Nazev"/>
-                </mci:Nazev>
-                <mci:Mop>
-                    <mpi:Kod>
-                        <xsl:value-of select="mci:Mop/mpi:Kod"/>
-                    </mpi:Kod>
-                </mci:Mop>
-                <mci:Obec>
-                    <obi:Kod>
-                        <xsl:value-of select="mci:Obec/obi:Kod"/>
-                    </obi:Kod>
-                </mci:Obec>
-                <mci:SpravniObvod>
-                    <spi:Kod>
-                        <xsl:value-of select="mci:SpravniObvod/spi:Kod"/>
-                    </spi:Kod>
-                </mci:SpravniObvod>
-            </vf:Momc>
+                </Nazev>
+            </Momc>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:CastiObci">
         <xsl:for-each select="vf:CastObce">
-            <vf:CastObce>
-                <coi:Kod>
-                    <xsl:value-of select="coi:Kod"/>
-                </coi:Kod>
-                <coi:Nazev>
+            <CastObce kod="{coi:Kod}"
+                      obec="{coi:Obec//obi:Kod}">
+                <Nazev>
                     <xsl:value-of select="coi:Nazev"/>
-                </coi:Nazev>
-                <coi:Obec>
-                    <obi:Kod>
-                        <xsl:value-of select="coi:Obec/obi:Kod"/>
-                    </obi:Kod>
-                </coi:Obec>
-            </vf:CastObce>
+                </Nazev>
+            </CastObce>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="vf:KatastralniUzemi">
         <xsl:for-each select="vf:KatastralniUzemi">
-            <vf:KatastralniUzemi>
-                <kui:Kod>
-                    <xsl:value-of select="kui:Kod"/>
-                </kui:Kod>
-                <kui:Nazev>
+            <KatastralniUzemi kod="{kui:Kod}"
+                              obec="{kui:Obec//obi:Kod}">
+                <Nazev>
                     <xsl:value-of select="kui:Nazev"/>
-                </kui:Nazev>
-                <kui:Obec>
-                    <obi:Kod>
-                        <xsl:value-of select="kui:Obec/obi:Kod"/>
-                    </obi:Kod>
-                </kui:Obec>
-            </vf:KatastralniUzemi>
+                </Nazev>
+            </KatastralniUzemi>
         </xsl:for-each>
     </xsl:template>
+
     <xsl:template match="vf:Zsj">
         <xsl:for-each select="vf:Zsj">
-            <vf:Zsj>
-                <zji:Kod>
-                    <xsl:value-of select="zji:Kod"/>
-                </zji:Kod>
+            <Zsj kod="{zji:Kod}"
+                 katastralniuzemi="{zji:KatastralniUzemi//kui:Kod}">
                 <zji:Nazev>
                     <xsl:value-of select="zji:Nazev"/>
                 </zji:Nazev>
-                <zji:KatastralniUzemi>
-                    <kui:Kod>
-                        <xsl:value-of select="zji:KatastralniUzemi/kui:Kod"/>
-                    </kui:Kod>
-                </zji:KatastralniUzemi>
                 <zji:Vymera>
                     <xsl:value-of select="zji:Vymera"/>
                 </zji:Vymera>
-            </vf:Zsj>
+            </Zsj>
         </xsl:for-each>
     </xsl:template>
 
