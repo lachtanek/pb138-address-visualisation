@@ -21,6 +21,7 @@ class VF:
 		self.file_queue = queue.Queue(maxsize=VF.MAX_THREADS * 4)
 		self.big_file_queue = queue.Queue()
 		self.threads = []
+
 		if not os.path.exists(self.output_directory):
 			os.makedirs(self.output_directory)
 
@@ -33,43 +34,36 @@ class VF:
 			if data is None:
 				break
 
-			fname = self.download_file(data[0])
-			if fname is None:
-				continue
-
-			if os.path.getsize(fname) > 10 * 1024 * 1024: # bigger than 10MB -> leave it for later
-				self.big_file_queue.put((fname, data[1]))
-				if VF.DEBUG:
-					print('skipping ' + fname + ' for now, because it\'s too big')
-
-				continue
+			fname1 = fname2 = None
 
 			try:
-				fname2 = self.uncompress(fname)
-			except MemoryError:
-				if VF.DEBUG:
-					print('failed ' + data[1])
+				fname1 = self.download_file(data[0])
 
-				continue
-			finally:
-				os.unlink(fname)
+				if os.path.getsize(fname1) > 10 * 1024 * 1024: # bigger than 10MB -> leave it for later
+					self.big_file_queue.put((fname1, data[1]))
+					if VF.DEBUG:
+						print('skipping ' + fname1 + ' for now, because it\'s too big')
 
-			if fname2 is None:
-				continue
+					continue
 
-			try:
+				fname2 = self.uncompress(fname1)
+
 				self.transform(fname2, data[1])
-			except etree.XSLTApplyError:
+
+				if VF.DEBUG:
+					print('done ' + data[1])
+			except (MemoryError, etree.XSLTApplyError):
 				if VF.DEBUG:
 					print('failed ' + data[1])
-
-				continue
+			except Exception as e:
+				print('error: ' + str(e))
 			finally:
 				self.file_queue.task_done()
-				os.unlink(fname2)
+				if fname1:
+					os.unlink(fname1)
+				if fname2:
+					os.unlink(fname2)
 
-			if VF.DEBUG:
-				print('done ' + data[1])
 
 	def download_and_parse(self):
 		for i in range(VF.MAX_THREADS):
@@ -98,35 +92,29 @@ class VF:
 		for t in self.threads:
 			t.join()
 
+		fname2 = None
+
 		while True:
 			data = self.big_file_queue.get(False)
+			if not data:
+				break
 
 			try:
 				fname2 = self.uncompress(data[0])
-			except MemoryError:
-				if VF.DEBUG:
-					print('failed ' + data[1])
-
-				continue
-			finally:
-				os.unlink(data[0])
-
-			if fname2 is None:
-				continue
-
-			try:
 				self.transform(fname2, data[1])
+
+				if VF.DEBUG:
+					print('done ' + data[1])
 			except etree.XSLTApplyError:
 				if VF.DEBUG:
 					print('failed ' + data[1])
-
-				continue
+			except Exception as e:
+				print('error: ' + str(e))
 			finally:
 				self.big_file_queue.task_done()
-				os.unlink(fname2)
-
-			if VF.DEBUG:
-				print('done ' + data[1])
+				os.unlink(data[0])
+				if fname2:
+					os.unlink(fname2)
 
 	def download_file(self, address):
 		with request.urlopen(address) as sock:
@@ -140,7 +128,7 @@ class VF:
 
 				return writeF.name
 
-		return None
+		raise Exception('Failed to download ' + address)
 
 	def uncompress(self, fileName):
 		with gzip.open(fileName) as gzf:
@@ -154,7 +142,7 @@ class VF:
 
 				return writeF.name
 
-		return None
+		raise Exception('Failed to uncompress ' + fileName)
 
 	def transform(self, inputFile, outputFile):
 		xml = etree.parse(inputFile)
