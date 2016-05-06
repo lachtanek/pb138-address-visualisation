@@ -22,7 +22,7 @@
 			</Vusc>
 		</Vusc>
 		<Okresy>
-			<Okres kod="3100">
+			<Okres kod="3100" kraj="31">
 				<Nazev>Hlavní město Praha</Nazev>
 			</Okres>
 		</Okresy>
