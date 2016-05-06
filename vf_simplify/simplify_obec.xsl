@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+                xmlns:gml="http://www.opengis.net/gml/3.2"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:ami="urn:cz:isvs:ruian:schemas:AdrMistoIntTypy:v1"
@@ -34,63 +35,35 @@
 
     <xsl:template match="vf:Data">
         <Data>
-            <Ulice>
-                <xsl:apply-templates select="vf:Ulice"/>
-            </Ulice>
+            <xsl:choose>
+                <xsl:when test="vf:Ulice">
+                    <!--Ulice-->
+                    <xsl:apply-templates select="vf:Ulice"/>
+                    <!--/Ulice-->
+                </xsl:when>
+                <xsl:otherwise>
+                    <AdresniMista>
+                        <xsl:variable name="soi"
+                                      select="vf:AdresniMista//vf:AdresniMisto//ami:StavebniObjekt//soi:Kod"/>
+                        <xsl:if test="vf:StavebniObjekty//vf:StavebniObjekt//soi:Kod=$soi">
+                            <xsl:variable name="coi"
+                                          select="vf:StavebniObjekty//vf:StavebniObjekt//soi:CastObce//coi:Kod"/>
+                            <xsl:if test="vf:CastiObci//vf:CastObce//coi:Kod=$coi">
+                                <xsl:variable name="obi" select="vf:CastiObci//vf:CastObce//coi:Obec//obi:Kod"/>
+
+                                <xsl:attribute name="obec">
+                                    <xsl:value-of select="$obi"/>
+                                </xsl:attribute>
+                            </xsl:if>
+                        </xsl:if>
+                        <pocetAdresnichMist>
+                            <xsl:value-of select="count(vf:AdresniMista//vf:AdresniMisto)"/>
+                        </pocetAdresnichMist>
+                    </AdresniMista>
+                </xsl:otherwise>
+            </xsl:choose>
         </Data>
     </xsl:template>
-
-    <xsl:template match="vf:Obce">
-        <xsl:for-each select="vf:Obec">
-            <Obec kod="{obi:Kod}"
-                  okres="{obi:Okres//oki:Kod}"
-                  pou="{obi:Pou//pui:Kod}">
-                <Nazev>
-                    <xsl:value-of select="obi:Nazev"/>
-                </Nazev>
-                <obi:StatusKod>
-                    <xsl:value-of select="obi:StatusKod"/>
-                </obi:StatusKod>
-            </Obec>
-        </xsl:for-each>
-    </xsl:template>
-
-    <xsl:template match="vf:CastiObci">
-        <xsl:for-each select="vf:CastObce">
-            <CastObce kod="{coi:Kod}"
-                      obec="{coi:Obec//obi:Kod}">
-                <Nazev>
-                    <xsl:value-of select="coi:Nazev"/>
-                </Nazev>
-            </CastObce>
-        </xsl:for-each>
-    </xsl:template>
-
-    <xsl:template match="vf:KatastralniUzemi">
-        <xsl:for-each select="vf:KatastralniUzemi">
-            <KatastralniUzemi kod="{kui:Kod}"
-                              obec="{kui:Obec//obi:Kod}">
-                <Nazev>
-                    <xsl:value-of select="kui:Nazev"/>
-                </Nazev>
-            </KatastralniUzemi>
-        </xsl:for-each>
-    </xsl:template>
-
-    <xsl:template match="vf:Zsj">
-        <xsl:for-each select="vf:Zsj">
-            <Zsj kod="{zji:Kod}"
-                 katastralniuzemi="{zji:KatastralniUzemi//kui:Kod}">
-                <zji:Nazev>
-                    <xsl:value-of select="zji:Nazev"/>
-                </zji:Nazev>
-                <zji:Vymera>
-                    <xsl:value-of select="zji:Vymera"/>
-                </zji:Vymera>
-            </Zsj>
-        </xsl:for-each>
-    </xsl:template>
-
 
     <xsl:template match="vf:Ulice">
         <xsl:for-each select="vf:Ulice">
@@ -105,74 +78,9 @@
                 </xsl:variable>
 
                 <pocetAdresnichMist>
-                    <xsl:value-of select="count(//vf:AdresniMisto[ami:Ulice[uli:Kod/text()=$kodUlice]])" />
+                    <xsl:value-of select="count(//vf:AdresniMisto[ami:Ulice[uli:Kod/text()=$kodUlice]])"/>
                 </pocetAdresnichMist>
             </Ulice>
-        </xsl:for-each>
-    </xsl:template>
-
-    <xsl:template match="vf:Parcely">
-        <xsl:for-each select="vf:Parcela">
-            <Parcela pai:Id="{pai:Id}" kui:Kod="{pai:KatastralniUzemi//kui:Kod}">
-            </Parcela>
-        </xsl:for-each>
-    </xsl:template>
-
-    <xsl:template match="vf:StavebniObjekty">
-        <xsl:for-each select="vf:StavebniObjekt">
-            <StavebniObjekt soi:Kod="{soi:Kod}"
-                            com:CisloDomovni="{soi:CislaDomovni//com:CisloDomovni}"
-                            pai:Id="{soi:IdentifikacniParcela//pai:Id}"
-                            coi:Kod="{soi:CastObce//coi:Kod}">
-                <TypStavebnihoObjektuKod>
-                    <xsl:value-of select="soi:TypStavebnihoObjektuKod"/>
-                </TypStavebnihoObjektuKod>
-                <ZpusobVyuzitiKod>
-                    <xsl:value-of select="soi:ZpusobVyuzitiKod"/>
-                </ZpusobVyuzitiKod>
-                <PocetBytu>
-                    <xsl:value-of select="soi:PocetBytu"/>
-                </PocetBytu>
-                <PocetPodlazi>
-                    <xsl:value-of select="soi:PocetPodlazi"/>
-                </PocetPodlazi>
-                <PodlahovaPlocha>
-                    <xsl:value-of select="soi:PodlahovaPlocha"/>
-                </PodlahovaPlocha>
-                <PripojeniKanalizaceKod>
-                    <xsl:value-of select="soi:PripojeniKanalizaceKod"/>
-                </PripojeniKanalizaceKod>
-                <PripojeniPlynKod>
-                    <xsl:value-of select="soi:PripojeniPlynKod"/>
-                </PripojeniPlynKod>
-                <PripojeniVodovodKod>
-                    <xsl:value-of select="soi:PripojeniVodovodKod"/>
-                </PripojeniVodovodKod>
-                <VybaveniVytahemKod>
-                    <xsl:value-of select="soi:VybaveniVytahemKod"/>
-                </VybaveniVytahemKod>
-                <ZpusobVytapeniKod>
-                    <xsl:value-of select="soi:ZpusobVytapeniKod"/>
-                </ZpusobVytapeniKod>
-                <pocetAdresnichMist>
-
-                </pocetAdresnichMist>
-            </StavebniObjekt>
-        </xsl:for-each>
-    </xsl:template>
-
-    <xsl:template match="vf:AdresniMista">
-        <xsl:for-each select="vf:AdresniMisto">
-            <AdresniMisto ami:Kod="{ami:Kod}"
-                          soi:Kod="{ami:StavebniObjekt//soi:Kod}"
-                          uli:Kod="{ami:Ulice//uli:Kod}">
-                <CisloDomovni>
-                    <xsl:value-of select="ami:CisloDomovni"/>
-                </CisloDomovni>
-                <Psc>
-                    <xsl:value-of select="ami:Psc"/>
-                </Psc>
-            </AdresniMisto>
         </xsl:for-each>
     </xsl:template>
 </xsl:stylesheet>
