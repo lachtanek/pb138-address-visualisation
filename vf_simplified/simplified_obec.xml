@@ -12,84 +12,82 @@
                xmlns:vci="urn:cz:isvs:ruian:schemas:VuscIntTypy:v1"
                xmlns:pai="urn:cz:isvs:ruian:schemas:ParcelaIntTypy:v1"
                xmlns:mci="urn:cz:isvs:ruian:schemas:MomcIntTypy:v1" xmlns:kri="urn:cz:isvs:ruian:schemas:KrajIntTypy:v1"
-               xmlns:kui="urn:cz:isvs:ruian:schemas:KatUzIntTypy:v1" xmlns:voi="urn:cz:isvs:ruian:schemas:VOIntTypy:v1"
-               xmlns:sti="urn:cz:isvs:ruian:schemas:StatIntTypy:v1"
+               xmlns:kui="urn:cz:isvs:ruian:schemas:KatUzIntTypy:v1" xmlns:gml="http://www.opengis.net/gml/3.2"
+               xmlns:voi="urn:cz:isvs:ruian:schemas:VOIntTypy:v1" xmlns:sti="urn:cz:isvs:ruian:schemas:StatIntTypy:v1"
                xmlns:rsi="urn:cz:isvs:ruian:schemas:RegSouIntiTypy:v1"
                xmlns:vf="urn:cz:isvs:ruian:schemas:VymennyFormatTypy:v1">
     <Data>
-        <Ulice>
-            <Ulice kod="644196" obec="500011">
-                <Nazev>4. května</Nazev>
-                <pocetAdresnichMist>50</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="644960" obec="500011">
-                <Nazev>Batalická</Nazev>
-                <pocetAdresnichMist>48</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="645192" obec="500011">
-                <Nazev>Družstevníků</Nazev>
-                <pocetAdresnichMist>14</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="645427" obec="500011">
-                <Nazev>Klínek</Nazev>
-                <pocetAdresnichMist>1</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="645486" obec="500011">
-                <Nazev>Kút</Nazev>
-                <pocetAdresnichMist>6</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="895652" obec="500011">
-                <Nazev>Lipská</Nazev>
-                <pocetAdresnichMist>1</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="644251" obec="500011">
-                <Nazev>Lysá</Nazev>
-                <pocetAdresnichMist>55</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="645907" obec="500011">
-                <Nazev>Nad Školou</Nazev>
-                <pocetAdresnichMist>17</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="644277" obec="500011">
-                <Nazev>Nádražní</Nazev>
-                <pocetAdresnichMist>28</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="644358" obec="500011">
-                <Nazev>Osvobození</Nazev>
-                <pocetAdresnichMist>67</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="644382" obec="500011">
-                <Nazev>Papírenská</Nazev>
-                <pocetAdresnichMist>20</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="647268" obec="500011">
-                <Nazev>Paseky</Nazev>
-                <pocetAdresnichMist>271</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="647152" obec="500011">
-                <Nazev>Pod Stráží</Nazev>
-                <pocetAdresnichMist>24</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="644404" obec="500011">
-                <Nazev>Podřevnická</Nazev>
-                <pocetAdresnichMist>16</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="796816" obec="500011">
-                <Nazev>Příkrá</Nazev>
-                <pocetAdresnichMist>3</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="796824" obec="500011">
-                <Nazev>Přílucká</Nazev>
-                <pocetAdresnichMist>44</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="796808" obec="500011">
-                <Nazev>Příční</Nazev>
-                <pocetAdresnichMist>6</pocetAdresnichMist>
-            </Ulice>
-            <Ulice kod="647241" obec="500011">
-                <Nazev>Výpusta</Nazev>
-                <pocetAdresnichMist>53</pocetAdresnichMist>
-            </Ulice>
+        <Ulice kod="644196" obec="500011">
+            <Nazev>4. května</Nazev>
+            <pocetAdresnichMist>50</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="644960" obec="500011">
+            <Nazev>Batalická</Nazev>
+            <pocetAdresnichMist>48</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="645192" obec="500011">
+            <Nazev>Družstevníků</Nazev>
+            <pocetAdresnichMist>14</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="645427" obec="500011">
+            <Nazev>Klínek</Nazev>
+            <pocetAdresnichMist>1</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="645486" obec="500011">
+            <Nazev>Kút</Nazev>
+            <pocetAdresnichMist>6</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="895652" obec="500011">
+            <Nazev>Lipská</Nazev>
+            <pocetAdresnichMist>1</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="644251" obec="500011">
+            <Nazev>Lysá</Nazev>
+            <pocetAdresnichMist>55</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="645907" obec="500011">
+            <Nazev>Nad Školou</Nazev>
+            <pocetAdresnichMist>17</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="644277" obec="500011">
+            <Nazev>Nádražní</Nazev>
+            <pocetAdresnichMist>28</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="644358" obec="500011">
+            <Nazev>Osvobození</Nazev>
+            <pocetAdresnichMist>67</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="644382" obec="500011">
+            <Nazev>Papírenská</Nazev>
+            <pocetAdresnichMist>20</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="647268" obec="500011">
+            <Nazev>Paseky</Nazev>
+            <pocetAdresnichMist>271</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="647152" obec="500011">
+            <Nazev>Pod Stráží</Nazev>
+            <pocetAdresnichMist>24</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="644404" obec="500011">
+            <Nazev>Podřevnická</Nazev>
+            <pocetAdresnichMist>16</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="796816" obec="500011">
+            <Nazev>Příkrá</Nazev>
+            <pocetAdresnichMist>3</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="796824" obec="500011">
+            <Nazev>Přílucká</Nazev>
+            <pocetAdresnichMist>44</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="796808" obec="500011">
+            <Nazev>Příční</Nazev>
+            <pocetAdresnichMist>6</pocetAdresnichMist>
+        </Ulice>
+        <Ulice kod="647241" obec="500011">
+            <Nazev>Výpusta</Nazev>
+            <pocetAdresnichMist>53</pocetAdresnichMist>
         </Ulice>
     </Data>
 </VymennyFormat>
