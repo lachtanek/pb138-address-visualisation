@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapView>
+	<!-- all arguments given in this example are required! (optionals are in comments) -->
+	<!-- we will use Google Maps Geocoding API, which lets us decode search string into GPS coordinates -->
+
+	<point search="Botanická 68, Brno" title="Tady je nějaký zajímavý místo" />
+</mapView>

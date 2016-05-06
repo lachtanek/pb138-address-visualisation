@@ -4,81 +4,68 @@
 		<Staty>
 			<Stat kod="1">
 				<Nazev>Česká republika</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Stat>
 		</Staty>
 		<RegionySoudrznosti>
 			<RegionSoudrznosti kod="19">
 				<Nazev>Praha</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</RegionSoudrznosti>
 		</RegionySoudrznosti>
 		<Kraje>
 			<Kraj kod="31">
 				<Nazev>Praha</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Kraj>
 		</Kraje>
 		<Vusc>
 			<Vusc kod="19">
 				<Nazev>Hlavní město Praha</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Vusc>
 		</Vusc>
 		<Okresy>
 			<Okres kod="3100">
 				<Nazev>Hlavní město Praha</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Okres>
 		</Okresy>
 		<Orp>
 			<Orp kod="19" spravniobec="554782" vusc="19">
 				<Nazev>Hlavní město Praha</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Orp>
 		</Orp>
 		<Pou>
 			<Pou kod="2119" spravniobec="571385" opr="981">
 				<Nazev>Heřmanův Městec</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Pou>
 		</Pou>
 		<Obce>
 			<Obec kod="569054" okres="3805" pou="3735">
 				<Nazev>Strukov</Nazev>
 				<obi:StatusKod>2</obi:StatusKod>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Obec>
 		</Obce>
 		<SpravniObvody>
 			<SpravniObvod kod="19" momc="500054" obec="554782">
 				<Nazev>Praha 1</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</SpravniObvod>
 		</SpravniObvody>
 		<Mop>
 			<Mop kod="19" obec="">
 				<Nazev>Praha 1</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Mop>
 		</Mop>
 		<Momc>
 			<Momc kod="547310" mop="94" obec="554782" spravniobvod="221">
 				<Nazev>Praha-Čakovice</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Momc>
 		</Momc>
 		<KatastralniUzemi>
 			<KatastralniUzemi kod="668761" obec="535877">
 				<Nazev>Pašinovice</Nazev>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</KatastralniUzemi>
 		</KatastralniUzemi>
 		<Ulice>
 			<Ulice kod="644196" obec="500011">
 				<Nazev>4. května</Nazev>
 				<pocetAdresnichMist>50</pocetAdresnichMist>
-				<Gps>-743100.00 -1043300.00</Gps>
 			</Ulice>
 		</Ulice>
 	</Data>
