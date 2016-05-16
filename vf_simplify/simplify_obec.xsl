@@ -77,10 +77,22 @@
                     <xsl:value-of select="uli:Kod"/>
                 </xsl:variable>
 
-                <pocetAdresnichMist>
+                <PocetAdresnichMist>
                     <xsl:value-of select="count(//vf:AdresniMisto[ami:Ulice[uli:Kod/text()=$kodUlice]])"/>
-                </pocetAdresnichMist>
+                </PocetAdresnichMist>
+
+                <Geometrie>
+                    <xsl:apply-templates select="uli:Geometrie//uli:DefinicniCara//gml:MultiCurve"/>
+                </Geometrie>
             </Ulice>
         </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="uli:Geometrie//uli:DefinicniCara//gml:MultiCurve">
+            <xsl:for-each select="gml:curveMember">
+                <PosList>
+                    <xsl:value-of select="gml:LineString//gml:posList"/>
+                </PosList>
+            </xsl:for-each>
     </xsl:template>
 </xsl:stylesheet>
