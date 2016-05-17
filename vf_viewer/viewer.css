@@ -1,0 +1,22 @@
+html, body, .view {
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	font-family: Ubuntu, 'Helvetica Neue', sans-serif;
+}
+
+.info {
+	position: absolute;
+	z-index: 9999;
+	top: 1em;
+	right: 1em;
+	color: white;
+	background: rgba(0,60,136,.5);
+	padding: 1em;
+	border-radius: 0.5em;
+	pointer-events: none;
+}
+
+.info:empty {
+	display: none;
+}
