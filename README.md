@@ -27,3 +27,7 @@ Mainly works with Czech address registry (RUIAN "Výměnný formát"), but it sh
 - Written in JavaScript
 
 Start a HTTP server `python3 -m http.server` and visit http://localhost:8000/vf_viewer/
+
+## Dependencies
+- [python-geojson](https://pypi.python.org/pypi/geojson)
+- [python-gdal](https://pypi.python.org/pypi/gdal)
