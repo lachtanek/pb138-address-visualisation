@@ -19,7 +19,7 @@ Mainly works with Czech address registry (RUIAN "Výměnný formát"), but it sh
 - lots of smaller modules
 - can be written in any programming language (we mainly use Python through)
 - input: database folder (with known structure)
-- output: single XML file containing drawing information (what to draw on map, ex. point on coordinates x, y)
+- output: single [GeoJSON](http://geojson.org/) file containing drawing information (what to draw on map, ex. point on coordinates lat, lng)
 - example visualiser: longest street in region - walks through all regions and finds longest street in each of them
 
 ### Viewer
