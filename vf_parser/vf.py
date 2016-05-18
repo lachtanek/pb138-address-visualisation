@@ -7,6 +7,7 @@ import threading
 import queue
 import gzip
 import os
+import sys
 
 class VF:
 	BUFF_SIZE = 4096
@@ -42,7 +43,7 @@ class VF:
 				if os.path.getsize(fname1) > 10 * 1024 * 1024: # bigger than 10MB -> leave it for later
 					self.big_file_queue.put((fname1, data[1]))
 					if VF.DEBUG:
-						print('skipping ' + fname1 + ' for now, because it\'s too big')
+						print('skipping ' + data[1] + ' (' + fname1 + ') for now, because it\'s too big')
 
 					continue
 
@@ -51,12 +52,12 @@ class VF:
 				self.transform(fname2, data[1])
 
 				if VF.DEBUG:
-					print('done ' + data[1])
-			except (MemoryError, etree.XSLTApplyError):
+					print('done', data[1])
+			except (MemoryError, etree.XSLTApplyError) as e:
 				if VF.DEBUG:
-					print('failed ' + data[1])
+					print('failed', data[1], 'error:', str(e), file=sys.stderr)
 			except Exception as e:
-				print('error: ' + str(e))
+				print('failed', data[1], 'error:', str(e), file=sys.stderr)
 			finally:
 				self.file_queue.task_done()
 				if fname1:
@@ -104,12 +105,12 @@ class VF:
 				self.transform(fname2, data[1])
 
 				if VF.DEBUG:
-					print('done ' + data[1])
-			except etree.XSLTApplyError:
+					print('done', data[1])
+			except etree.XSLTApplyError as e:
 				if VF.DEBUG:
-					print('failed ' + data[1])
+					print('failed', data[1], 'error:', str(e), file=sys.stderr)
 			except Exception as e:
-				print('error: ' + str(e))
+				print('failed', data[1], 'error:', str(e), file=sys.stderr)
 			finally:
 				self.big_file_queue.task_done()
 				os.unlink(data[0])
