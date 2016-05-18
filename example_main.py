@@ -5,7 +5,7 @@ parser.load('source/20141130_ST_UZSZ.xml')
 parser.parse('database/') # output directory
 
 visReg = AV.VisualiserRegistry()
-visReg.setDatabasePath('databaase/')
+visReg.setDatabasePath('database/')
 visReg.registerVisualiserSet(AV.Visualisers.DefaultSet)
 visReg.runVisualisers('visualised/') # output directory
 
