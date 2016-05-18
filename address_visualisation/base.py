@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+import re
+
 class Settings:
 	URL_FNAME_RE = re.compile(r'(\w+\.xml)\.gz')
 	# maybe move somewhere else in the future

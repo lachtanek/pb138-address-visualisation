@@ -1,14 +1,10 @@
-#!/usr/bin/python3
-from urllib import request
 from lxml import etree
 from subprocess import call
 from .base import Settings
 from .helpers import download_file, uncompress
 import re
-import tempfile
 import threading
 import queue
-import gzip
 import os
 import sys
 
@@ -37,7 +33,7 @@ class Downloader:
 			skipped = False
 
 			try:
-				fname1 = self.download_file(data[0])
+				fname1 = download_file(data[0])
 
 				if os.path.getsize(fname1) > 10 * 1024 * 1024: # bigger than 10MB -> leave it for later
 					self.big_file_queue.put((fname1, data[1]))
@@ -48,7 +44,7 @@ class Downloader:
 
 					continue
 
-				fname2 = self.uncompress(fname1)
+				fname2 = uncompress(fname1)
 
 				self.transform(fname2, data[1])
 
@@ -102,7 +98,7 @@ class Downloader:
 				break
 
 			try:
-				fname2 = self.uncompress(data[0])
+				fname2 = uncompress(data[0])
 				call('java', '-Xmx' + Settings.SAXON_MAX_RAM + 'G', '-cp', Settings.SAXON_PATH, 'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + data[1])
 
 				if Settings.DEBUG:
