@@ -36,12 +36,15 @@ class VF:
 				break
 
 			fname1 = fname2 = None
+			skipped = False
 
 			try:
 				fname1 = self.download_file(data[0])
 
 				if os.path.getsize(fname1) > 10 * 1024 * 1024: # bigger than 10MB -> leave it for later
 					self.big_file_queue.put((fname1, data[1]))
+					skipped = True
+
 					if VF.DEBUG:
 						print('skipping ' + data[1] + ' (' + fname1 + ') for now, because it\'s too big')
 
@@ -60,7 +63,7 @@ class VF:
 				print('failed', data[1], 'error:', str(e), file=sys.stderr)
 			finally:
 				self.file_queue.task_done()
-				if fname1:
+				if not skipped and fname1:
 					os.unlink(fname1)
 				if fname2:
 					os.unlink(fname2)
