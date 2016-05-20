@@ -1,3 +1,4 @@
+from xml.etree import ElementTree
 from lxml import etree
 from subprocess import call
 from .base import Settings
@@ -7,6 +8,7 @@ import threading
 import queue
 import os
 import sys
+import glob
 
 class Downloader:
 	def __init__(self, link_file, output, xsl):
@@ -113,6 +115,26 @@ class Downloader:
 				os.unlink(data[0])
 				if fname2:
 					os.unlink(fname2)
+
+	def merge(self):
+		xml_files = glob.glob(self.output_directory + '/*.xml')
+		xml_element_tree = None
+
+		for xml_file in xml_files:
+			data = ElementTree.parse(xml_file).getroot()
+
+			for result in data.iter('Data'):
+				if xml_element_tree is None:
+					xml_element_tree = data 
+					insertion_point = xml_element_tree.findall("./Data")[0]
+				else:
+					insertion_point.extend(result) 
+
+		if xml_element_tree is not None:
+			tree = ElementTree.ElementTree(xml_element_tree)
+			tree.write( 'db.xml', encoding='utf-8' )
+			if Settings.DEBUG:
+				print('Files merged into ' + os.getcwd() + '/db.xml')
 
 	def transform(self, inputFile, outputFile):
 		xml = etree.parse(inputFile)

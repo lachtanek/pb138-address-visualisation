@@ -5,3 +5,4 @@ Settings.DEBUG = True
 Settings.SAXON_PATH = 'saxon9he.jar'
 dow = Downloader('vf_resources/links_obec_kompletni.txt', 'vf_resources/tmp/', 'vf_simplify/simplify_obec.xsl')
 dow.download_and_parse()
+dow.merge()
