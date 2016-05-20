@@ -1,2 +1,4 @@
 vf_resources/tmp
+*.pyc
+db.xml
 __pycache__
