@@ -3,12 +3,15 @@ from lxml import etree
 from subprocess import call
 from .base import Settings
 from .helpers import download_file, uncompress
+from collections import namedtuple
+import datetime
 import re
-import threading
+from threading import Thread
 import queue
 import os
 import sys
 import glob
+
 
 class Downloader:
 	def __init__(self, link_file, output, xsl):
@@ -25,7 +28,7 @@ class Downloader:
 	def isdone(self, outfile):
 		return os.path.exists(self.output_directory + '/' + outfile)
 
-	def thread_process(self):
+	def thread_process_queue(self):
 		while True:
 			data = self.file_queue.get()
 			if data is None:
@@ -65,11 +68,9 @@ class Downloader:
 					os.unlink(fname2)
 
 
-	def download_and_parse(self):
-		for i in range(Settings.MAX_THREADS):
-			t = threading.Thread(target=self.thread_process)
-			t.start()
-			self.threads.append(t)
+	def thread_fill_queue(self):
+		FileData = namedtuple('FileData', ['date', 'downlink', 'outfile'])
+		uniq = {}
 
 		with open(self.link_file, 'r') as linkList:
 			for line in linkList:
@@ -77,11 +78,33 @@ class Downloader:
 				if not m:
 					continue
 
-				outfname = m.group(1)
-				if self.isdone(outfname):
+				fname = m.group(1)
+				m = Settings.FNAME_VERSION_RE.search(fname)
+				if not m:
 					continue
 
-				self.file_queue.put((line, outfname))
+				datestr = m.group(1)
+				date = datetime.date( int( datestr[:4] ), int( datestr[4:6] ), int( datestr[6:] ) )
+				townid = int(m.group(2))
+
+				if townid in uniq and uniq[townid].date >= date:
+					continue
+
+				uniq[townid] = FileData(date, line, str(townid) + '.xml')
+
+		for data in uniq.values():
+			if not self.isdone(data.outfile):
+				self.file_queue.put((data.downlink, data.outfile))
+
+	def download_and_parse(self):
+		filling = Thread(target=self.thread_fill_queue)
+
+		for i in range(Settings.MAX_THREADS):
+			t = Thread(target=self.thread_process_queue)
+			t.start()
+			self.threads.append(t)
+
+		filling.join()
 
 		self.file_queue.join()
 		if Settings.DEBUG:
@@ -101,7 +124,8 @@ class Downloader:
 
 			try:
 				fname2 = uncompress(data[0])
-				call('java', '-Xmx' + Settings.SAXON_MAX_RAM + 'G', '-cp', Settings.SAXON_PATH, 'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + data[1])
+				call( [ 'java', '-Xmx' + Settings.SAXON_MAX_RAM + 'G', '-cp', Settings.SAXON_PATH,
+						'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + data[1] ] )
 
 				if Settings.DEBUG:
 					print('done', data[1])
