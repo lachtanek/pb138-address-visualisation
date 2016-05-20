@@ -7,5 +7,6 @@ class Settings:
 	BUFF_SIZE = 4096
 	MAX_THREADS = 2
 	DEBUG = False
+	BIGFILE_MIN_ARCHIVE_MB = 10
 	SAXON_PATH = 'saxon9he.jar'
 	SAXON_MAX_RAM = '8'
