@@ -98,6 +98,7 @@ class Downloader:
 
 	def download_and_parse(self):
 		filling = Thread(target=self.thread_fill_queue)
+		filling.start()
 
 		for i in range(Settings.MAX_THREADS):
 			t = Thread(target=self.thread_process_queue)
