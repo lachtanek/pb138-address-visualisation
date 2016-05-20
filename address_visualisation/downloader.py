@@ -11,6 +11,7 @@ import queue
 import os
 import sys
 import glob
+import time
 
 
 class Downloader:
@@ -18,18 +19,21 @@ class Downloader:
 		self.link_file = link_file
 		self.xsl = xsl
 		self.output_directory = output
-		self.file_queue = queue.Queue(maxsize=Settings.MAX_THREADS * 4)
+		self.file_queue = queue.Queue()
 		self.big_file_queue = queue.Queue()
 		self.threads = []
+		self.running = True
 
 		if not os.path.exists(self.output_directory):
 			os.makedirs(self.output_directory)
 
+
 	def isdone(self, outfile):
 		return os.path.exists(self.output_directory + '/' + outfile)
 
+
 	def thread_process_queue(self):
-		while True:
+		while self.running:
 			data = self.file_queue.get()
 			if data is None:
 				break
@@ -96,7 +100,8 @@ class Downloader:
 			if not self.isdone(data.outfile):
 				self.file_queue.put((data.downlink, data.outfile))
 
-	def download_and_parse(self):
+
+	def main_thread(self):
 		filling = Thread(target=self.thread_fill_queue)
 		filling.start()
 
@@ -107,7 +112,12 @@ class Downloader:
 
 		filling.join()
 
-		self.file_queue.join()
+		# self.file_queue.join()
+		# not using join because it blocks and doesn't support timeout and
+		# KeyboardInterrupt is ignored or something (we want to be able to stop program!)
+		while not self.file_queue.empty():
+			time.sleep(100)
+
 		if Settings.DEBUG:
 			print('joined queue')
 
@@ -118,15 +128,18 @@ class Downloader:
 
 		fname2 = None
 
-		while True:
-			data = self.big_file_queue.get(False)
-			if not data:
+		while self.running:
+			try:
+				data = self.big_file_queue.get(False)
+				if not data:
+					break
+			except queue.Empty:
 				break
 
 			try:
 				fname2 = uncompress(data[0])
 				call( [ 'java', '-Xmx' + Settings.SAXON_MAX_RAM + 'G', '-cp', Settings.SAXON_PATH,
-						'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + data[1] ] )
+						'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + self.output_directory + '/' + data[1] ] )
 
 				if Settings.DEBUG:
 					print('done', data[1])
@@ -140,6 +153,26 @@ class Downloader:
 				os.unlink(data[0])
 				if fname2:
 					os.unlink(fname2)
+
+
+	def download_and_parse(self):
+		try:
+			self.main_thread()
+		except KeyboardInterrupt:
+			print('Stopping download...')
+			self.running = False
+
+			if not self.file_queue.empty():
+				with self.file_queue.mutex:
+					self.file_queue.queue.clear()
+
+				for i in range(Settings.MAX_THREADS):
+					self.file_queue.put(None)
+				for t in self.threads:
+					t.join()
+
+			raise
+
 
 	def merge(self):
 		xml_files = glob.glob(self.output_directory + '/*.xml')
@@ -160,6 +193,7 @@ class Downloader:
 			tree.write( 'db.xml', encoding='utf-8' )
 			if Settings.DEBUG:
 				print('Files merged into ' + os.getcwd() + '/db.xml')
+
 
 	def transform(self, inputFile, outputFile):
 		xml = etree.parse(inputFile)
