@@ -1,3 +1,0 @@
-http://vdp.cuzk.cz/vymenny_format/soucasna/20160430_ST_UZSZ.xml.gz
-http://vdp.cuzk.cz/vymenny_format/soucasna/20160331_ST_UZSZ.xml.gz
-http://vdp.cuzk.cz/vymenny_format/soucasna/20160229_ST_UZSZ.xml.gz

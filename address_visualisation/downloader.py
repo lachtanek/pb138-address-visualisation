@@ -146,7 +146,8 @@ class Downloader:
 			try:
 				fname2 = uncompress(data[0])
 				call( [ 'java', '-Xmx' + Settings.SAXON_MAX_RAM + 'G', '-cp', Settings.SAXON_PATH,
-						'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + self.temp_directory + '/' + data[1] ] )
+						'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self.xsl, '-o:' + self.temp_directory + '/' + data[1],
+						'-versionmsg:off', '-warnings:' + 'recover' if Settings.DEBUG else 'silent' ] )
 
 				if Settings.DEBUG:
 					print('done', data[1])
