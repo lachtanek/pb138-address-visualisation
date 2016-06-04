@@ -1,4 +1,4 @@
-import gzip.open
+import gzip
 from tempfile import NamedTemporaryFile
 from urllib import request
 
