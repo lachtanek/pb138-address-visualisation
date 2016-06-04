@@ -1,38 +1,41 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
 from xml.etree import cElementTree
 
-class townWithMostStreetsVisualiser(object):
+class TownWithMostStreetsVisualiser(object):
     stat_filepath = None
     ulice_filepath = None
     
     def __init__(self, stat_filepath, ulice_filepath):
         self.stat_filepath = stat_filepath
         self.ulice_filepath = ulice_filepath
-        
+    
     def find(self):
         tree_stat = cElementTree.ElementTree(file=self.stat_filepath)
         root = tree_stat.getroot()
-        kraje = root.findall(".//Kraj/@kod")
-        maxValues = []
-        
+        kraje = root.findall(".//Kraj")
+        maxValues = [None]*len(kraje)
+        i = 0
         for kraj in kraje:
-            maximum = [-1,None,None,None,None]
-            if type(kraj) == cElementTree.Element.__class__ and kraj.tag == "Kraj":
-                okresy = tree_stat.findall(".//Okres[@kraj = '"+kraj.attrib["kod"]+"']/@kod")
-
-                for okres in okresy:
-                    if type(okres) == cElementTree.Element.__class__ and okres.tag == "Okres":
-                        dotaz = ".//Obec[@okres='"+okres.attrib["kod"]+"']/@kod"
-                        obce = tree_stat.findall(dotaz)
-                        for obec in obce:
-                            if type(obec) == cElementTree.Element.__class__ and obec.tag == "Obec":
-                                       
-                                ulice_xml = cElementTree.ElementTree(file=self.ulice_filepath)
-                                dotaz = ".//Ulice[@obec='"+obec.attrib["kod"]+"]"
-                                ulice_obec = ulice_xml.getroot().find(dotaz)
-                                if maximum[0] < len(ulice_obec):
-                                    maximum = [len(ulice_obec), obec.get("kod"), obec.find("nazev").text, kraj.find("nazev").text]                                      
-            maxValues.append(maximum)
+            maximum = [0,None,None,None,kraj.find("Nazev").text]
+            for okres in root.iter('Okres'):
+                if okres.get("kod")[0:2] == kraj.get("kod"):
+                    for obec in root.iter('Obec'):
+                        if obec.get("okres") == okres.get("kod"):
+                            count = 0
+                            tree_ulice = cElementTree.ElementTree(file=self.ulice_filepath)
+                            for ulice in tree_ulice.getroot().iter('Ulice'):
+                                if ulice.get("obec") == obec.get("kod"):
+                                    count = count + 1
+                            if count > maximum[0]:
+                                maximum = [count, obec.get("kod"), obec.find("Nazev").text, kraj.find("Nazev").text]
+            maxValues[i] = maximum
+            i = i + 1
         return maxValues    
-    
-    
-    
+"""    
+if __name__ == '__main__':
+    visualiser = TownWithMostStreetsVisualiser("simplified_stat.xml","simplified_obec_kompletni.xml")
+    values = visualiser.find()
+    print(values)
+"""    

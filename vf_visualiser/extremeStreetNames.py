@@ -1,8 +1,7 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
 from xml.etree import cElementTree
-#from geojson import Feature, MultiLineString, dumps
-#from features import FeatureCollection
-#from builtins import int
-from sys import maxsize
 
 class ExtremeStreetNamesVisualiser(object):
     stat_filepath = None
@@ -11,40 +10,39 @@ class ExtremeStreetNamesVisualiser(object):
     def __init__(self, stat_filepath, ulice_filepath):
         self.stat_filepath = stat_filepath
         self.obec_filepath = ulice_filepath
-        
+       
     def find(self):
         tree_stat = cElementTree.ElementTree(file=self.stat_filepath)
         root = tree_stat.getroot()
-        kraje = root.findall(".//Kraj/@kod")
-        minValues = []
-        maxValues = []
-        
+        kraje = root.findall(".//Kraj")
+        maxValues = [None]*len(kraje)
+        minValues = [None]*len(kraje)
+        i = 0
         for kraj in kraje:
-            minimum = [maxsize,None,None,None,None]
+            minimum = [257,None,None,None,None]
             maximum = [-1,None,None,None,None]
-            if type(kraj) == cElementTree.Element.__class__ and kraj.tag == "Kraj":
-                okresy = tree_stat.findall(".//Okres[@kraj = '"+kraj.attrib["kod"]+"']/@kod")
-
-                for okres in okresy:
-                    if type(okres) == cElementTree.Element.__class__ and okres.tag == "Okres":
-                        dotaz = ".//Obec[@okres='"+okres.attrib["kod"]+"']/@kod"
-                        obce = tree_stat.findall(dotaz)
-                        for obec in obce:
-                            if type(obec) == cElementTree.Element.__class__ and obec.tag == "Obec":
-                                      
-                                ulice_xml = cElementTree.ElementTree(file=self.ulice_filepath)
-                                dotaz = ".//Ulice[@obec='"+obec.attrib["kod"]+"]" 
-                                ulice_obec = ulice_xml.getroot().findall(dotaz)
-                                for ulice in ulice_obec:
-                                    if type(ulice) == cElementTree.Element.__class__ and ulice.tag == "Ulice":
-                                        nazev = ulice.get("Nazev")
-                                        if maximum[0] < len(nazev):
-                                            maximum = [len(nazev), ulice.get("kod"), ulice.find("nazev").text, obec.find("nazev").text, kraj.find("nazev").text]
-                                        if minimum[0] > len(nazev):
-                                            maximum = [len(nazev), ulice.get("kod"), ulice.find("nazev").text, obec.find("nazev").text, kraj.find("nazev").text]
-            minValues.append(minimum)
-            maxValues.append(maximum)
-        return minValues, maxValues    
-    
-    
+            for okres in root.iter('Okres'):
+                if okres.get("kod")[0:2] == kraj.get("kod"):
+                    for obec in root.iter('Obec'):
+                        if obec.get("okres") == okres.get("kod"):                            
+                            tree_ulice = cElementTree.ElementTree(file=self.obec_filepath)
+                            for ulice in tree_ulice.getroot().iter('Ulice'):
+                                if ulice.get("obec") == obec.get("kod"):
+                                    nazev = ulice.find("Nazev").text
+                                    if minimum[0] > len(nazev):
+                                        minimum = [len(nazev), ulice.get("kod"), ulice.find("Nazev").text, obec.find("Nazev").text, kraj.find("Nazev").text]
+                                    if maximum[0] < len(nazev):
+                                        maximum = [len(nazev), ulice.get("kod"), ulice.find("Nazev").text, obec.find("Nazev").text, kraj.find("Nazev").text]
+            minValues[i] = minimum
+            maxValues[i] = maximum
+            i = i + 1
+        return minValues, maxValues
+                    
+"""
+if __name__ == '__main__':
+    visualiser = ExtremeStreetNamesVisualiser("simplified_stat.xml","simplified_obec_kompletni.xml")
+    (values1,values2) = visualiser.find()
+    print(values1)
+    print(values2)
+"""    
     
