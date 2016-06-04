@@ -60,4 +60,5 @@ def feature_collection_from_towns(values, street_filepath, collection_title):
     
     return FeatureCollection(collection_title, towns_collection)
 
-
+def feature_collection_from_areas(values, country_filepath, street_filepath, collection_title):
+    return None
