@@ -18,9 +18,12 @@ with open(output_directory + '/' + 'longest_streets.json', 'w') as f:
 	f.write(geojson.dumps(transformToFeatureCollection.feature_collection_from_streets(longest_streets, 'vf_simplified/simplified_obec_kompetni.xml', 'Longest streets in region')))
 
 extreme_street_names_visualiser = ExtremeStreetNamesVisualiser('vf_simplified/simplified_stat.xml','vf_simplified/simplified_obec_kompetni.xml')
-extreme_street_names = extreme_street_names_visualiser.find()
-with open(output_directory + '/' + 'extreme_street_names.json', 'w') as f:
-	f.write(geojson.dumps(transformToFeatureCollection.feature_collection_from_streets(extreme_street_names, 'vf_simplified/simplified_obec_kompetni.xml', 'Extreme street names in region')))
+(minimal_names, maximal_names) = extreme_street_names_visualiser.find()
+
+min_f = open(output_directory + '/' + 'minimal_names.json', 'w')
+min_f.write(geojson.dumps(transformToFeatureCollection.feature_collection_from_streets(minimal_names, 'vf_simplified/simplified_obec_kompetni.xml', 'Minimal street names in region')))
+max_f = open(output_directory + '/' + 'maximal_names.json', 'w')
+min_f.write(geojson.dumps(transformToFeatureCollection.feature_collection_from_streets(maximal_names, 'vf_simplified/simplified_obec_kompetni.xml', 'Maximal street names in region')))
 
 #areas
 square_count_visualiser = SquareCountVisualiser('vf_simplified/simplified_stat.xml','vf_simplified/simplified_obec_kompetni.xml')
