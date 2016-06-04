@@ -2,8 +2,7 @@
 from xml.etree import cElementTree
 from .features import FeatureCollection
 from geojson import Feature, MultiLineString
-import geojson
-from osgeo import ogr
+from .helpers import multi_segment_length
 
 class SampleStreets(object):
 	__title = 'Ulice'
@@ -28,8 +27,8 @@ class SampleStreets(object):
 				segments.append(points)
 
 			mls = MultiLineString(segments)
-			geom = ogr.CreateGeometryFromJson(geojson.dumps(mls))
-			street_feature = Feature(geometry=mls, properties={'name': street.find('Nazev').text, 'length': geom.Length()}, id=street_id)
+			length = multi_segment_length(segments)
+			street_feature = Feature(geometry=mls, properties={'name': street.find('Nazev').text, 'length': length}, id=street_id)
 			streets.append(street_feature)
 
 		return FeatureCollection(self.__title, streets)
