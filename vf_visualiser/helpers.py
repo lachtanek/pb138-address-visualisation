@@ -9,3 +9,15 @@ def segment_length(seg):
 
 def multi_segment_length(segs):
 	return sum(map(segment_length, segs))
+
+def parse_segment(seg):
+	coords = seg.text.split()
+	points = []
+
+	for i in range(0, len(coords), 2):
+		points.append((float(coords[i]), float(coords[i + 1])))
+
+	return points
+
+def parse_street_lines(segs):
+	return list(map(parse_segment, segs))

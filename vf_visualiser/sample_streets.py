@@ -2,7 +2,7 @@
 from xml.etree import cElementTree
 from .features import FeatureCollection
 from geojson import Feature, MultiLineString
-from .helpers import multi_segment_length
+from .helpers import multi_segment_length, parse_street_lines
 
 class SampleStreets(object):
 	__title = 'Ulice'
@@ -15,16 +15,7 @@ class SampleStreets(object):
 
 		for street in self.tree.findall(".//Ulice"):
 			street_id = int(street.get('kod'))
-			segments = []
-
-			for segment in street.findall('Geometrie/PosList'):
-				coords = segment.text.split()
-				points = []
-
-				for i in range(0, len(coords), 2):
-					points.append((float(coords[i]), float(coords[i + 1])))
-
-				segments.append(points)
+			segments = parse_street_lines(street.findall('Geometrie/PosList'))
 
 			mls = MultiLineString(segments)
 			length = multi_segment_length(segments)
