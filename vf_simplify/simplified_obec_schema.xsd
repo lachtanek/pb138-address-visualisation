@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="VymennyFormat" type="VymennyFormatType"/>
+
+  <xs:complexType name="GeometrieType" mixed="true">
+    <xs:sequence>
+      <xs:element type="xs:string" name="PosList" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="UliceType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="Nazev" minOccurs="1" maxOccurs="1"/>
+      <xs:element type="xs:nonNegativeInteger" name="PocetAdresnichMist" minOccurs="1" maxOccurs="1"/>
+      <xs:element type="GeometrieType" name="Geometrie"/>
+    </xs:sequence>
+
+    <xs:attribute type="xs:nonNegativeInteger" name="kod" use="required"/>
+    <xs:attribute type="xs:nonNegativeInteger" name="obec" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="AdresniMistaType">
+    <xs:sequence>
+      <xs:element type="xs:nonNegativeInteger" name="pocetAdresnichMist" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:nonNegativeInteger" name="obec" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="VymennyFormatType">
+    <xs:sequence>
+      <xs:element type="DataType" name="Data" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DataType">
+    <xs:choice maxOccurs="unbounded">
+        <xs:element type="UliceType" name="Ulice" maxOccurs="unbounded" minOccurs="0"/>
+        <xs:element type="AdresniMistaType" name="AdresniMista" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:choice>
+  </xs:complexType>
+</xs:schema>

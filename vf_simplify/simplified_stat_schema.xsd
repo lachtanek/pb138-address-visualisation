@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="VymennyFormat" type="VymennyFormatType"/>
+
+  <xs:complexType name="OkresyType">
+    <xs:sequence>
+      <xs:element type="OkresType" name="Okres" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OkresType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="kod" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StatyType">
+    <xs:sequence>
+      <xs:element type="StatType" name="Stat"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="VymennyFormatType">
+    <xs:sequence>
+      <xs:element type="DataType" name="Data" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="KrajType">
+    <xs:sequence>
+        <xs:element type="xs:string" name="Nazev" maxOccurs="1" minOccurs="1" />
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="kod" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="KrajeType">
+    <xs:sequence>
+      <xs:element type="KrajType" name="Kraj" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="kod" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="DataType">
+    <xs:sequence>
+      <xs:element type="StatyType" name="Staty" maxOccurs="1"/>
+      <xs:element type="KrajeType" name="Kraje" maxOccurs="1"/>
+      <xs:element type="OkresyType" name="Okresy" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
