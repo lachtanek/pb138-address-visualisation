@@ -1,5 +1,5 @@
 from xml.etree import cElementTree
-from geojson import Feature, MultiLineString, Point, dumps
+from geojson import Feature, MultiLineString, Point
 from .features import FeatureCollection
 from .helpers import multi_segment_length, parse_street_lines
 
@@ -29,7 +29,7 @@ def feature_collection_from_streets(values, street_filepath, collection_title):
         mls = MultiLineString(lines)
         length = multi_segment_length(lines)
         street_feature = Feature(geometry=mls, properties={'name': region_street[Street.street_name]+", "+region_street[Street.town_name]+", "+region_street[Street.region_name], 'length': length}, id=int(region_street[Street.code]))
-        streets_collection.append(dumps(street_feature))
+        streets_collection.append(street_feature)
 
     return FeatureCollection(collection_title, streets_collection)
 
