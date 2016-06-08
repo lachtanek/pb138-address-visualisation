@@ -1,58 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="VymennyFormat" type="VymennyFormatType"/>
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="VymennyFormat" type="VymennyFormatType">
+      <xsd:unique name="unique-statkod">
+          <xsd:selector xpath="Data/Staty/Stat"/>
+          <xsd:field xpath="@kod"/>
+      </xsd:unique>
 
-  <xs:complexType name="OkresyType">
-    <xs:sequence>
-      <xs:element type="OkresType" name="Okres" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
+      <xsd:unique name="unique-krajkod">
+          <xsd:selector xpath="Data/Kraje/Kraj"/>
+          <xsd:field xpath="@kod"/>
+      </xsd:unique>
 
-  <xs:complexType name="OkresType">
-    <xs:sequence>
-      <xs:element type="xs:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute type="xs:string" name="kod" use="required"/>
-  </xs:complexType>
+      <xsd:unique name="unique-okreskod">
+          <xsd:selector xpath="Data/Okresy/Okres"/>
+          <xsd:field xpath="@kod"/>
+      </xsd:unique>
 
-  <xs:complexType name="StatyType">
-    <xs:sequence>
-      <xs:element type="StatType" name="Stat"/>
-    </xs:sequence>
-  </xs:complexType>
+      <xsd:unique name="unique-obeckod">
+          <xsd:selector xpath="Data/Obce/Obec"/>
+          <xsd:field xpath="@kod"/>
+      </xsd:unique>
+  </xsd:element>
 
-  <xs:complexType name="VymennyFormatType">
-    <xs:sequence>
-      <xs:element type="DataType" name="Data" maxOccurs="1" minOccurs="1"/>
-    </xs:sequence>
-  </xs:complexType>
+    <xsd:complexType name="ObceType">
+        <xsd:sequence>
+            <xsd:element type="ObecType" name="Obec" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
 
-  <xs:complexType name="KrajType">
-    <xs:sequence>
-        <xs:element type="xs:string" name="Nazev" maxOccurs="1" minOccurs="1" />
-    </xs:sequence>
-    <xs:attribute type="xs:string" name="kod" use="required"/>
-  </xs:complexType>
+    <xsd:complexType name="ObecType">
+        <xsd:sequence>
+            <xsd:element type="xsd:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
+        </xsd:sequence>
 
-  <xs:complexType name="KrajeType">
-    <xs:sequence>
-      <xs:element type="KrajType" name="Kraj" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
+        <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+        <xsd:attribute type="xsd:nonNegativeInteger" name="okres" use="required"/>
+    </xsd:complexType>
 
-  <xs:complexType name="StatType">
-    <xs:sequence>
-      <xs:element type="xs:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute type="xs:string" name="kod" use="required"/>
-  </xs:complexType>
+  <xsd:complexType name="OkresyType">
+    <xsd:sequence>
+      <xsd:element type="OkresType" name="Okres" maxOccurs="unbounded" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
-  <xs:complexType name="DataType">
-    <xs:sequence>
-      <xs:element type="StatyType" name="Staty" maxOccurs="1"/>
-      <xs:element type="KrajeType" name="Kraje" maxOccurs="1"/>
-      <xs:element type="OkresyType" name="Okresy" maxOccurs="1"/>
-    </xs:sequence>
-  </xs:complexType>
+  <xsd:complexType name="OkresType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+  </xsd:complexType>
 
-</xs:schema>
+  <xsd:complexType name="StatyType">
+    <xsd:sequence>
+      <xsd:element type="StatType" name="Stat"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="VymennyFormatType">
+    <xsd:sequence>
+      <xsd:element type="DataType" name="Data" maxOccurs="1" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="KrajType">
+    <xsd:sequence>
+        <xsd:element type="xsd:string" name="Nazev" maxOccurs="1" minOccurs="1" />
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kraj" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="KrajeType">
+    <xsd:sequence>
+      <xsd:element type="KrajType" name="Kraj" maxOccurs="unbounded" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="StatType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Nazev" maxOccurs="1" minOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:string" name="kod" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="DataType">
+    <xsd:sequence>
+      <xsd:element type="StatyType" name="Staty" maxOccurs="1"/>
+      <xsd:element type="KrajeType" name="Kraje" maxOccurs="1"/>
+      <xsd:element type="OkresyType" name="Okresy" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

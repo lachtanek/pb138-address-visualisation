@@ -42,7 +42,7 @@
 
             <xsl:apply-templates select="vf:Okresy"/>
 
-            <!--xsl:apply-templates select="vf:Obce"/-->
+            <xsl:apply-templates select="vf:Obce"/>
         </Data>
     </xsl:template>
 
@@ -86,7 +86,8 @@
     <xsl:template match="vf:Okresy">
         <Okresy>
         <xsl:for-each select="vf:Okres">
-            <Okres kod="{oki:Kod}">
+            <Okres kod="{oki:Kod}"
+                   kraj="{oki:Kraj//kri:Kod}">
                 <Nazev>
                     <xsl:value-of select="oki:Nazev"/>
                 </Nazev>
@@ -100,22 +101,18 @@
         </Okresy>
     </xsl:template>
 
-    <!--xsl:template match="vf:Obce">
+    <xsl:template match="vf:Obce">
         <Obce>
         <xsl:for-each select="vf:Obec">
             <Obec kod="{obi:Kod}"
-                  okres="{obi:Okres//oki:Kod}"
-                  pou="{obi:Pou//pui:Kod}">
+                  okres="{obi:Okres//oki:Kod}">
                 <Nazev>
                     <xsl:value-of select="obi:Nazev"/>
                 </Nazev>
-                <obi:StatusKod>
-                    <xsl:value-of select="obi:StatusKod"/>
-                </obi:StatusKod>
             </Obec>
         </xsl:for-each>
         </Obce>
-    </xsl:template-->
+    </xsl:template>
 
 </xsl:stylesheet>
 
