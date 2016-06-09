@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 
 class Visualiser(ABC):
-	def __init__(self, stat_filepath, db_filepath):
-		self.stat_filepath = stat_filepath
-		self.db_filepath = db_filepath
+	def __init__(self, db_tree):
+		self.db_tree = db_tree
 
 	@abstractmethod
 	def run(self):

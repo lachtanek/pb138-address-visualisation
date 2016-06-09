@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from xml.etree import cElementTree
 from address_visualisation import Visualiser
 from address_visualisation.features import FeatureCollection
 from geojson import Feature, MultiLineString
@@ -9,10 +8,9 @@ class SampleStreetsVisualiser(Visualiser):
 	__title = 'Ulice'
 
 	def run(self):
-		streets_tree = cElementTree.ElementTree(file=self.db_filepath)
 		streets = []
 
-		for street in streets_tree.findall(".//Ulice"):
+		for street in self.db_tree.findall(".//Ulice"):
 			street_id = int(street.get('kod'))
 			segments = parse_street_lines(street.findall('Geometrie/PosList'))
 

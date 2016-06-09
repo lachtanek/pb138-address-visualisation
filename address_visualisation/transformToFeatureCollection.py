@@ -1,5 +1,4 @@
 from geojson import Feature, MultiLineString, Point, Polygon
-from xml.etree import cElementTree
 from .features import FeatureCollection
 from .helpers import multi_segment_length, parse_street_lines, parse_segment
 
@@ -24,11 +23,10 @@ class Area:
 """
 Generates GEOJSON FeatureCollection which vizualizes given streets
 """
-def feature_collection_from_streets(values, street_filepath, collection_title):
-	tree = cElementTree.ElementTree(file=street_filepath)
+def feature_collection_from_streets(values, street_tree, collection_title):
 	streets_collection = []
 	for region_street in values:
-		street_positions = tree.getroot().findall(".//Ulice[@kod='"+region_street[1]+"']/Geometrie/PosList")
+		street_positions = street_tree.getroot().findall(".//Ulice[@kod='"+region_street[1]+"']/Geometrie/PosList")
 		lines = parse_street_lines(street_positions)
 
 		mls = MultiLineString(lines)
@@ -38,11 +36,10 @@ def feature_collection_from_streets(values, street_filepath, collection_title):
 
 	return FeatureCollection(collection_title, streets_collection)
 
-def feature_collection_from_towns(values, street_filepath, collection_title):
-	tree = cElementTree.ElementTree(file=street_filepath)
+def feature_collection_from_towns(values, steet_tree, collection_title):
 	towns_collection = []
 	for region_town in values:
-		town_streets = tree.getroot().findall(".//Ulice[@obec='"+region_town[Town.code]+"']")
+		town_streets = steet_tree.getroot().findall(".//Ulice[@obec='"+region_town[Town.code]+"']")
 		street_positions = town_streets[len(town_streets)//2].findall("./Geometrie/PosList")
 		lines = parse_street_lines(street_positions)
 
@@ -53,11 +50,10 @@ def feature_collection_from_towns(values, street_filepath, collection_title):
 
 	return FeatureCollection(collection_title, towns_collection)
 
-def feature_collection_from_areas(values, country_filepath, collection_title):
-	tree = cElementTree.ElementTree(file=country_filepath)
+def feature_collection_from_areas(values, country_tree, collection_title):
 	areas_collection = []
 	for area in values:
-		area_positions = tree.getroot().find(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
+		area_positions = country_tree.getroot().find(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		line = parse_segment(area_positions)
 		polygon = Polygon(line)
 		area_feature = Feature(geometry=polygon, properties={'name': area[Area.area_name], 'measured': area[Area.measured]}, id= int(area[Area.code]))

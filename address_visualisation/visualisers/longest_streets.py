@@ -2,7 +2,6 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
-from xml.etree import cElementTree
 
 class LongestStreetsVisualiser(Visualiser):
 	"""
@@ -11,16 +10,14 @@ class LongestStreetsVisualiser(Visualiser):
 	one longest street per region
 	"""
 	def find(self):
-		tree_stat = cElementTree.ElementTree(file=self.stat_filepath)
-		tree_ulice = cElementTree.ElementTree(file=self.db_filepath)
-		root = tree_stat.getroot()
+		root = self.db_tree.getroot()
 
 		kraje = root.findall(".//Kraj")
 		max_values = {kraj.get("kod"): (0, None, None, None, kraj.find("Nazev").text) for kraj in kraje}
 
 		obce = {obec.get("kod"): (obec.find("Nazev").text, obec.get("okres")[0:2]) for obec in root.iter('Obec')}
 
-		for ulice in tree_ulice.getroot().iter('Ulice'):
+		for ulice in root.iter('Ulice'):
 			pocet_adresnich_mist = int(ulice.find("PocetAdresnichMist").text)
 			kod_obce = ulice.get("obec")
 			kod_kraje = obce[kod_obce][1]
@@ -33,4 +30,4 @@ class LongestStreetsVisualiser(Visualiser):
 
 	def run(self):
 		data = self.find()
-		return feature_collection_from_streets(data, self.db_filepath, 'Longest streets in region')
+		return feature_collection_from_streets(data, self.db_tree, 'Longest streets in region')

@@ -2,13 +2,10 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
-from xml.etree import cElementTree
 
 class ExtremeStreetNamesVisualiser(Visualiser):
 	def find(self):
-		tree_stat = cElementTree.ElementTree(file=self.stat_filepath)
-		tree_ulice = cElementTree.ElementTree(file=self.db_filepath)
-		root = tree_stat.getroot()
+		root = self.db_tree.getroot()
 		kraje = root.findall(".//Kraj")
 		max_values = [None]*len(kraje)
 		min_values = [None]*len(kraje)
@@ -20,7 +17,7 @@ class ExtremeStreetNamesVisualiser(Visualiser):
 				if okres.get("kod")[0:2] == kraj.get("kod"):
 					for obec in root.iter('Obec'):
 						if obec.get("okres") == okres.get("kod"):
-							for ulice in tree_ulice.getroot().iter('Ulice'):
+							for ulice in root.iter('Ulice'):
 								if ulice.get("obec") == obec.get("kod"):
 									nazev = ulice.find("Nazev").text
 									if minimum[0] > len(nazev):
@@ -35,4 +32,4 @@ class ExtremeStreetNamesVisualiser(Visualiser):
 	def run(self):
 		(minimal_names, maximal_names) = self.find()
 
-		return feature_collection_from_streets(minimal_names + maximal_names, self.db_filepath, 'Extreme street names in region')
+		return feature_collection_from_streets(minimal_names + maximal_names, self.db_tree, 'Extreme street names in region')
