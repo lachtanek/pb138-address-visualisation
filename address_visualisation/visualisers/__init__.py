@@ -1,10 +1,10 @@
 from .sample_streets import SampleStreetsVisualiser
-from .biggestTowns import BiggestTownsVisualiser
-from .extremeStreetNames import ExtremeStreetNamesVisualiser
-# from .javaVisualiser import JavaVisualiser
-from .longestStreets import LongestStreetsVisualiser
-from .squareCount import SquareCountVisualiser
-from .townWithMostStreets import TownWithMostStreetsVisualiser
+from .biggest_towns import BiggestTownsVisualiser
+from .extreme_street_names import ExtremeStreetNamesVisualiser
+# from .java_visualiser import JavaVisualiser
+from .longest_streets import LongestStreetsVisualiser
+from .square_count import SquareCountVisualiser
+from .town_with_most_streets import TownWithMostStreetsVisualiser
 
 DefaultSet = [
 	(SampleStreetsVisualiser, 'sample_streets'),
