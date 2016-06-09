@@ -18,4 +18,3 @@ class FeatureCollection:
 			},
 			'features': self.features
 		}
-

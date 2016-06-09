@@ -3,13 +3,14 @@ from math import sqrt
 from tempfile import NamedTemporaryFile
 from urllib import request
 
-from .base import Settings
+BUFF_SIZE = 4096
+
 
 def download_file(address):
 	with request.urlopen(address) as sock:
 		with NamedTemporaryFile('wb', delete=False) as writeF:
 			while True:
-				data = sock.read(Settings.BUFF_SIZE)
+				data = sock.read(BUFF_SIZE)
 				if not data:
 					break
 
@@ -19,11 +20,12 @@ def download_file(address):
 
 	raise Exception('Failed to download ' + address)
 
+
 def uncompress(fileName):
 	with gzip.open(fileName) as gzf:
 		with NamedTemporaryFile('wb', delete=False) as writeF:
 			while True:
-				data = gzf.read(Settings.BUFF_SIZE)
+				data = gzf.read(BUFF_SIZE)
 				if not data:
 					break
 
@@ -33,6 +35,7 @@ def uncompress(fileName):
 
 	raise Exception('Failed to uncompress ' + fileName)
 
+
 def segment_length(seg):
 	length = 0
 	for i in range(1, len(seg)):
@@ -40,8 +43,10 @@ def segment_length(seg):
 
 	return length
 
+
 def multi_segment_length(segs):
 	return sum(map(segment_length, segs))
+
 
 def parse_segment(seg):
 	coords = seg.text.split()
@@ -51,6 +56,7 @@ def parse_segment(seg):
 		points.append((float(coords[i]), float(coords[i + 1])))
 
 	return points
+
 
 def parse_street_lines(segs):
 	return list(map(parse_segment, segs))

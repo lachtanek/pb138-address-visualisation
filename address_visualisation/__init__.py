@@ -1,4 +1,3 @@
-from .base import Settings
 from .downloader import Downloader
 from .features import FeatureCollection
 from .visualiser import Visualiser

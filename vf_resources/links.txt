@@ -1,3 +1,6 @@
+http://vdp.cuzk.cz/vymenny_format/soucasna/20160531_ST_UKSG.xml.gz
+http://vdp.cuzk.cz/vymenny_format/soucasna/20160430_ST_UKSG.xml.gz
+http://vdp.cuzk.cz/vymenny_format/soucasna/20160331_ST_UKSG.xml.gz
 http://vdp.cuzk.cz/vymenny_format/soucasna/20160430_OB_500011_UKSH.xml.gz
 http://vdp.cuzk.cz/vymenny_format/soucasna/20160430_OB_500020_UKSH.xml.gz
 http://vdp.cuzk.cz/vymenny_format/soucasna/20160430_OB_500046_UKSH.xml.gz
