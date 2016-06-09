@@ -6,5 +6,5 @@ class Visualiser(ABC):
 		self.db_filepath = db_filepath
 
 	@abstractmethod
-	def run(self, output_directory):
+	def run(self):
 		pass
