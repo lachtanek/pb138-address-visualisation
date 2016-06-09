@@ -2,7 +2,6 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_areas
-import geojson
 from xml.etree import cElementTree
 
 class SquareCountVisualiser(Visualiser):
@@ -26,7 +25,6 @@ class SquareCountVisualiser(Visualiser):
             i = i + 1
         return values
 
-    def run(self, output_directory):
+    def run(self):
         data = self.find()
-        with open(output_directory + '/' + 'square_count.json', 'w') as f:
-            f.write(geojson.dumps(feature_collection_from_areas(data, self.db_filepath, self.db_filepath, 'Square count in area')))
+        return feature_collection_from_areas(data, self.db_filepath, self.db_filepath, 'Square count in area')

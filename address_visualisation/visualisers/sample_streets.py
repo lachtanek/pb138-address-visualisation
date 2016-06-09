@@ -1,19 +1,18 @@
 #!/usr/bin/python3
 from xml.etree import cElementTree
+from address_visualisation import Visualiser
 from address_visualisation.features import FeatureCollection
 from geojson import Feature, MultiLineString
 from address_visualisation.helpers import multi_segment_length, parse_street_lines
 
-class SampleStreets(object):
+class SampleStreetsVisualiser(Visualiser):
 	__title = 'Ulice'
 
-	def __init__(self, dbFile):
-		self.tree = cElementTree.ElementTree(file=dbFile)
-
-	def all_streets(self):
+	def run(self):
+		streets_tree = cElementTree.ElementTree(file=self.db_filepath)
 		streets = []
 
-		for street in self.tree.findall(".//Ulice"):
+		for street in streets_tree.findall(".//Ulice"):
 			street_id = int(street.get('kod'))
 			segments = parse_street_lines(street.findall('Geometrie/PosList'))
 

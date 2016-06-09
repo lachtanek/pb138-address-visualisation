@@ -2,7 +2,6 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
-import geojson
 from xml.etree import cElementTree
 
 class LongestStreetsVisualiser(Visualiser):
@@ -32,7 +31,6 @@ class LongestStreetsVisualiser(Visualiser):
 
         return list(max_values.values())
 
-    def run(self, output_directory):
-        with open(output_directory + '/longest_streets.json', 'w') as f:
-            data = self.find()
-            f.write(geojson.dumps(feature_collection_from_streets(data, self.db_filepath, 'Longest streets in region')))
+    def run(self):
+        data = self.find()
+        return feature_collection_from_streets(data, self.db_filepath, 'Longest streets in region')

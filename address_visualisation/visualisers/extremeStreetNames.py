@@ -2,7 +2,6 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
-import geojson
 from xml.etree import cElementTree
 
 class ExtremeStreetNamesVisualiser(Visualiser):
@@ -33,10 +32,8 @@ class ExtremeStreetNamesVisualiser(Visualiser):
             i = i + 1
         return minValues, maxValues
 
-    def run(self, output_directory):
+    def run(self):
         (minimal_names, maximal_names) = self.find()
 
-        min_f = open(output_directory + '/' + 'minimal_names.json', 'w')
-        min_f.write(geojson.dumps(feature_collection_from_streets(minimal_names, self.db_filepath, 'Minimal street names in region')))
-        max_f = open(output_directory + '/' + 'maximal_names.json', 'w')
-        min_f.write(geojson.dumps(feature_collection_from_streets(maximal_names, self.db_filepath, 'Maximal street names in region')))
+        return feature_collection_from_streets(minimal_names, self.db_filepath, 'Minimal street names in region')
+        # return feature_collection_from_streets(maximal_names, self.db_filepath, 'Maximal street names in region')

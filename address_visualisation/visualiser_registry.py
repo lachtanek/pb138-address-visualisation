@@ -1,4 +1,5 @@
 from .visualiser import Visualiser
+import geojson
 
 class VisualiserRegistry:
 	def __init__(self, stat_file, db_file):
@@ -10,16 +11,18 @@ class VisualiserRegistry:
 		if not isinstance(visualisers, list):
 			raise Exception('Argument must be instance of list')
 
-		for VisClass in visualisers:
-			self.registerVisualiser(VisClass)
+		for (VisClass, output_file_name) in visualisers:
+			self.registerVisualiser(VisClass, output_file_name)
 
-	def registerVisualiser(self, VisClass):
+	def registerVisualiser(self, VisClass, output_file_name):
 		if not issubclass(VisClass, Visualiser):
 			raise Exception('Argument must be subclass of Visualiser')
 
-		self.visualisers.append(VisClass)
+		self.visualisers.append((VisClass, output_file_name))
 
 	def runVisualisers(self, output_directory):
-		for VisClass in self.visualisers:
+		for (VisClass, output_file_name) in self.visualisers:
 			vis = VisClass(self.stat_file, self.db_file)
-			vis.run(output_directory)
+			output = vis.run()
+			with open(output_directory + '/' + output_file_name + '.json', 'w') as f:
+				f.write(geojson.dumps(output))

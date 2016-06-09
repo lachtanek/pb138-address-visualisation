@@ -2,7 +2,6 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_towns
-import geojson
 from xml.etree import cElementTree
 
 class BiggestTownsVisualiser(Visualiser):
@@ -28,8 +27,6 @@ class BiggestTownsVisualiser(Visualiser):
             i = i + 1
         return maxValues
 
-    def run(self, output_directory):
+    def run(self):
         data = self.find()
-        print(data)
-        with open(output_directory + '/' + 'biggest_towns.json', 'w') as f:
-            f.write(geojson.dumps(feature_collection_from_towns(data, self.db_filepath, 'Biggest towns in region')))
+        return feature_collection_from_towns(data, self.db_filepath, 'Biggest towns in region')
