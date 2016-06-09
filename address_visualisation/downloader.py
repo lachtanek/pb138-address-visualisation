@@ -57,12 +57,14 @@ class Downloader:
 			Maximum Saxon RAM (in gigabytes)
 		"""
 		self._link_file = link_file
-		self._xsl = xsl
+		self._xsl_stat = xsl_stat
+		self._xsl_obec = xsl_obec
 		self._output_file = output
 		self._file_queue = queue.Queue()
 		self._big_file_queue = queue.Queue()
 		self._threads = []
 		self._running = True
+		self._done = False
 		self.max_threads = max_threads
 		self.bigfile_archive_min_mb = bigfile_archive_min_mb
 		self.saxon_path = saxon_path
@@ -192,7 +194,7 @@ class Downloader:
 				fname2 = uncompress(data[0])
 				call([
 					'java', '-Xmx' + self.saxon_max_ram + 'G', '-cp', self.saxon_path,
-					'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self._xsl, '-o:' + self._temp_directory + '/' + data[1],
+					'net.sf.saxon.Transform', '-s:' + fname2, '-xsl:' + self._xsl_obec, '-o:' + self._temp_directory + '/' + data[1],
 					'-versionmsg:off', '-warnings:' + 'recover' if Downloader.DEBUG else 'silent'
 				])
 
@@ -209,6 +211,9 @@ class Downloader:
 				if fname2:
 					os.unlink(fname2)
 
+		if self._running:
+			self._done = True
+
 	def download_and_parse(self):
 		"""Start the process of downloading, uncompressing and transforming of XML files.
 
@@ -220,7 +225,8 @@ class Downloader:
 
 		try:
 			self._main_thread()
-			self._merge()
+			if self._done:
+				self._merge()
 		except KeyboardInterrupt:
 			print('Stopping download (can take a few seconds to stop working threads)')
 			self._running = False
@@ -258,7 +264,10 @@ class Downloader:
 
 	def _transform(self, inputFile, outputFile):
 		xml = etree.parse(inputFile)
-		xslt = etree.parse(self._xsl)
+		if outputFile == 'stat.xml':
+			xslt = etree.parse(self._xsl_stat)
+		else:
+			xslt = etree.parse(self._xsl_obec)
 		doTransform = etree.XSLT(xslt)
 		newdom = doTransform(xml)
 		with open(self._temp_directory + '/' + outputFile, 'wb') as wr:
