@@ -1,5 +1,6 @@
 from .biggestTowns import BiggestTownsVisualiser
 from .extremeStreetNames import ExtremeStreetNamesVisualiser
+from .javaVisualiser import JavaVisualiser
 from .longestStreets import LongestStreetsVisualiser
 from .squareCount import SquareCountVisualiser
 from .townWithMostStreets import TownWithMostStreetsVisualiser
