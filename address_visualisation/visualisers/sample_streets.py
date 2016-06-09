@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from xml.etree import cElementTree
-from .features import FeatureCollection
+from address_visualisation.features import FeatureCollection
 from geojson import Feature, MultiLineString
-from .helpers import multi_segment_length, parse_street_lines
+from address_visualisation.helpers import multi_segment_length, parse_street_lines
 
 class SampleStreets(object):
 	__title = 'Ulice'

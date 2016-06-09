@@ -1,0 +1,7 @@
+from .biggestTowns import BiggestTownsVisualiser
+from .extremeStreetNames import ExtremeStreetNamesVisualiser
+from .longestStreets import LongestStreetsVisualiser
+from .squareCount import SquareCountVisualiser
+from .townWithMostStreets import TownWithMostStreetsVisualiser
+
+DefaultSet = [BiggestTownsVisualiser, ExtremeStreetNamesVisualiser, LongestStreetsVisualiser, SquareCountVisualiser, TownWithMostStreetsVisualiser]

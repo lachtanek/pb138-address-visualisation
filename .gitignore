@@ -2,3 +2,4 @@ vf_resources/tmp
 *.pyc
 db.xml
 __pycache__
+vf_visualiser/visualisations/*

@@ -1,4 +1,4 @@
-class FeatureCollection():
+class FeatureCollection:
 	def __init__(self, name, features):
 		self.name = name
 		self.features = features
