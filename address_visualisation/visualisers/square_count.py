@@ -5,26 +5,21 @@ from address_visualisation.transformToFeatureCollection import feature_collectio
 from xml.etree import cElementTree
 
 class SquareCountVisualiser(Visualiser):
-	def find(self):
+	def run(self):
 		tree_stat = cElementTree.ElementTree(file=self.stat_filepath)
 		tree_ulice = cElementTree.ElementTree(file=self.db_filepath)
 		root = tree_stat.getroot()
-		okresy = root.findall(".//Okres")
-		values=[None]*len(okresy)
-		i = 0
-		for okres in okresy:
-			count=[0,okres.get("kod"), okres.find("Nazev").text]
-			for obec in root.iter('Obec'):
-				if obec.get("okres") == okres.get("kod"):
-					for ulice in tree_ulice.iter('Ulice'):
-						if ulice.get("obec") == obec.get("kod"):
-							nazev = ulice.find("Nazev").text
-							if "nám" in nazev or "Nám" in nazev:
-								count = [count[0]+1, okres.get("kod"), okres.find("Nazev").text]
-			values[i] = count
-			i = i + 1
-		return values
 
-	def run(self):
-		data = self.find()
-		return feature_collection_from_areas(data, self.db_filepath, self.db_filepath, 'Square count in area')
+		okresy = {okres.get("kod"): (0, okres.get("kod"), okres.find("Nazev").text) for okres in root.iter('Okres')}
+		obce_okresy = {obec.get("kod"): obec.get("okres") for obec in root.iter('Obec')}
+
+		for ulice in tree_ulice.iter('Ulice'):
+			kod_obce = ulice.get("obec")
+			kod_okresu = obce_okresy[kod_obce]
+
+			nazev = ulice.find("Nazev").text
+			if "nám" in nazev or "Nám" in nazev:
+				(stary_pocet, _, nazev_okresu) = okresy[kod_okresu]
+				okresy[kod_okresu] = (stary_pocet + 1, kod_okresu, nazev_okresu)
+
+		return feature_collection_from_areas(okresy.values(), self.db_filepath, 'Square count in area')

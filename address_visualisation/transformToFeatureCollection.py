@@ -1,7 +1,7 @@
-from xml.etree import cElementTree
 from geojson import Feature, MultiLineString, Point, Polygon
-from features import FeatureCollection
-from helpers import multi_segment_length, parse_street_lines, parse_segment
+from xml.etree import cElementTree
+from .features import FeatureCollection
+from .helpers import multi_segment_length, parse_street_lines, parse_segment
 
 class Street:
 	measured = 0
