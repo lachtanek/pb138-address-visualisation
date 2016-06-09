@@ -32,7 +32,7 @@ class Downloader:
 	DEBUG = False
 
 	def __init__(
-		self, link_file, output, xsl='vf_resources/simplify_obec.xsl', temp_dir=None, max_threads=2,
+		self, link_file, output, xsl_stat='vf_resources/simplify_stat.xsl', xsl_obec='vf_resources/simplify_obec.xsl', temp_dir=None, max_threads=2,
 		bigfile_archive_min_mb=10, saxon_path='saxon9he.jar', saxon_max_ram=8
 	):
 		"""Class constructor.
