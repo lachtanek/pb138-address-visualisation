@@ -46,7 +46,7 @@ class SaxonParser:
 			'-versionmsg:off', '-warnings:' + 'recover' if logging.root.level <= logging.DEBUG else 'silent'
 		])
 
-	def merge(self):
+	def merge(self, delete_temp=True):
 		xml_files = glob(self._downloader.temp_directory + '/*.xml')
 		xml_element_tree = None
 
@@ -65,4 +65,5 @@ class SaxonParser:
 			tree.write(self._output_file, encoding='utf-8')
 			logging.debug('Files merged into ' + self._output_file)
 
-			rmtree(self._downloader.temp_directory)
+			if delete_temp:
+				rmtree(self._downloader.temp_directory)
