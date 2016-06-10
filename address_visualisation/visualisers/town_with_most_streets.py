@@ -34,23 +34,23 @@ class TownWithMostStreetsVisualiser(Visualiser):
 
 		"""
 		root = self.db_tree.getroot()
+
 		kraje = root.findall(".//Kraj")
-		max_values = [None]*len(kraje)
-		i = 0
-		for kraj in kraje:
-			maximum = [0,None,None,None,kraj.find("Nazev").text]
-			for okres in root.iter('Okres'):
-				if okres.get("kod")[0:2] == kraj.get("kod"):
-					for obec in root.iter('Obec'):
-						if obec.get("okres") == okres.get("kod"):
-							count = 0
-							for ulice in root.iter('Ulice'):
-								if ulice.get("obec") == obec.get("kod"):
-									count = count + 1
-							if count > maximum[0]:
-								maximum = [count, obec.get("kod"), obec.find("Nazev").text, kraj.find("Nazev").text]
-			max_values[i] = maximum
-			i = i + 1
+		max_values = {kraj.get("kod"): (0, None, None, kraj.find("Nazev").text) for kraj in kraje}
+
+		obce = {obec.get("kod"): (0, obec.find("Nazev").text, obec.get("okres")[0:2]) for obec in root.iter('Obec')}
+
+		for ulice in root.iter("Ulice"):
+			kod_obce = ulice.get("obec")
+			obce[kod_obce] = (obce[kod_obce][0] + 1, obce[kod_obce][1], obce[kod_obce][2])
+
+		for kod_obce, obec in obce.items():
+			pocet_ulic = obec[0]
+			nazev_obce = obec[1]
+			kod_kraje = obec[2]
+			if pocet_ulic > max_values[kod_kraje][0]:
+				nazev_kraje = max_values[kod_kraje][3]
+				max_values[kod_kraje] = (pocet_ulic, kod_obce, nazev_obce, nazev_kraje)
 
 		return max_values
 
