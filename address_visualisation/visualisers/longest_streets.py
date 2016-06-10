@@ -5,34 +5,34 @@ from address_visualisation.transformToFeatureCollection import feature_collectio
 
 class LongestStreetsVisualiser(Visualiser):
 	"""
-    Visualiser which finds streets with most address places in database xml and turns information about them into geojson format.
-    
-    ...
-    Methods
-    -------
-    find()
-        Finds streets with most address places in region and returns information about them in list of lists.
-    run()
-        Calls find method and turns its result to geojson FeatureCollection.
-    """
-	
+	Visualiser which finds streets with most address places in database xml and turns information about them into geojson format.
+
+	...
+	Methods
+	-------
+	find()
+		Finds streets with most address places in region and returns information about them in list of lists.
+	run()
+		Calls find method and turns its result to geojson FeatureCollection.
+	"""
+
 	def find(self):
 		"""
 		Finds streets with most address places in each region in xml tree and returns information about its location.
-		
-		For each region, it searches through xml tree for towns in region and checks their number of address places. 
+
+		For each region, it searches through xml tree for towns in region and checks their number of address places.
 		If this number is greater than maximum of region, method saves information about it into `maximum`.
 		Finally, extreme values in `maximum` are saved into `maxValues`.
-		
+
 		Returns
 		-------
 		type
 			list of lists
-			
+
 		max_values : list of lists
-			For each region one list with following information about longest street in region: 
+			For each region one list with following information about longest street in region:
 			[number of address places, code of street, name of street, name of town, name of region]
-		
+
 		"""
 		root = self.db_tree.getroot()
 
@@ -55,12 +55,12 @@ class LongestStreetsVisualiser(Visualiser):
 	def run(self):
 		"""
 		Runs visualiser - gets information about streets with most address places and converts it into geojson FeatureCollection.
-		
+
 		Calls find method for getting required information in list of lists and converts it into geojson FeatureCollection.
-		
+
 		Returns
 		-------
-		type : geojson.FeatureCollection		
+		type : geojson.FeatureCollection
 		"""
 		data = self.find()
 		return feature_collection_from_streets(data, self.db_tree, 'Longest streets in region')
