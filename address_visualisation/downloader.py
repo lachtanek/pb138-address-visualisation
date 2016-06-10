@@ -5,7 +5,7 @@ import queue
 
 from collections import namedtuple
 from datetime import date
-from glob import glob
+import logging
 from re import compile
 from sys import stderr
 from tempfile import TemporaryDirectory
@@ -24,7 +24,6 @@ class Downloader:
 	URL_FNAME_RE = compile(r'(\w+\.xml)\.gz')
 	FNAME_VERSION_RE = compile(r'(\d+?)_([^_]+?)_(?:(\d+)_)?.*')
 
-	DEBUG = False
 	SUBDIR_NAME = 'download'
 	STAT_NAME = 'stat'
 
@@ -79,10 +78,9 @@ class Downloader:
 				download_file(data[0], fname1)
 				uncompress(fname1, fname2)
 
-				if Downloader.DEBUG:
-					print('Done', data[1])
+				logging.debug('Done %s', data[1])
 			except Exception as e:
-				print('Failed', data[1], 'error:', str(e), file=stderr)
+				logging.error('Failed %s, error: %s', data[1], str(e))
 			finally:
 				self._file_queue.task_done()
 				if os.path.isfile(fname1):
@@ -139,8 +137,7 @@ class Downloader:
 		while not self._file_queue.empty():
 			sleep(100)
 
-		if Downloader.DEBUG:
-			print('All threads finished')
+		logging.debug('All threads finished')
 
 		for i in range(self.max_threads):
 			self._file_queue.put(None)

@@ -1,5 +1,6 @@
 from .visualiser import Visualiser
 import geojson
+import logging
 from xml.etree import cElementTree
 
 class VisualiserRegistry:
@@ -22,6 +23,7 @@ class VisualiserRegistry:
 
 	def runVisualisers(self, output_directory):
 		for (VisClass, output_file_name) in self.visualisers:
+			logging.debug('Starting ' + VisClass.__name__)
 			vis = VisClass(self.db_tree)
 			output = vis.run()
 			with open(output_directory + '/' + output_file_name + '.json', 'w') as f:

@@ -1,6 +1,7 @@
 """Parser."""
 
 from glob import glob
+import logging
 from shutil import rmtree
 from subprocess import call
 from xml.etree import ElementTree
@@ -34,7 +35,7 @@ class SaxonParser:
 			'-s:' + self._downloader.temp_directory + '/' + Downloader.SUBDIR_NAME,
 			'-xsl:' + self._xsl_obec,
 			'-o:' + self._downloader.temp_directory,
-			'-versionmsg:off', '-warnings:' + 'recover' if Downloader.DEBUG else 'silent'
+			'-versionmsg:off', '-warnings:' + 'recover' if logging.root.level <= logging.DEBUG else 'silent'
 		])
 
 		call([
@@ -42,7 +43,7 @@ class SaxonParser:
 			'-s:' + self._downloader.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml',
 			'-xsl:' + self._xsl_stat,
 			'-o:' + self._downloader.temp_directory + '/' + Downloader.STAT_NAME + '.xml',
-			'-versionmsg:off', '-warnings:' + 'recover' if Downloader.DEBUG else 'silent'
+			'-versionmsg:off', '-warnings:' + 'recover' if logging.root.level <= logging.DEBUG else 'silent'
 		])
 
 	def merge(self):
@@ -62,7 +63,6 @@ class SaxonParser:
 		if xml_element_tree is not None:
 			tree = ElementTree.ElementTree(xml_element_tree)
 			tree.write(self._output_file, encoding='utf-8')
-			if Downloader.DEBUG:
-				print('Files merged into ' + self._output_file)
+			logging.debug('Files merged into ' + self._output_file)
 
 			rmtree(self._downloader.temp_directory)
