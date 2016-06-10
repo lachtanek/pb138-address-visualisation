@@ -2,6 +2,7 @@
 
 from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
+from sys import maxsize
 
 class ExtremeStreetNamesVisualiser(Visualiser):
 	"""
@@ -36,28 +37,27 @@ class ExtremeStreetNamesVisualiser(Visualiser):
 
 		"""
 		root = self.db_tree.getroot()
+
 		kraje = root.findall(".//Kraj")
-		max_values = [None]*len(kraje)
-		min_values = [None]*len(kraje)
-		i = 0
-		for kraj in kraje:
-			minimum = [257, None, None, None, None]
-			maximum = [-1, None, None, None, None]
-			for okres in root.iter('Okres'):
-				if okres.get("kod")[0:2] == kraj.get("kod"):
-					for obec in root.iter('Obec'):
-						if obec.get("okres") == okres.get("kod"):
-							for ulice in root.iter('Ulice'):
-								if ulice.get("obec") == obec.get("kod"):
-									nazev = ulice.find("Nazev").text
-									if minimum[0] > len(nazev):
-										minimum = (len(nazev), ulice.get("kod"), ulice.find("Nazev").text, obec.find("Nazev").text, kraj.find("Nazev").text)
-									if maximum[0] < len(nazev):
-										maximum = (len(nazev), ulice.get("kod"), ulice.find("Nazev").text, obec.find("Nazev").text, kraj.find("Nazev").text)
-			min_values[i] = minimum
-			max_values[i] = maximum
-			i = i + 1
-		return min_values, max_values
+		max_values = {kraj.get("kod"): (0, None, None, None, kraj.find("Nazev").text) for kraj in kraje}
+		min_values = {kraj.get("kod"): (maxsize, None, None, None, kraj.find("Nazev").text) for kraj in kraje}
+
+		obce_kraje = {obec.get("kod"): (obec.find("Nazev").text, obec.get("okres")[0:2]) for obec in root.iter('Obec')}
+
+		for ulice in root.iter('Ulice'):
+			nazev = ulice.find("Nazev").text
+			kod_ulice = ulice.get("kod")
+			kod_obce = ulice.get("obec")
+			nazev_obce = obce_kraje[kod_obce][0]
+			kod_kraje = obce_kraje[kod_obce][1]
+			nazev_kraje = min_values[kod_kraje][4]
+
+			if min_values[kod_kraje][0] > len(nazev):
+				min_values[kod_kraje] = (len(nazev), kod_ulice, nazev, nazev_obce, nazev_kraje)
+			if max_values[kod_kraje][0] < len(nazev):
+				max_values[kod_kraje] = (len(nazev), kod_ulice, nazev, nazev_obce, nazev_kraje)
+
+		return list(min_values.values()), list(max_values.values())
 
 	def run(self):
 		"""
