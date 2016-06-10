@@ -61,12 +61,14 @@ class SaxonParser:
 			mista = result.find('./AdresniMista')
 
 			if mista:
-				kodObec = mista.get('obec')
-				obec = insertion_point.find('./Obce/Obec[@kod="' + kodObec + '"]')
-				obec.append(mista.find('pocetAdresnichMist'))
 				result.remove(mista)
-			else:
-				insertion_point.extend(result)
+				kodObec = mista.get('obec')
+				if kodObec:
+					obec = insertion_point.find('./Obce/Obec[@kod="' + kodObec + '"]')
+					obec.append(mista.find('pocetAdresnichMist'))
+					continue
+
+			insertion_point.extend(result)
 
 		if xml_element_tree is not None:
 			xml_element_tree.write(self._output_file, encoding='utf-8')
