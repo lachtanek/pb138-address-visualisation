@@ -109,6 +109,11 @@
                 <Nazev>
                     <xsl:value-of select="obi:Nazev"/>
                 </Nazev>
+                <Geometrie>
+                    <PosList>
+                        <xsl:value-of select="obi:Geometrie//obi:GeneralizovaneHranice3//gml:MultiSurface//gml:surfaceMember//gml:Polygon//gml:exterior//gml:LinearRing//gml:posList"/>
+                    </PosList>
+                </Geometrie>
             </Obec>
         </xsl:for-each>
         </Obce>
