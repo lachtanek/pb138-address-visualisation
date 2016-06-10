@@ -52,7 +52,7 @@ class TownWithMostStreetsVisualiser(Visualiser):
 				nazev_kraje = max_values[kod_kraje][3]
 				max_values[kod_kraje] = (pocet_ulic, kod_obce, nazev_obce, nazev_kraje)
 
-		return max_values
+		return list(max_values.values())
 
 	def run(self):
 		"""
