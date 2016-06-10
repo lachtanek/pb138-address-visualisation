@@ -1,14 +1,13 @@
 import gzip
 from math import sqrt
-from tempfile import NamedTemporaryFile
 from urllib import request
 
 BUFF_SIZE = 4096
 
 
-def download_file(address):
+def download_file(address, target):
 	with request.urlopen(address) as sock:
-		with NamedTemporaryFile('wb', delete=False) as writeF:
+		with open(target, 'wb') as writeF:
 			while True:
 				data = sock.read(BUFF_SIZE)
 				if not data:
@@ -16,14 +15,14 @@ def download_file(address):
 
 				writeF.write(data)
 
-			return writeF.name
+		return
 
 	raise Exception('Failed to download ' + address)
 
 
-def uncompress(fileName):
+def uncompress(fileName, target):
 	with gzip.open(fileName) as gzf:
-		with NamedTemporaryFile('wb', delete=False) as writeF:
+		with open(target, 'wb') as writeF:
 			while True:
 				data = gzf.read(BUFF_SIZE)
 				if not data:
@@ -31,7 +30,7 @@ def uncompress(fileName):
 
 				writeF.write(data)
 
-			return writeF.name
+		return
 
 	raise Exception('Failed to uncompress ' + fileName)
 
