@@ -56,9 +56,9 @@
                                 </xsl:attribute>
                             </xsl:if>
                         </xsl:if>
-                        <pocetAdresnichMist>
+                        <PocetAdresnichMist>
                             <xsl:value-of select="count(vf:AdresniMista//vf:AdresniMisto)"/>
-                        </pocetAdresnichMist>
+                        </PocetAdresnichMist>
                     </AdresniMista>
                 </xsl:otherwise>
             </xsl:choose>

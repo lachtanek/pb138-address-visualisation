@@ -65,7 +65,7 @@ class SaxonParser:
 				kodObec = mista.get('obec')
 				if kodObec:
 					obec = insertion_point.find('./Obce/Obec[@kod="' + kodObec + '"]')
-					obec.append(mista.find('pocetAdresnichMist'))
+					obec.append(mista.find('PocetAdresnichMist'))
 					continue
 
 			insertion_point.extend(result)
