@@ -47,22 +47,29 @@ class SaxonParser:
 		])
 
 	def merge(self, delete_temp=True):
+		"""Merge."""
 		xml_files = glob(self._downloader.temp_directory + '/*.xml')
-		xml_element_tree = None
+		xml_element_tree = ElementTree.parse(self._downloader.temp_directory + '/' + Downloader.STAT_NAME + '.xml')
+		insertion_point = xml_element_tree.find("./Data")
 
 		for xml_file in xml_files:
-			data = ElementTree.parse(xml_file).getroot()
+			if Downloader.STAT_NAME in xml_file:
+				continue
 
-			for result in data.iter('Data'):
-				if xml_element_tree is None:
-					xml_element_tree = data
-					insertion_point = xml_element_tree.findall("./Data")[0]
-				else:
-					insertion_point.extend(result)
+			data = ElementTree.parse(xml_file).getroot()
+			result = data.find('./Data')
+			mista = result.find('./AdresniMista')
+
+			if mista:
+				kodObec = mista.get('obec')
+				obec = insertion_point.find('./Obce/Obec[@kod="' + kodObec + '"]')
+				obec.append(mista.find('pocetAdresnichMist'))
+				result.remove(mista)
+			else:
+				insertion_point.extend(result)
 
 		if xml_element_tree is not None:
-			tree = ElementTree.ElementTree(xml_element_tree)
-			tree.write(self._output_file, encoding='utf-8')
+			xml_element_tree.write(self._output_file, encoding='utf-8')
 			logging.debug('Files merged into ' + self._output_file)
 
 			if delete_temp:
