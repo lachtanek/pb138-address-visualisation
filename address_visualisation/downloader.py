@@ -26,7 +26,7 @@ class Downloader:
 
 	DEBUG = False
 	SUBDIR_NAME = 'download'
-	STAT_NAME = 'stat_full'
+	STAT_NAME = 'stat'
 
 	def __init__(self, link_file, temp_directory=None, max_threads=2):
 		"""Class constructor.
@@ -66,7 +66,10 @@ class Downloader:
 			if data is None:
 				break
 
-			fname2 = self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + data[1]
+			if data[1] is None:
+				fname2 = self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml'
+			else:
+				fname2 = self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + data[1]
 			fname1 = fname2 + '.gz'
 
 			try:
@@ -102,7 +105,7 @@ class Downloader:
 
 				if m.group(2) == 'ST':  # stat
 					townid = -1
-					outfname = Downloader.STAT_NAME + '.full.xml'
+					outfname = None
 				else:
 					townid = int(m.group(3))
 					outfname = str(townid) + '.xml'
