@@ -58,7 +58,10 @@ class Downloader:
 		os.makedirs(self.temp_directory + '/' + Downloader.SUBDIR_NAME, exist_ok=True)
 
 	def _isdone(self, outfile):
-		return os.path.exists(self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + outfile)
+		if outfile is None:  # stat
+			return os.path.exists(self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml')
+		else:
+			return os.path.exists(self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + outfile)
 
 	def _thread_process_queue(self, threadId):
 		while self._running:
