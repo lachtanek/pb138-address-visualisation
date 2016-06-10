@@ -4,7 +4,35 @@ from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_towns
 
 class TownWithMostStreetsVisualiser(Visualiser):
+	"""
+    Visualiser which finds towns with most streets in database xml and turns information about them into geojson format.
+    
+    ...
+    Methods
+    -------
+    find()
+        Finds towns with most streets in region and returns information about them in list of lists.
+    run()
+        Calls find method and converts its result to geojson FeatureCollection.
+    """
 	def find(self):
+		"""
+		Finds towns with most streets in each region in xml tree and returns information about its location.
+		
+		For each region, it searches through xml tree for towns in region and checks their number of streets. 
+		If this number is greater than maximum of region, method saves information about it into `maximum`.
+		Finally, extreme values in `maximum` are saved into `maxValues`.
+		
+		Returns
+		-------
+		type
+			list of lists
+			
+		max_values : list of lists
+			For each region one array with following information about town with most streets in region: 
+			[number of address places, code of town, name of town, name of region]
+		
+		"""
 		root = self.db_tree.getroot()
 		kraje = root.findall(".//Kraj")
 		max_values = [None]*len(kraje)
@@ -27,5 +55,14 @@ class TownWithMostStreetsVisualiser(Visualiser):
 		return max_values
 
 	def run(self):
+		"""
+		Runs visualiser - gets information about towns with most streets and converts it into geojson FeatureCollection.
+		
+		Calls find method to get required information in list of lists and converts this information into geojson FeatureCollection.
+		
+		Returns
+		-------
+		type : geojson.FeatureCollection		
+		"""
 		data = towns_with_most_streets_visualiser.find()
 		return feature_collection_from_towns(data, self.db_tree, 'Towns with most streets in region')

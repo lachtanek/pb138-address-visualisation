@@ -36,10 +36,10 @@ def feature_collection_from_streets(values, street_tree, collection_title):
 
 	return FeatureCollection(collection_title, streets_collection)
 
-def feature_collection_from_towns(values, steet_tree, collection_title):
+def feature_collection_from_towns(values, street_tree, collection_title):
 	towns_collection = []
 	for region_town in values:
-		town_streets = steet_tree.getroot().findall(".//Ulice[@obec='"+region_town[Town.code]+"']")
+		town_streets = street_tree.getroot().find(".//Ulice[@obec='"+region_town[Town.code]+"']")
 		street_positions = town_streets[len(town_streets)//2].findall("./Geometrie/PosList")
 		lines = parse_street_lines(street_positions)
 
