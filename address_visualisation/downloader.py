@@ -102,7 +102,7 @@ class Downloader:
 
 				if m.group(2) == 'ST':  # stat
 					townid = -1
-					outfname = 'stat.xml'
+					outfname = Downloader.STAT_NAME + '.full.xml'
 				else:
 					townid = int(m.group(3))
 					outfname = str(townid) + '.xml'
