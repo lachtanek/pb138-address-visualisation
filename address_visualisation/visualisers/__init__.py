@@ -5,7 +5,7 @@ from .longest_streets import LongestStreetsVisualiser
 from .square_count import SquareCountVisualiser
 from .town_with_most_streets import TownWithMostStreetsVisualiser
 
-DefaultSet = [
+DEFAULT_VISUALISERS = [
 	(SampleStreetsVisualiser, 'sample_streets'),
 	(BiggestTownsVisualiser, 'biggest_towns'),
 	(ExtremeStreetNamesVisualiser, 'extreme_street_names'),
