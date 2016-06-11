@@ -108,7 +108,7 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 	"""
 	areas_collection = []
 	sorted_values = sorted(values, key=lambda area: area[Area.measured])
-	opacity = 1
+	opacity = 0
 	for area in sorted_values:
 		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		boundaries = parse_street_lines(area_positions)
@@ -119,6 +119,6 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 
 		area_feature = Feature(geometry=polygon, properties=properties, id=int(area[Area.code]))
 		areas_collection.append(area_feature)
-		opacity = opacity - 0.07
+		opacity = opacity + (1 / len(sorted_values))
 
 	return FeatureCollection(collection_title, areas_collection)
