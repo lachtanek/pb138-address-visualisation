@@ -39,12 +39,10 @@ def feature_collection_from_streets(values, street_tree, collection_title):
 def feature_collection_from_towns(values, street_tree, collection_title):
 	towns_collection = []
 	for region_town in values:
-		town_streets = street_tree.getroot().findall(".//Ulice[@obec='"+region_town[Town.code]+"']")
-		street_positions = town_streets[len(town_streets)//2].findall("./Geometrie/PosList")
-		lines = parse_street_lines(street_positions)
-		middle_line = lines[len(lines)//2]
-		middle_point = Point(middle_line[len(middle_line)//2])
-		town_feature = Feature(geometry=middle_point, properties={'name': region_town[Town.town_name], 'region': region_town[Town.region_name], 'measured': region_town[Town.measured]}, id=int(region_town[Town.code]))
+		town_positions = street_tree.getroot().findall(".//Obec[@kod='"+region_town[Town.code]+"']/Geometrie/PosList")
+		boundaries = parse_street_lines(town_positions)
+		polygon = Polygon(boundaries)
+		town_feature = Feature(geometry=polygon, properties={'name': region_town[Town.town_name], 'region': region_town[Town.region_name], 'measured': region_town[Town.measured]}, id=int(region_town[Town.code]))
 		towns_collection.append(town_feature)
 
 	return FeatureCollection(collection_title, towns_collection)
