@@ -86,7 +86,7 @@ if (!fileName) {
 		],
 		target: 'view',
 		view: new ol.View({
-			center: ol.proj.fromLonLat([14.416667, 50.083333]),
+			center: ol.proj.fromLonLat([15.5, 49.75]),
 			zoom: 8,
 			minZoom: 8
 		})
