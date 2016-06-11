@@ -1,32 +1,36 @@
 'use strict';
 
+const createSidebar = function() {
+	const sideBar = document.getElementById('sidebar');
+
+	const header = document.createElement('h1');
+	header.textContent = 'Available visualisations';
+	sideBar.appendChild(header);
+
+	const visList = document.createElement('ul');
+	sideBar.appendChild(visList);
+
+	visualisations.forEach((item, key) => {
+		const li = document.createElement('li');
+
+		const a = document.createElement('a');
+		a.href = '?' + key;
+		a.textContent = item.name;
+		li.appendChild(a);
+
+		visList.appendChild(li);
+	});
+
+	const sideBarToggle = document.createElement('button');
+	sideBarToggle.classList.add('sidebar-toggle')
+	sideBarToggle.addEventListener('click', () => sideBar.classList.toggle('collapsed'));
+	sideBarToggle.textContent = 'Menu';
+	sideBar.appendChild(sideBarToggle);
+}
+
+
 const fileName = window.location.search.toString().replace(/^\?/, '');
-
-const sideBar = document.getElementById('sidebar');
-
-const header = document.createElement('h1');
-header.textContent = 'Available visualisations';
-sideBar.appendChild(header);
-
-const visList = document.createElement('ul');
-sideBar.appendChild(visList);
-
-visualisations.forEach((item, key) => {
-	const li = document.createElement('li');
-
-	const a = document.createElement('a');
-	a.href = '?' + key;
-	a.textContent = item.name;
-	li.appendChild(a);
-
-	visList.appendChild(li);
-});
-
-const sideBarToggle = document.createElement('button');
-sideBarToggle.classList.add('sidebar-toggle')
-sideBarToggle.addEventListener('click', () => sideBar.classList.toggle('collapsed'));
-sideBarToggle.textContent = 'Menu';
-sideBar.appendChild(sideBarToggle);
+createSidebar();
 
 if (!fileName) {
 	document.body.classList.add('front');
