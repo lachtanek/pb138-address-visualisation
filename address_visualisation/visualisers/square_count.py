@@ -7,10 +7,10 @@ class SquareCountVisualiser(Visualiser):
 	def run(self):
 		"""
 		Finds areas with most squares and converts information about them to geojson FeatureCollection.
-		
-		For each region, it searches through xml tree for streets with 'nám' or 'Nám' in name and conts them.
+
+		For each region, it searches through xml tree for streets with 'nÃ¡m' or 'NÃ¡m' in name and conts them.
 		The counts and information about areas are saved into 'okresy' and converted into geojson FeatureCollection.
-		
+
 		Returns
 		-------
 		geojson.FeatureCollection
@@ -26,7 +26,7 @@ class SquareCountVisualiser(Visualiser):
 			kod_okresu = obce_okresy[kod_obce]
 
 			nazev = ulice.find("Nazev").text
-			if "nám" in nazev or "Nám" in nazev:
+			if "nÃ¡m" in nazev or "NÃ¡m" in nazev:
 				(stary_pocet, _, nazev_okresu) = okresy[kod_okresu]
 				okresy[kod_okresu] = (stary_pocet + 1, kod_okresu, nazev_okresu)
 

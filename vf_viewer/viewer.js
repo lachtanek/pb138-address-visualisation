@@ -26,35 +26,47 @@ if (!fileName) {
 } else {
 	proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
 
-	const pointStyle = new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 5,
-			fill: new ol.style.Fill({
-				color: 'rgba(240, 0, 0, 0.3)'
-			}),
-			stroke: new ol.style.Stroke({
-				color: '#f00000',
-				width: 10
-			})
-		})
-	});
-
-	const shapeStyle = new ol.style.Style({
-		fill: new ol.style.Fill({
-			color: 'rgba(240, 0, 0, 0.3)'
-		}),
-		stroke: new ol.style.Stroke({
-			color: '#f00000',
-			width: 10
-		})
-	});
-
 	function styleFunction(feature) {
-		if (feature.getGeometry().getType() === 'Point') {
-			return pointStyle;
-		} else {
-			return shapeStyle;
+		let style;
+		let fillColor = 'rgba(240, 0, 0, 0.3)';
+		let strokeColor = 'rgba(240, 0, 0, 1)';
+
+		let styleProperty = feature.get('style');
+		if (styleProperty) {
+			if (styleProperty.fill) {
+				fillColor = styleProperty.fill;
+			}
+			if (styleProperty.stroke) {
+				strokeColor = styleProperty.stroke;
+			}
 		}
+
+		if (feature.getGeometry().getType() === 'Point') {
+			style = new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: 5,
+					fill: new ol.style.Fill({
+						color: fillColor,
+					}),
+					stroke: new ol.style.Stroke({
+						color: strokeColor,
+						width: 10
+					})
+				})
+			});
+		} else {
+			style = new ol.style.Style({
+				fill: new ol.style.Fill({
+					color: fillColor,
+				}),
+				stroke: new ol.style.Stroke({
+					color: strokeColor,
+					width: 10
+				})
+			});
+		}
+
+		return style;
 	}
 
 	const map = new ol.Map({

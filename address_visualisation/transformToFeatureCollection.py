@@ -24,7 +24,7 @@ class Area:
 def feature_collection_from_streets(values, street_tree, collection_title):
 	"""
 	Transformation of information about streets into gejson FeatureCollection.
-	
+
 	Parameters
 	----------
 	values : list of lists
@@ -34,7 +34,7 @@ def feature_collection_from_streets(values, street_tree, collection_title):
 		cElementTree of xml database about contry addresses
 	collection_title : string
 		What name the resulting FeatureCollection should have.
-		
+
 	Returns
 	-------
 	geojson.FeatureCollection
@@ -55,11 +55,11 @@ def feature_collection_from_streets(values, street_tree, collection_title):
 def feature_collection_from_towns(values, street_tree, collection_title):
 	"""
 	Transformation of information about towns into gejson FeatureCollection.
-	
+
 	Transformation of information about towns into gejson FeatureCollection.
 	Method finds location of street, creates Polygon, and Feature with properties which contains Polygon, and adds it into list `towns_collection`.
 	From `towns_collection`, it creates FeatureCollection.
-	
+
 	Parameters
 	----------
 	values : list of lists
@@ -69,7 +69,7 @@ def feature_collection_from_towns(values, street_tree, collection_title):
 		cElementTree of xml database about contry addresses
 	collection_title : string
 		What name the resulting FeatureCollection should have.
-	
+
 	Returns
 	-------
 	geojson.FeatureCollection
@@ -90,7 +90,7 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 	Transformation of information about areas into gejson FeatureCollection.
 	Method finds location of street, creates Polygon, and Feature with properties which contains Polygon, and adds it into list `towns_collection`.
 	From `towns_collection`, it creates FeatureCollection.
-	
+
 	Parameters
 	----------
 	values : list of lists
@@ -100,7 +100,7 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 		cElementTree of xml database about contry addresses
 	collection_title : string
 		What name the resulting FeatureCollection should have.
-	
+
 	Returns
 	-------
 	geojson.FeatureCollection
@@ -110,10 +110,15 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 	sorted_values = sorted(values, key=lambda area: area[Area.measured])
 	opacity = 1
 	for area in sorted_values:
-		area_positions = country_tree.getroot().find(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
+		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		boundaries = parse_street_lines(area_positions)
+
 		polygon = Polygon(boundaries)
-		area_feature = Feature(geometry=polygon, properties={'name': area[Area.area_name], 'measured': area[Area.measured]}, style={'fill':'red', 'fill-opacity':opacity}, id=int(area[Area.code]))
+		style = {'fill': 'rgba(240, 0, 0, ' + str(opacity) + ')'}
+		properties = {'name': area[Area.area_name], 'measured': area[Area.measured], 'style': style}
+
+		area_feature = Feature(geometry=polygon, properties=properties, id=int(area[Area.code]))
 		areas_collection.append(area_feature)
 		opacity = opacity - 0.07
+
 	return FeatureCollection(collection_title, areas_collection)
