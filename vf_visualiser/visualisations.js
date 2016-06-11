@@ -36,7 +36,7 @@ const visualisations = new Map([
 				return `${feature.getId()}: ${feature.get('name')}<br>
 				${Math.round(feature.get('length'))} m`;
 			},
-			listInfo: streetListInfo
+			listInfo: feature => feature.get('name')
 		}
 	],
 	[
@@ -62,7 +62,7 @@ const visualisations = new Map([
 		'extreme_street_names',
 		{
 			name: 'Ulice s extrémními jmény',
-			info: (feature) => streetInfo(feature, 'Délka'),
+			info: feature => streetInfo(feature, 'Délka'),
 			listInfo: streetListInfo
 		}
 	],
@@ -70,7 +70,7 @@ const visualisations = new Map([
 		'square_count',
 		{
 			name: 'Počet náměstí',
-			info: (feature) => areaInfo(feature, 'Počet náměstí'),
+			info: feature => areaInfo(feature, 'Počet náměstí'),
 			listInfo: areaListInfo
 		}
 	],
@@ -78,7 +78,7 @@ const visualisations = new Map([
 		'biggest_towns',
 		{
 			name: 'Největší města',
-			info: (feature) => townInfo(feature, 'Počet adresních míst'),
+			info: feature => townInfo(feature, 'Počet adresních míst'),
 			listInfo: townListInfo
 		}
 	],
@@ -86,7 +86,7 @@ const visualisations = new Map([
 		'town_with_most_streets',
 		{
 			name: 'Města s nejvíce ulicemi',
-			info: (feature) => townInfo(feature, 'Počet ulic'),
+			info: feature => townInfo(feature, 'Počet ulic'),
 			listInfo: townListInfo
 		}
 	],
