@@ -27,6 +27,16 @@ const visualisations = new Map([
 		}
 	],
 	[
+		'profane_streets',
+		{
+			name: 'Morbidní ulice',
+			info: function(feature) {
+				return `Ulice: ${feature.get('name')}<br>
+				Město: ${feature.get('town')}`;
+			}
+		}
+	],
+	[
 		'longest_streets',
 		{
 			name: 'Nejdelší ulice',
