@@ -89,3 +89,7 @@ html, body {
 	overflow: auto;
 	height: calc(100% - 5em);
 }
+
+.features li {
+	cursor: pointer;;
+}

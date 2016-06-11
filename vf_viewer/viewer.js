@@ -57,15 +57,27 @@ const createInfoBar = function() {
 
 	const self = {
 		setInfo: (info) => {infoHolder.innerHTML = info;},
-		clearInfo: () => {infoHolder.innerHTML = 'Hover a feature to show information about it.';},
-		setFeatures: (features) => {
+		clearInfo: () => {infoHolder.innerHTML = 'Hover a feature on the map or click on one in the list below to show information about the feature.';},
+		setFeatures: (features, highlightFeature) => {
 			featList.textContent = '';
 			features.forEach((feature) => {
 				const li = document.createElement('li');
-				const featName = document.createElement('span');
-				featName.textContent = feature.get('name');
-				li.appendChild(featName);
+				const highlight = () => {
+					highlightFeature(feature);
+				};
 
+				li.setAttribute('role', 'button');
+				li.setAttribute('tabindex', '0');
+				li.feature = feature;
+				li.addEventListener('click', highlight);
+				li.addEventListener('keypress', (e) => {
+					if (e.key == 'Spacebar' || e.key == ' ' || e.key == 'Enter') {
+						e.preventDefault();
+						highlight();
+					}
+				});
+
+				li.textContent = feature.get('name');
 				featList.appendChild(li);
 			});
 		}
@@ -173,12 +185,14 @@ window.onload = function() {
 			})
 		});
 
-		let highlight;
-		const displayFeatureInfo = function(pixel) {
-			const feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+		function getFeatureUnderCursor(pixel) {
+			return map.forEachFeatureAtPixel(pixel, function(feature) {
 				return feature;
 			});
+		}
 
+		let highlight;
+		function highlightFeature(feature) {
 			if (feature) {
 				if(visualisations.get(fileName).info) {
 					infoBar.setInfo(visualisations.get(fileName).info(feature))
@@ -206,16 +220,16 @@ window.onload = function() {
 				return;
 			}
 			const pixel = map.getEventPixel(evt.originalEvent);
-			displayFeatureInfo(pixel);
+			highlightFeature(getFeatureUnderCursor(pixel));
 		});
 
 		map.on('click', function(evt) {
-			displayFeatureInfo(evt.pixel);
+			highlightFeature(getFeatureUnderCursor(evt.pixel));
 		});
 
 		function updateFeatureList() {
 			const extent = map.getView().calculateExtent(map.getSize());
-			infoBar.setFeatures(geoJsonSource.getFeaturesInExtent(extent));
+			infoBar.setFeatures(geoJsonSource.getFeaturesInExtent(extent), highlightFeature);
 		}
 
 		map.on('postrender', updateFeatureList);
