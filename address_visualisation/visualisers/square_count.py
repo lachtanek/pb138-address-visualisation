@@ -4,6 +4,15 @@ from address_visualisation import Visualiser
 from address_visualisation.transformToFeatureCollection import feature_collection_from_areas
 
 class SquareCountVisualiser(Visualiser):
+	"""
+    Visualiser which finds towns with least address places in database xml and turns information about them into geojson format.
+
+    ...
+    Methods
+    -------
+    run()
+        Finds areas with most squares and converts information about them to geojson FeatureCollection.
+    """
 	def run(self):
 		"""
 		Finds areas with most squares and converts information about them to geojson FeatureCollection.
