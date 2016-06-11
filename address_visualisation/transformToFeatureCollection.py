@@ -107,10 +107,13 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 		FeatureCollection containing Polygons made from information about areas from `values`.
 	"""
 	areas_collection = []
-	for area in values:
-		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
+	sorted_values = sorted(values, key=lambda area: area[Area.measured])
+	opacity = 1
+	for area in sorted_values:
+		area_positions = country_tree.getroot().find(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		boundaries = parse_street_lines(area_positions)
 		polygon = Polygon(boundaries)
-		area_feature = Feature(geometry=polygon, properties={'name': area[Area.area_name], 'measured': area[Area.measured]}, id= int(area[Area.code]))
+		area_feature = Feature(geometry=polygon, properties={'name': area[Area.area_name], 'measured': area[Area.measured]}, style={'fill':'red', 'fill-opacity':opacity}, id=int(area[Area.code]))
 		areas_collection.append(area_feature)
+		opacity = opacity - 0.07
 	return FeatureCollection(collection_title, areas_collection)
