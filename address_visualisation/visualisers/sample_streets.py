@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 from address_visualisation import Visualiser
 from address_visualisation.features import FeatureCollection
-from geojson import Feature, MultiLineString
 from address_visualisation.helpers import multi_segment_length, parse_street_lines
+from geojson import Feature, MultiLineString
+from random import shuffle
 
 class SampleStreetsVisualiser(Visualiser):
 	__title = 'Ulice'
@@ -19,4 +20,5 @@ class SampleStreetsVisualiser(Visualiser):
 			street_feature = Feature(geometry=mls, properties={'name': street.find('Nazev').text, 'length': length}, id=street_id)
 			streets.append(street_feature)
 
-		return FeatureCollection(self.__title, streets)
+		shuffle(streets)
+		return FeatureCollection(self.__title, streets[0:100])
