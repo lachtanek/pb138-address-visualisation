@@ -1,8 +1,24 @@
 from geojson import Feature, MultiLineString, Point, Polygon
 from .features import FeatureCollection
-from .helpers import multi_segment_length, parse_street_lines, parse_segment
+from .helpers import multi_segment_length, parse_street_lines, parse_segment, get_opacity
 
 class Street:
+	"""
+	Enumeration of indices in list of information about street.	
+	...	
+	Attributes
+	----------
+	measured : int
+		index of measured information in the street
+	code : int
+		index of code of the street
+	street_name : int
+		index of name of the street
+	town_name : int
+		index of name of the town where the street is situated
+	region_name : int
+		index of name of the region where the street is situated
+	"""
 	measured = 0
 	code = 1
 	street_name = 2
@@ -10,12 +26,38 @@ class Street:
 	region_name = 4
 
 class Town:
+	"""
+	Enumeration of indices in list of information about town.	
+	...	
+	Attributes
+	----------
+	measured : int
+		index of measured information in the town
+	code : int
+		index of code of the town
+	town_name : int
+		index of name of the town
+	region_name : int
+		index of name of the region where the town is situated
+	"""
 	measured = 0
 	code = 1
 	town_name = 2
 	region_name = 3
 
 class Area:
+	"""
+	Enumeration of indices in list of information about area.
+	...	
+	Attributes
+	----------
+	measured : int
+		index of measured information in the area
+	code : int
+		index of code of the area
+	area_name : int
+		index of name of the area
+	"""
 	measured = 0
 	code = 1
 	area_name = 2
@@ -107,14 +149,14 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 		FeatureCollection containing Polygons made from information about areas from `values`.
 	"""
 	areas_collection = []
-	sorted_values = sorted(values, key=lambda area: area[Area.measured])
+	sorted_values = max(values, key=lambda area: area[Area.measured])
 	opacity = 0
-	for area in sorted_values:
+	for area in values:
 		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		boundaries = parse_street_lines(area_positions)
-
+		
 		polygon = Polygon(boundaries)
-		style = {'fill': 'rgba(240, 0, 0, ' + str(opacity) + ')'}
+		style = {'fill': 'rgba(240, 0, 0, ' + str(get_opacity(area[Area.measured], sorted_values[0][Area.measured])) + ')'}
 		properties = {'name': area[Area.area_name], 'measured': area[Area.measured], 'style': style}
 
 		area_feature = Feature(geometry=polygon, properties=properties, id=int(area[Area.code]))

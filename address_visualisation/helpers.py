@@ -59,3 +59,12 @@ def parse_segment(seg):
 
 def parse_street_lines(segs):
 	return list(map(parse_segment, segs))
+
+def get_opacity(measured_value, max_value):
+	differ = max_value / 5
+	i = 1
+	while i*differ <= max_value:
+		if measured_value <= i*differ:
+			return i * 0.2
+		i = i + 1
+		
