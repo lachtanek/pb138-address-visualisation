@@ -37,7 +37,7 @@ const createSideBar = function() {
 	return self;
 }
 
-const createInfoBar = function() {
+const createInfoBar = function(fileName) {
 	const infoBar = document.getElementById('infobar');
 
 	const infoHolder = document.createElement('div');
@@ -77,7 +77,7 @@ const createInfoBar = function() {
 					}
 				});
 
-				li.textContent = feature.get('name');
+				li.textContent = visualisations.get(fileName).listInfo(feature);
 				featList.appendChild(li);
 			});
 		}
@@ -98,7 +98,7 @@ window.onload = function() {
 		alert('Unknown visualisation.');
 		window.location.search = '';
 	} else {
-		const infoBar = createInfoBar();
+		const infoBar = createInfoBar(fileName);
 		document.body.classList.remove('front');
 		sideBar.collapse();
 		proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
@@ -194,11 +194,7 @@ window.onload = function() {
 		let highlight;
 		function highlightFeature(feature) {
 			if (feature) {
-				if(visualisations.get(fileName).info) {
-					infoBar.setInfo(visualisations.get(fileName).info(feature))
-				} else {
-					infoBar.setInfo(feature.getId() + ': ' + feature.get('name'));
-				}
+				infoBar.setInfo(visualisations.get(fileName).info(feature))
 			} else {
 				infoBar.clearInfo();
 			}

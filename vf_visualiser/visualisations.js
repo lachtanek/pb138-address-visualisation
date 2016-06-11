@@ -15,6 +15,18 @@ const areaInfo = function(feature, measured='Počet') {
 	${measured}: ${feature.get('measured')}`;
 }
 
+const streetListInfo = function(feature, measured='Počet') {
+	return `${feature.get('name')}, ${feature.get('town')}`;
+}
+
+const townListInfo = function(feature, measured='Počet') {
+	return `${feature.get('name')} (${feature.get('region')})`;
+}
+
+const areaListInfo = function(feature) {
+	return feature.get('name');
+}
+
 const visualisations = new Map([
 	[
 		'sample_streets',
@@ -23,7 +35,8 @@ const visualisations = new Map([
 			info: function(feature) {
 				return `${feature.getId()}: ${feature.get('name')}<br>
 				${Math.round(feature.get('length'))} m`;
-			}
+			},
+			listInfo: streetListInfo
 		}
 	],
 	[
@@ -33,42 +46,48 @@ const visualisations = new Map([
 			info: function(feature) {
 				return `Ulice: ${feature.get('name')}<br>
 				Město: ${feature.get('town')}`;
-			}
+			},
+			listInfo: streetListInfo
 		}
 	],
 	[
 		'longest_streets',
 		{
 			name: 'Nejdelší ulice',
-			info: (feature) => streetInfo(feature, 'Počet adresních míst')
+			info: (feature) => streetInfo(feature, 'Počet adresních míst'),
+			listInfo: streetListInfo
 		}
 	],
 	[
 		'extreme_street_names',
 		{
 			name: 'Ulice s extrémními jmény',
-			info: (feature) => streetInfo(feature, 'Délka')
+			info: (feature) => streetInfo(feature, 'Délka'),
+			listInfo: streetListInfo
 		}
 	],
 	[
 		'square_count',
 		{
 			name: 'Počet náměstí',
-			info: (feature) => areaInfo(feature, 'Počet náměstí')
+			info: (feature) => areaInfo(feature, 'Počet náměstí'),
+			listInfo: areaListInfo
 		}
 	],
 	[
 		'biggest_towns',
 		{
 			name: 'Největší města',
-			info: (feature) => townInfo(feature, 'Počet adresních míst')
+			info: (feature) => townInfo(feature, 'Počet adresních míst'),
+			listInfo: townListInfo
 		}
 	],
 	[
 		'town_with_most_streets',
 		{
 			name: 'Města s nejvíce ulicemi',
-			info: (feature) => townInfo(feature, 'Počet ulic')
+			info: (feature) => townInfo(feature, 'Počet ulic'),
+			listInfo: townListInfo
 		}
 	],
 ]);
