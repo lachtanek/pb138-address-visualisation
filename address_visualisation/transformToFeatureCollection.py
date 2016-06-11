@@ -54,7 +54,7 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 	for area in values:
 		area_positions = country_tree.getroot().find(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		line = parse_segment(area_positions)
-		polygon = Polygon(line)
+		polygon = Polygon([line])
 		area_feature = Feature(geometry=polygon, properties={'name': area[Area.area_name], 'measured': area[Area.measured]}, id= int(area[Area.code]))
 		areas_collection.append(area_feature)
 	return FeatureCollection(collection_title, areas_collection)
