@@ -1,5 +1,14 @@
 :root {
-	--sidebar-width: 500px;
+	--sidebar-width: 400px;
+	--sidebar-foreground: #2e3436;
+	--sidebar-background: #fffcf2;
+	--toggle-background: #fff8de;
+	--toggle-width: 50px;
+	--toggle-active-background: #eeeeec;
+}
+
+* {
+	box-sizing: border-box;
 }
 
 html, body {
@@ -10,8 +19,8 @@ html, body {
 
 .view {
 	position: absolute;
-	left: 50px;
-	width: calc(100% - 50px);
+	left: var(--toggle-width);
+	width: calc(100% - var(--toggle-width) - var(--sidebar-width));
 	height: 100%;
 }
 
@@ -20,11 +29,13 @@ html, body {
 	z-index: 9999;
 	width: var(--sidebar-width);
 	height: 100%;
-	background: white;
+	padding-right: var(--toggle-width);
+	background: var(--sidebar-background);
+	color: var(--sidebar-foreground);
 }
 
 .sidebar.collapsed {
-	transform: translateX(calc(50px - var(--sidebar-width)));
+	transform: translateX(calc(var(--toggle-width) - var(--sidebar-width)));
 }
 
 .sidebar-toggle {
@@ -32,37 +43,49 @@ html, body {
 	position: absolute;
 	top: 0;
 	right: 0;
-	padding: 0;
+	padding: 20px 0 0 0;
 	margin: 0;
-	width: 50px;
-	height: 50px;
-	background: transparent;
+	width: var(--toggle-width);
+	height: 100%;
+	background: var(--toggle-background);
 	border: none;
 	font-variant: small-caps;
 	font-weight: bold;
+	font-size: 0.8em;
+	text-align: center;
 	cursor: pointer;
 }
 
 .sidebar-toggle:hover, .sidebar-toggle:focus {
-	background: #eeeeec;
+	background: var(--toggle-active-background);
 }
 
 .front .sidebar-toggle {
 	display: none;
 }
 
-.info {
+.infobar {
 	position: absolute;
-	z-index: 9999;
-	top: 1em;
-	right: 1em;
-	color: white;
-	background: rgba(0,60,136,.5);
-	padding: 1em;
-	border-radius: 0.5em;
-	pointer-events: none;
+	top: 0;
+	right: 0;
+	width: var(--sidebar-width);
+	height: 100%;
+	background: var(--sidebar-background);
+	color: var(--sidebar-foreground);
 }
 
-.info:empty {
+.infobar:empty {
 	display: none;
+}
+
+.info {
+	height: 5em;
+	padding: 1em;
+	background: var(--toggle-background);
+}
+
+.features {
+	padding: 1em;
+	overflow: auto;
+	height: calc(100% - 5em);
 }
