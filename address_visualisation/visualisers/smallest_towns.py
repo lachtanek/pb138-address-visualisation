@@ -68,7 +68,8 @@ class SmallestTownsVisualiser(Visualiser):
 
         Returns
         -------
-        type : geojson.FeatureCollection
+        geojson.FeatureCollection
+            FeatureCollection containing Polygons of smallest towns
         """
         data = self.find()
         return feature_collection_from_towns(data, self.db_tree, 'Smallest towns in region')

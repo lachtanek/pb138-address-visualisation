@@ -21,8 +21,8 @@ class ExtremeStreetNamesVisualiser(Visualiser):
 		Finds extreme (shortest and longest) street name in each region in xml tree and returns information about its location.
 
 		For each region, it searches through xml tree for streets in region and checks their names.
-		If their name is shorter than minimum or longer than maximum of region, it saves information about it into `minimum`/`maximum`.
-		Finally, extreme values in `minimum` and `maximum` are saved into `min_values`,`max_values`.
+		If their name is shorter than minimum or longer than maximum of region, 
+		method saves information about it into `min_values`/`max_values` on the position of region.
 
 		Returns
 		-------
@@ -67,7 +67,8 @@ class ExtremeStreetNamesVisualiser(Visualiser):
 
 		Returns
 		-------
-		type : geojson.FeatureCollection
+		geojson.FeatureCollection
+			FeatureCollestion containg MultiLines of shortest and longest streets
 		"""
 		(minimal_names, maximal_names) = self.find()
 		return feature_collection_from_streets(minimal_names+maximal_names, self.db_tree, 'Extreme street names in region')

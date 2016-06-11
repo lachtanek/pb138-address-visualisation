@@ -20,10 +20,26 @@ class Area:
 	code = 1
 	area_name = 2
 
-"""
-Generates GEOJSON FeatureCollection which vizualizes given streets
-"""
+
 def feature_collection_from_streets(values, street_tree, collection_title):
+	"""
+	Transformation of information about streets into gejson FeatureCollection.
+	
+	Parameters
+	----------
+	values : list of lists
+		List of information about one street of each region in following format:
+		[measured value, code of street, name of street, name of town, name of region]
+	db_tree : xml.etree.cElementTree
+		cElementTree of xml database about contry addresses
+	collection_title : string
+		What name the resulting FeatureCollection should have.
+		
+	Returns
+	-------
+	geojson.FeatureCollection
+		FeatureCollection containing MultiLines made from information about streets from `values`.
+	"""
 	streets_collection = []
 	for region_street in values:
 		street_positions = street_tree.getroot().findall(".//Ulice[@kod='"+region_street[1]+"']/Geometrie/PosList")
@@ -37,6 +53,28 @@ def feature_collection_from_streets(values, street_tree, collection_title):
 	return FeatureCollection(collection_title, streets_collection)
 
 def feature_collection_from_towns(values, street_tree, collection_title):
+	"""
+	Transformation of information about towns into gejson FeatureCollection.
+	
+	Transformation of information about towns into gejson FeatureCollection.
+	Method finds location of street, creates Polygon, and Feature with properties which contains Polygon, and adds it into list `towns_collection`.
+	From `towns_collection`, it creates FeatureCollection.
+	
+	Parameters
+	----------
+	values : list of lists
+		List of information about one town of each region in following format:
+		[measured value, code of town, name of town, name of region]
+	db_tree : xml.etree.cElementTree
+		cElementTree of xml database about contry addresses
+	collection_title : string
+		What name the resulting FeatureCollection should have.
+	
+	Returns
+	-------
+	geojson.FeatureCollection
+		FeatureCollection containing Polygons made from information about towns from `values`.
+	"""
 	towns_collection = []
 	for region_town in values:
 		town_positions = street_tree.getroot().findall(".//Obec[@kod='"+region_town[Town.code]+"']/Geometrie/PosList")
@@ -48,6 +86,26 @@ def feature_collection_from_towns(values, street_tree, collection_title):
 	return FeatureCollection(collection_title, towns_collection)
 
 def feature_collection_from_areas(values, country_tree, collection_title):
+	"""
+	Transformation of information about areas into gejson FeatureCollection.
+	Method finds location of street, creates Polygon, and Feature with properties which contains Polygon, and adds it into list `towns_collection`.
+	From `towns_collection`, it creates FeatureCollection.
+	
+	Parameters
+	----------
+	values : list of lists
+		List of information about areas in following format:
+		[measured value, code of area, name of area]
+	db_tree : xml.etree.cElementTree
+		cElementTree of xml database about contry addresses
+	collection_title : string
+		What name the resulting FeatureCollection should have.
+	
+	Returns
+	-------
+	geojson.FeatureCollection
+		FeatureCollection containing Polygons made from information about areas from `values`.
+	"""
 	areas_collection = []
 	for area in values:
 		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")

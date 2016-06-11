@@ -20,8 +20,7 @@ class TownWithMostStreetsVisualiser(Visualiser):
 		Finds towns with most streets in each region in xml tree and returns information about its location.
 
 		For each region, it searches through xml tree for towns in region and checks their number of streets.
-		If this number is greater than maximum of region, method saves information about it into `maximum`.
-		Finally, extreme values in `maximum` are saved into `maxValues`.
+		If this number is greater than maximum of region, method saves information about it into `max_values` on the position of region.
 
 		Returns
 		-------
@@ -29,7 +28,7 @@ class TownWithMostStreetsVisualiser(Visualiser):
 			list of lists
 
 		max_values : list of lists
-			For each region one array with following information about town with most streets in region:
+			For each region one list with following information about town with most streets in region:
 			[number of address places, code of town, name of town, name of region]
 
 		"""
@@ -62,7 +61,8 @@ class TownWithMostStreetsVisualiser(Visualiser):
 
 		Returns
 		-------
-		type : geojson.FeatureCollection
+		geojson.FeatureCollection
+			FeatureCollection containing MultiLines of longest streets
 		"""
 		data = self.find()
 		return feature_collection_from_towns(data, self.db_tree, 'Towns with most streets in region')

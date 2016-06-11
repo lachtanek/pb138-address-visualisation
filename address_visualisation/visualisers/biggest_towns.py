@@ -20,8 +20,7 @@ class BiggestTownsVisualiser(Visualiser):
 		Finds towns with most address places in each region in xml tree and returns information about its location.
 
 		For each region, it searches through xml tree for towns in region and checks their number of address places.
-		If this number is greater than maximum of region, method saves information about it into `maximum`.
-		Finally, extreme values in `maximum` are saved into `maxValues`.
+		If this number is greater than maximum of region, method saves information about it into `max_values` on the position of region.
 
 		Returns
 		-------
@@ -69,7 +68,8 @@ class BiggestTownsVisualiser(Visualiser):
 
 		Returns
 		-------
-		type : geojson.FeatureCollection
+		geojson.FeatureCollection
+			FeatureCollection with Polygons from biggest towns
 		"""
 		data = self.find()
 		return feature_collection_from_towns(data, self.db_tree, 'Biggest towns in region')
