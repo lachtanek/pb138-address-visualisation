@@ -153,9 +153,9 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 	for area in values:
 		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		boundaries = parse_street_lines(area_positions)
-		opacity = get_opacity(area[Area.measured], sorted_values[len(sorted_values)-1][Area.measured], sorted_values[0][Area.measured])
+		color = get_color(area[Area.measured], sorted_values[0][Area.measured], sorted_values[len(sorted_values)-1][Area.measured])
 		polygon = Polygon(boundaries)
-		style = {'fill': 'rgba(240, 0, 0, ' + str(opacity)+ ')'}
+		style = {'fill': 'rgba(' + str(color)+ ', 0, 0, 0.8)'}
 		properties = {'name': area[Area.area_name], 'measured': area[Area.measured], 'style': style}
 
 		area_feature = Feature(geometry=polygon, properties=properties, id=int(area[Area.code]))
