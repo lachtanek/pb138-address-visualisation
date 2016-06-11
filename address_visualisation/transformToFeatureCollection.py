@@ -52,9 +52,9 @@ def feature_collection_from_towns(values, street_tree, collection_title):
 def feature_collection_from_areas(values, country_tree, collection_title):
 	areas_collection = []
 	for area in values:
-		area_positions = country_tree.getroot().find(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
-		line = parse_segment(area_positions)
-		polygon = Polygon([line])
+		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
+		boundaries = parse_street_lines(area_positions)
+		polygon = Polygon(boundaries)
 		area_feature = Feature(geometry=polygon, properties={'name': area[Area.area_name], 'measured': area[Area.measured]}, id= int(area[Area.code]))
 		areas_collection.append(area_feature)
 	return FeatureCollection(collection_title, areas_collection)
