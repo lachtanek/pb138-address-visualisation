@@ -1,14 +1,14 @@
-const fileName = window.location.search.toString().replace(/^\?/, '');
+'use strict';
 
-if (!fileName) {
-	const view = document.getElementById('view');
+const createSidebar = function() {
+	const sideBar = document.getElementById('sidebar');
 
 	const header = document.createElement('h1');
 	header.textContent = 'Available visualisations';
-	view.appendChild(header);
+	sideBar.appendChild(header);
 
-	const menu = document.createElement('ul');
-	view.appendChild(menu);
+	const visList = document.createElement('ul');
+	sideBar.appendChild(visList);
 
 	visualisations.forEach((item, key) => {
 		const li = document.createElement('li');
@@ -18,12 +18,29 @@ if (!fileName) {
 		a.textContent = item.name;
 		li.appendChild(a);
 
-		menu.appendChild(li);
-	})
+		visList.appendChild(li);
+	});
+
+	const sideBarToggle = document.createElement('button');
+	sideBarToggle.classList.add('sidebar-toggle')
+	sideBarToggle.addEventListener('click', () => sideBar.classList.toggle('collapsed'));
+	sideBarToggle.textContent = 'Menu';
+	sideBar.appendChild(sideBarToggle);
+}
+
+
+const fileName = window.location.search.toString().replace(/^\?/, '');
+createSidebar();
+
+if (!fileName) {
+	document.body.classList.add('front');
+	sideBar.classList.remove('collapsed');
 } else if (!visualisations.has(fileName)) {
 	alert('Unknown visualisation.');
 	window.location.search = '';
 } else {
+	document.body.classList.remove('front');
+	sideBar.classList.add('collapsed');
 	proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
 
 	function styleFunction(feature) {
