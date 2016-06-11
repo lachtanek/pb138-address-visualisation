@@ -39,7 +39,6 @@ class ProfaneStreetsVisualiser(Visualiser):
 		for street in self.db_tree.findall(".//Ulice"):
 			street_name = street.find('Nazev').text
 			if self.__profanity.match(street_name):
-				print(street_name)
 				street_id = int(street.get('kod'))
 				town_id = street.get('obec')
 				segments = parse_street_lines(street.findall('Geometrie/PosList'))

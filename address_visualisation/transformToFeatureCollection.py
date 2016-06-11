@@ -1,11 +1,11 @@
 from geojson import Feature, MultiLineString, Point, Polygon
 from .features import FeatureCollection
-from .helpers import multi_segment_length, parse_street_lines, parse_segment, get_opacity
+from .helpers import multi_segment_length, parse_street_lines, parse_segment, get_color
 
 class Street:
 	"""
-	Enumeration of indices in list of information about street.	
-	...	
+	Enumeration of indices in list of information about street.
+
 	Attributes
 	----------
 	measured : int
@@ -27,8 +27,8 @@ class Street:
 
 class Town:
 	"""
-	Enumeration of indices in list of information about town.	
-	...	
+	Enumeration of indices in list of information about town.
+
 	Attributes
 	----------
 	measured : int
@@ -48,7 +48,7 @@ class Town:
 class Area:
 	"""
 	Enumeration of indices in list of information about area.
-	...	
+
 	Attributes
 	----------
 	measured : int
