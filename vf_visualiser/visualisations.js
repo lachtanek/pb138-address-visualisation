@@ -15,11 +15,11 @@ const areaInfo = function(feature, measured='Počet') {
 	${measured}: ${feature.get('measured')}`;
 }
 
-const streetListInfo = function(feature, measured='Počet') {
+const streetListInfo = function(feature) {
 	return `${feature.get('name')}, ${feature.get('town')}`;
 }
 
-const townListInfo = function(feature, measured='Počet') {
+const townListInfo = function(feature) {
 	return `${feature.get('name')} (${feature.get('region')})`;
 }
 
