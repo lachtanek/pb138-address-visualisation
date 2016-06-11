@@ -1,5 +1,27 @@
 class FeatureCollection:
+	"""
+	Creates geojson.FeatureCollection with custom structure.
+	
+	...
+	
+	Attributes
+	----------
+	name : string
+		Name of FeatureCollection
+	features : list of geojson.Feature
+		List of Features in FeatureCollection
+	"""
 	def __init__(self, name, features):
+		"""
+		Class constructor.
+		
+		Parameters
+		----------
+		name : string
+			Name of FeatureCollection
+		features : list of geojson.Feature
+			List of Features in FeatureCollection
+		"""
 		self.name = name
 		self.features = features
 
