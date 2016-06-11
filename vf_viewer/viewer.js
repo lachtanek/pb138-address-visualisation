@@ -218,7 +218,6 @@ window.onload = function() {
 			infoBar.setFeatures(geoJsonSource.getFeaturesInExtent(extent));
 		}
 
-		setTimeout(updateFeatureList, 1000);
-		map.on('moveend', updateFeatureList);
+		map.on('postrender', updateFeatureList);
 	}
 };
