@@ -226,6 +226,13 @@ const createInfoBar = function(fileName) {
 						options: {
 							legend: {
 								display: false
+							},
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero: true
+									}
+								}]
 							}
 						}
 					});
