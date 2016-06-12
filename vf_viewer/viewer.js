@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Class counting occurrences of values.
+ */
 class Histogram {
 	constructor() {
 		this.frequencies = {};
@@ -11,6 +14,11 @@ class Histogram {
 		}
 	}
 
+	/**
+	 * Increase frequency of val in the histogram.
+	 *
+	 * @param {any} val – Value to be added to a histogram.
+	 */
 	addValue(val) {
 		if (this.frequencies.hasOwnProperty(val)) {
 			this.frequencies[val]++;
@@ -19,6 +27,11 @@ class Histogram {
 		}
 	}
 
+	/**
+	 * Produce the list of categories counted by the histogram.
+	 *
+	 * @return {Array[any]} List of categories.
+	 */
 	get labels() {
 		let labels = [];
 		for (let i in this.frequencies) {
@@ -27,21 +40,40 @@ class Histogram {
 		return labels;
 	}
 
-	get occurences() {
-		let occurences = [];
+	/**
+	 * Produce the list of frequencies of the categories as counted by the histogram.
+	 *
+	 * @return {Array[Int]} List of frequencies.
+	 */
+	get occurrences() {
+		let occurrences = [];
 		for (let i in this.frequencies) {
-			occurences.push(this.frequencies[i]);
+			occurrences.push(this.frequencies[i]);
 		}
-		return occurences;
+		return occurrences;
 	}
 }
 
+
+/**
+ * Class counting occurrences of numerical values in specified intervals.
+ */
 class PartitionedHistogram extends Histogram {
+	/**
+	 * Create a histogram of number intervals.
+	 *
+	 * @param {array[number]} partitions – List of numbers that will partition the numbers.
+	 */
 	constructor(partitions) {
 		super();
 		this.partitions = partitions.slice().sort();
 	}
 
+	/**
+	 * Find an interval to add a value to and increase its frequency.
+	 *
+	 * @param {number} val – Value to be added to a histogram.
+	 */
 	addValue(val) {
 		let partition = this.partitions.length;
 		for (let i = 0; i < this.partitions.length; i++) {
@@ -53,6 +85,11 @@ class PartitionedHistogram extends Histogram {
 		super.addValue(partition);
 	}
 
+	/**
+	 * Produce the list of intervals counted by the histogram.
+	 *
+	 * @return {Array[any]} List of intervals.
+	 */
 	get labels() {
 		if (this.partitions.length == 0) {
 			return ['*'];
@@ -71,201 +108,254 @@ class PartitionedHistogram extends Histogram {
 		return labels;
 	}
 
-	get occurences() {
-		let occurences = [];
+	/**
+	 * Produce the list of frequencies of the intervals as counted by the histogram.
+	 *
+	 * @return {Array[Int]} List of frequencies.
+	 */
+	get occurrences() {
+		let occurrences = [];
 		for (var i = 0; i <= this.partitions.length; i++) {
-			occurences.push(this.frequencies[i] || 0);
+			occurrences.push(this.frequencies[i] || 0);
 		}
-		return occurences;
+		return occurrences;
 	}
 }
 
-const createSideBar = function() {
-	const sideBar = document.getElementById('sidebar');
 
-	const header = document.createElement('h1');
-	header.textContent = 'Available visualisations';
-	sideBar.appendChild(header);
+/**
+ * Class representing a menu with a list of available visualisations.
+ */
+class SideBar {
+	/**
+	 * Create a sidebar
+	 *
+	 * @param {Element} sideBarElement – An element to which the menu should be placed.
+	 */
+	constructor(sideBarElement) {
+		this.sideBarElement = sideBarElement;
+		const header = document.createElement('h1');
+		header.textContent = 'Available visualisations';
+		sideBarElement.appendChild(header);
 
-	const visList = document.createElement('ul');
-	sideBar.appendChild(visList);
+		const visList = document.createElement('ul');
+		sideBarElement.appendChild(visList);
 
-	visualisations.forEach((item, key) => {
-		const li = document.createElement('li');
+		visualisations.forEach((item, key) => {
+			const li = document.createElement('li');
 
-		const a = document.createElement('a');
-		a.href = '?' + key;
-		a.textContent = item.name;
-		li.appendChild(a);
+			const a = document.createElement('a');
+			a.href = '?' + key;
+			a.textContent = item.name;
+			li.appendChild(a);
 
-		visList.appendChild(li);
-	});
+			visList.appendChild(li);
+		});
 
-	const sideBarToggle = document.createElement('span');
-	sideBarToggle.setAttribute('role', 'button');
-	sideBarToggle.setAttribute('tabindex', '0');
-	sideBarToggle.classList.add('sidebar-toggle')
-	sideBarToggle.addEventListener('click', () => sideBar.classList.toggle('collapsed'));
-	sideBarToggle.textContent = 'Menu';
-	sideBar.appendChild(sideBarToggle);
-
-	const self = {
-		collapse: () => sideBar.classList.add('collapsed'),
-		expand: () => sideBar.classList.remove('collapsed'),
+		const sideBarToggle = document.createElement('span');
+		sideBarToggle.setAttribute('role', 'button');
+		sideBarToggle.setAttribute('tabindex', '0');
+		sideBarToggle.classList.add('sidebar-toggle')
+		sideBarToggle.addEventListener('click', () => sideBarElement.classList.toggle('collapsed'));
+		sideBarToggle.textContent = 'Menu';
+		sideBarElement.appendChild(sideBarToggle);
 	}
 
-	return self;
+	/**
+	 * Collapse the sidebar to save space on the screen.
+	 */
+	collapse() {
+		this.sideBarElement.classList.add('collapsed');
+	}
+
+	/**
+	 * Expand the sidebar so the user could change the visualisation.
+	 */
+	expand() {
+		this.sideBarElement.classList.remove('collapsed');
+	}
 }
 
-const createInfoBar = function(fileName) {
-	const infoBar = document.getElementById('infobar');
+/**
+ * Class representing a sidebar where a list of currently visible features,
+ * as well as informations about the selected feature are displayed.
+ */
+class InfoBar {
+	/**
+	 * Create an info sidebar.
+	 *
+	 * @param {Element} infoBar – An element to which the sidebar should be placed.
+	 * @param {Object} visualisation – Currently active visualisation.
+	 */
+	constructor(infoBar, visualisation) {
+		this.visualisation = visualisation;
 
-	const infoHolder = document.createElement('div');
-	infoHolder.classList.add('info');
-	infoBar.appendChild(infoHolder);
+		this.infoHolder = document.createElement('div');
+		this.infoHolder.classList.add('info');
+		infoBar.appendChild(this.infoHolder);
 
-	const featureHolder = document.createElement('div');
-	infoBar.appendChild(featureHolder);
+		const featureHolder = document.createElement('div');
+		infoBar.appendChild(featureHolder);
 
-	const header = document.createElement('h1');
-	header.textContent = 'Visible features';
-	featureHolder.classList.add('features');
-	featureHolder.appendChild(header);
+		this.header = document.createElement('h1');
+		this.header.textContent = 'Visible features';
+		featureHolder.classList.add('features');
+		featureHolder.appendChild(this.header);
 
-	const emptyMessage = document.createElement('p');
-	emptyMessage.textContent = 'There are no features in the visible area. Try zooming out or moving the map view.';
-	emptyMessage.classList.add('hidden');
-	featureHolder.appendChild(emptyMessage);
+		this.emptyMessage = document.createElement('p');
+		this.emptyMessage.textContent = 'There are no features in the visible area. Try zooming out or moving the map view.';
+		this.emptyMessage.classList.add('hidden');
+		featureHolder.appendChild(this.emptyMessage);
 
-	const featList = document.createElement('ul');
-	featureHolder.appendChild(featList);
+		this.featList = document.createElement('ul');
+		featureHolder.appendChild(this.featList);
 
-	const chartEnabled = visualisations.get(fileName).histogram;
-	let histogram, plottedCategory, chart, chartHolder;
-	let chartStyle = {
-		backgroundColor: 'rgba(255,99,132,0.2)',
-		borderColor: 'rgba(255,99,132,1)',
-		borderWidth: 1,
-		hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-		hoverBorderColor: 'rgba(255,99,132,1)'
-	};
+		this.chartEnabled = visualisation.histogram;
+		this.histogram = null;
+		this.plottedCategory = null;
+		this.chart = null;
+		this.chartHolder = null;
 
-	if (chartEnabled) {
-		if (visualisations.get(fileName).histogram.partitions) {
-			histogram = new PartitionedHistogram(visualisations.get(fileName).histogram.partitions);
-		} else {
-			histogram = new Histogram;
-		}
+		this.chartStyle = {
+			backgroundColor: 'rgba(255,99,132,0.2)',
+			borderColor: 'rgba(255,99,132,1)',
+			borderWidth: 1,
+			hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+			hoverBorderColor: 'rgba(255,99,132,1)'
+		};
 
-		let styleProperties = visualisations.get(fileName).histogram.style;
-		if (styleProperties) {
-			for (let prop in chartStyle) {
-				if (styleProperties.hasOwnProperty(prop)) {
-					chartStyle[prop] = styleProperties[prop];
-				}
-			}
-		}
-
-		plottedCategory = visualisations.get(fileName).histogram.plottedCategory || (feature => feature.get('measured'));
-
-		chartHolder = document.createElement('canvas');
-		chartHolder.classList.add('chart');
-		chartHolder.width = infoBar.offsetWidth;
-		chartHolder.height = Math.floor(infoBar.offsetWidth / 16 * 9);
-
-		infoBar.appendChild(chartHolder);
-	}
-
-	const self = {
-		setInfo: (info) => {infoHolder.innerHTML = info;},
-		clearInfo: () => {infoHolder.innerHTML = 'Hover a feature on the map or click on one in the list below to show information about the feature.';},
-		setFeatures: (features, highlightFeature) => {
-			featList.textContent = '';
-
-			if (chartEnabled) {
-				histogram.clear();
-			}
-
-			if (features.length == 0) {
-				header.classList.add('hidden');
-				emptyMessage.classList.remove('hidden');
+		if (this.chartEnabled) {
+			if (visualisation.histogram.partitions) {
+				this.histogram = new PartitionedHistogram(visualisation.histogram.partitions);
 			} else {
-				header.classList.remove('hidden');
-				emptyMessage.classList.add('hidden');
+				this.histogram = new Histogram;
 			}
 
-			features.forEach((feature) => {
-				const li = document.createElement('li');
-				const highlight = () => {
-					highlightFeature(feature);
-				};
-
-				li.setAttribute('role', 'button');
-				li.setAttribute('tabindex', '0');
-				li.feature = feature;
-				li.addEventListener('click', highlight);
-				li.addEventListener('keypress', (e) => {
-					if (e.key == 'Spacebar' || e.key == ' ' || e.key == 'Enter') {
-						e.preventDefault();
-						highlight();
+			let styleProperties = visualisation.histogram.style;
+			if (styleProperties) {
+				for (let prop in this.chartStyle) {
+					if (styleProperties.hasOwnProperty(prop)) {
+						this.chartStyle[prop] = styleProperties[prop];
 					}
-				});
-
-				if (chartEnabled) {
-					histogram.addValue(plottedCategory(feature));
 				}
+			}
 
-				li.textContent = visualisations.get(fileName).listInfo(feature);
-				featList.appendChild(li);
+			this.plottedCategory = visualisation.histogram.plottedCategory || (feature => feature.get('measured'));
+
+			this.chartHolder = document.createElement('canvas');
+			this.chartHolder.classList.add('chart');
+			this.chartHolder.width = infoBar.offsetWidth;
+			this.chartHolder.height = Math.floor(infoBar.offsetWidth / 16 * 9);
+
+			infoBar.appendChild(this.chartHolder);
+		}
+	}
+
+	/**
+	 * Set the information about the selected feature.
+	 *
+	 * @param {String} info – Feature information.
+	 */
+	setInfo(info) {
+		this.infoHolder.innerHTML = info;
+	}
+
+	/**
+	 * Clear the information after the feature was deselected.
+	 */
+	clearInfo() {
+		this.infoHolder.innerHTML = 'Hover a feature on the map or click on one in the list below to show information about the feature.';
+	}
+
+	/**
+	 * Update the list of features.
+	 *
+	 * @param {Array[ol.Feature]} features – List of features to be listed.
+	 * @param {Function} highlightFeature – A function that will highlight the feature selected in the list.
+	 */
+	setFeatures(features, highlightFeature) {
+		this.featList.textContent = '';
+
+		if (this.chartEnabled) {
+			this.histogram.clear();
+		}
+
+		if (features.length == 0) {
+			this.header.classList.add('hidden');
+			this.emptyMessage.classList.remove('hidden');
+		} else {
+			this.header.classList.remove('hidden');
+			this.emptyMessage.classList.add('hidden');
+		}
+
+		features.forEach((feature) => {
+			const li = document.createElement('li');
+			const highlight = () => {
+				highlightFeature(feature);
+			};
+
+			li.setAttribute('role', 'button');
+			li.setAttribute('tabindex', '0');
+			li.feature = feature;
+			li.addEventListener('click', highlight);
+			li.addEventListener('keypress', (e) => {
+				if (e.key == 'Spacebar' || e.key == ' ' || e.key == 'Enter') {
+					e.preventDefault();
+					highlight();
+				}
 			});
 
-			if (chartEnabled) {
-				if (!chart) {
-					chart = new Chart(chartHolder, {
-						type: 'bar',
-						data: {
-							labels: histogram.labels,
-							datasets: [
-								{
-									backgroundColor: chartStyle.backgroundColor,
-									borderColor: chartStyle.borderColor,
-									borderWidth: chartStyle.borderWidth,
-									hoverBackgroundColor: chartStyle.hoverBackgroundColor,
-									hoverBorderColor: chartStyle.hoverBorderColor,
-									data: histogram.occurences,
-								}
-							]
-						},
-						options: {
-							legend: {
-								display: false
-							},
-							scales: {
-								yAxes: [{
-									ticks: {
-										beginAtZero: true
-									}
-								}]
+			if (this.chartEnabled) {
+				this.histogram.addValue(this.plottedCategory(feature));
+			}
+
+			li.textContent = this.visualisation.listInfo(feature);
+			this.featList.appendChild(li);
+		});
+
+		if (this.chartEnabled) {
+			if (!this.chart) {
+				this.chart = new Chart(this.chartHolder, {
+					type: 'bar',
+					data: {
+						labels: this.histogram.labels,
+						datasets: [
+							{
+								backgroundColor: this.chartStyle.backgroundColor,
+								borderColor: this.chartStyle.borderColor,
+								borderWidth: this.chartStyle.borderWidth,
+								hoverBackgroundColor: this.chartStyle.hoverBackgroundColor,
+								hoverBorderColor: this.chartStyle.hoverBorderColor,
+								data: this.histogram.occurrences,
 							}
+						]
+					},
+					options: {
+						legend: {
+							display: false
+						},
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
 						}
-					});
-				} else {
-					for (let i in chart.data.datasets[0].data) {
-						chart.data.datasets[0].data[i] = histogram.occurences[i];
 					}
-					chart.update();
+				});
+			} else {
+				for (let i in this.chart.data.datasets[0].data) {
+					this.chart.data.datasets[0].data[i] = this.histogram.occurrences[i];
 				}
+				this.chart.update();
 			}
 		}
-	};
-
-	self.clearInfo();
-	return self;
+	}
 }
 
 window.onload = function() {
 	const fileName = window.location.search.toString().replace(/^\?/, '');
-	const sideBar = createSideBar();
+	const sideBar = new SideBar(document.getElementById('sidebar'));
 
 	if (!fileName) {
 		sideBar.expand();
@@ -273,9 +363,10 @@ window.onload = function() {
 		alert('Unknown visualisation.');
 		window.location.search = '';
 	} else {
-		const infoBar = createInfoBar(fileName);
+		const currentVisualiser = visualisations.get(fileName);
+		const infoBar = new InfoBar(document.getElementById('infobar'), currentVisualiser);
 
-		document.title = 'Address visualisation – ' + visualisations.get(fileName).name;
+		document.title = 'Address visualisation – ' + currentVisualiser.name;
 		sideBar.collapse();
 		setTimeout(() => document.body.classList.remove('preload'), 250);
 
@@ -372,7 +463,7 @@ window.onload = function() {
 		let highlight;
 		function highlightFeature(feature) {
 			if (feature) {
-				infoBar.setInfo(visualisations.get(fileName).info(feature))
+				infoBar.setInfo(currentVisualiser.info(feature))
 			} else {
 				infoBar.clearInfo();
 			}
