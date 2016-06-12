@@ -14,9 +14,21 @@ class SaxonParser:
 
 	def __init__(
 		self, downloader, output, xsl_stat='vf_simplify/simplify_stat.xsl', xsl_obec='vf_simplify/simplify_obec.xsl',
-		saxon_max_threads=2, saxon_path='saxon9he.jar', saxon_max_ram=2
+		saxon_max_threads=2, saxon_path='saxon9he.jar'
 	):
-		"""Class constructor."""
+		"""Class constructor.
+
+		Parameters
+		----------
+		downloader : Downloader
+		xsl_stat : string
+			Path to "stat" XSL transformation.
+		xsl_obec : string
+			Path to "obec" XSL transformation.
+		saxon_max_threads : int
+			RAM allowed is saxon_max_threads * 1.
+		saxon_path : string
+		"""
 		self._downloader = downloader
 		self._xsl_stat = xsl_stat
 		self._xsl_obec = xsl_obec
@@ -25,10 +37,13 @@ class SaxonParser:
 		self._done = False
 		self.saxon_max_threads = saxon_max_threads
 		self.saxon_path = saxon_path
-		self.saxon_max_ram = saxon_max_ram
+		self.saxon_max_ram = saxon_max_threads  # * 1
 
 	def run(self):
-		"""Start the process of transforming XML files."""
+		"""Start the process of transforming XML files.
+
+		Takes about 20 minutes with 6 threads and 6GB RAM at peaks.
+		"""
 		call([
 			'java', '-Xmx' + str(self.saxon_max_ram) + 'G', '-cp', self.saxon_path, 'net.sf.saxon.Transform',
 			'-threads:' + str(self.saxon_max_threads),

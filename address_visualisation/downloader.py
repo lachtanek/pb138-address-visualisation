@@ -33,11 +33,11 @@ class Downloader:
 		Parameters
 		----------
 		link_file : string
-			Path to file containing xml-archive links (from http://vdp.cuzk.cz/vdp/ruian/vymennyformat/vyhledej)
+			Path to file containing xml-archive links (from http://vdp.cuzk.cz/vdp/ruian/vymennyformat/vyhledej).
 		temp_directory : string
-			Path to working directory, if you wish to use custom ("permanent") temporary directory
+			Path to working directory, if you wish to use custom ("permanent") temporary directory.
 		max_threads : int
-			Number of concurrent threads for download and transformation of files
+			Number of concurrent threads for downloading of files.
 		"""
 		self._link_file = link_file
 		self._file_queue = queue.Queue()
@@ -150,7 +150,7 @@ class Downloader:
 	def download(self):
 		"""Start the downloading and uncompressing of XML files.
 
-		Can take up to 3 hours with 5 threads using up to 2GB RAM at peaks.
+		Takes around 20 minutes with 6 threads using 1GB RAM at peaks.
 		"""
 		print('Downloading and parsing XML files (this will take long time, depending on number of threads)')
 		if len(os.listdir(self.temp_directory + '/' + Downloader.SUBDIR_NAME)) > 0:
