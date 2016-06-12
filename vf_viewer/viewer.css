@@ -17,6 +17,10 @@ html, body {
 	font-family: Ubuntu, 'Helvetica Neue', sans-serif;
 }
 
+.hidden {
+	display: none;
+}
+
 .preload .sidebar {
 	transition: none !important;
 }

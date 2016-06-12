@@ -132,6 +132,11 @@ const createInfoBar = function(fileName) {
 	featureHolder.classList.add('features');
 	featureHolder.appendChild(header);
 
+	const emptyMessage = document.createElement('p');
+	emptyMessage.textContent = 'There are no features in the visible area. Try zooming out or moving the map view.';
+	emptyMessage.classList.add('hidden');
+	featureHolder.appendChild(emptyMessage);
+
 	const featList = document.createElement('ul');
 	featureHolder.appendChild(featList);
 
@@ -179,6 +184,14 @@ const createInfoBar = function(fileName) {
 
 			if (chartEnabled) {
 				histogram.clear();
+			}
+
+			if (features.length == 0) {
+				header.classList.add('hidden');
+				emptyMessage.classList.remove('hidden');
+			} else {
+				header.classList.remove('hidden');
+				emptyMessage.classList.add('hidden');
 			}
 
 			features.forEach((feature) => {
