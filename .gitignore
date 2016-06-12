@@ -1,4 +1,5 @@
 vf_resources/tmp
+vf_resources/visualisations/*
 *.pyc
 __pycache__
 vf_visualiser/visualisations/*
