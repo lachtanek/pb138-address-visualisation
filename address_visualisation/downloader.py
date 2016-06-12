@@ -78,7 +78,7 @@ class Downloader:
 		self._current_size += os.path.getsize(fname) / (1024 ** 2)
 		self._current_files.append(fname)
 
-		if self._current_size > self.max_disk_space or len(self._current_files) == 20:
+		if self._current_size > self.max_disk_space:
 			logging.debug('Disk space limit reachet, waking parser...')
 			self._parser._queue.put((self._current_files[:], ''))
 			self._current_size = 0
