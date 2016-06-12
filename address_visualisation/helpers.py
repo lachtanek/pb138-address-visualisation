@@ -2,7 +2,7 @@ import gzip
 from math import sqrt
 from urllib import request
 
-BUFF_SIZE = 4096
+BUFF_SIZE = 4 * 1024 * 1024
 
 
 def download_file(address, target):

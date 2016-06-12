@@ -1,8 +1,11 @@
 """Parser."""
 
-from glob import glob
 import logging
-from shutil import rmtree
+import os
+from queue import Queue
+
+from glob import glob
+from shutil import move, rmtree
 from subprocess import call
 from xml.etree import ElementTree
 
@@ -12,15 +15,16 @@ from .downloader import Downloader
 class SaxonParser:
 	"""Used for XSLT transformation of files in "RUIAN Vymenny Format" format."""
 
+	SUBDIR_NAME = 'parser'
+
 	def __init__(
-		self, downloader, output, xsl_stat='vf_resources/simplify_stat.xsl', xsl_obec='vf_resources/simplify_obec.xsl',
+		self, output, xsl_stat='vf_resources/simplify_stat.xsl', xsl_obec='vf_resources/simplify_obec.xsl',
 		saxon_max_threads=2, saxon_path='saxon9he.jar'
 	):
 		"""Class constructor.
 
 		Parameters
 		----------
-		downloader : Downloader
 		xsl_stat : string
 			Path to "stat" XSL transformation.
 		xsl_obec : string
@@ -29,37 +33,61 @@ class SaxonParser:
 			RAM allowed is saxon_max_threads * 1.
 		saxon_path : string
 		"""
-		self._downloader = downloader
+		self._downloader = None
 		self._xsl_stat = xsl_stat
 		self._xsl_obec = xsl_obec
 		self._output_file = output
-		self._running = True
 		self._done = False
+		self._queue = Queue()
 		self.saxon_max_threads = saxon_max_threads
 		self.saxon_path = saxon_path
 		self.saxon_max_ram = saxon_max_threads  # * 1
+
+	def _after_attach(self):
+		d = self._downloader.temp_directory + '/' + SaxonParser.SUBDIR_NAME
+		rmtree(d, ignore_errors=True)
+		os.makedirs(d)
+
+	def _run_saxon(self, saxon_in, saxon_out=None):
+		xsl = self._xsl_obec
+		if saxon_out is None:
+			saxon_out = ''
+			xsl = self._xsl_stat
+
+		call([
+			'java', '-Xmx' + str(self.saxon_max_ram) + 'G', '-cp', self.saxon_path, 'net.sf.saxon.Transform',
+			'-threads:' + str(self.saxon_max_threads),
+			'-s:' + saxon_in,
+			'-xsl:' + xsl,
+			'-o:' + self._downloader.temp_directory + '/' + saxon_out,
+			'-versionmsg:off', '-warnings:' + 'recover' if logging.root.level <= logging.DEBUG else 'silent'
+		])
 
 	def run(self):
 		"""Start the process of transforming XML files.
 
 		Takes about 20 minutes with 6 threads and 6GB RAM at peaks.
 		"""
-		call([
-			'java', '-Xmx' + str(self.saxon_max_ram) + 'G', '-cp', self.saxon_path, 'net.sf.saxon.Transform',
-			'-threads:' + str(self.saxon_max_threads),
-			'-s:' + self._downloader.temp_directory + '/' + Downloader.SUBDIR_NAME,
-			'-xsl:' + self._xsl_obec,
-			'-o:' + self._downloader.temp_directory,
-			'-versionmsg:off', '-warnings:' + 'recover' if logging.root.level <= logging.DEBUG else 'silent'
-		])
+		while self._downloader._running:
+			data = self._queue.get()
+			if data is None:
+				break
 
-		call([
-			'java', '-Xmx' + str(self.saxon_max_ram) + 'G', '-cp', self.saxon_path, 'net.sf.saxon.Transform',
-			'-s:' + self._downloader.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml',
-			'-xsl:' + self._xsl_stat,
-			'-o:' + self._downloader.temp_directory + '/' + Downloader.STAT_NAME + '.xml',
-			'-versionmsg:off', '-warnings:' + 'recover' if logging.root.level <= logging.DEBUG else 'silent'
-		])
+			logging.debug('Running saxon...')
+
+			arg1 = data[0]
+			if isinstance(data[0], list):
+				for f in data[0]:
+					move(f, self._downloader.temp_directory + '/' + SaxonParser.SUBDIR_NAME)
+
+				arg1 = self._downloader.temp_directory + '/' + SaxonParser.SUBDIR_NAME
+
+			self._run_saxon(arg1, data[1])
+
+			for f in glob(self._downloader.temp_directory + '/' + SaxonParser.SUBDIR_NAME + '/*'):
+				os.unlink(f)
+
+			self._queue.task_done()
 
 	def merge(self, delete_temp=True):
 		"""Merge."""

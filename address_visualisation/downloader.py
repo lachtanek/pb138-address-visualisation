@@ -1,15 +1,16 @@
 """Downloader."""
 
+import logging
 import os
 import queue
 
 from collections import namedtuple
 from datetime import date
-import logging
 from re import compile
+from shutil import rmtree
 from sys import stderr
 from tempfile import TemporaryDirectory
-from threading import Thread
+from threading import Thread, Lock
 from time import sleep
 
 from .helpers import download_file, uncompress
@@ -27,7 +28,7 @@ class Downloader:
 	SUBDIR_NAME = 'download'
 	STAT_NAME = 'stat'
 
-	def __init__(self, link_file, temp_directory=None, max_threads=2):
+	def __init__(self, parser, link_file, temp_directory=None, max_threads=2, max_disk_space=4 * 1024):
 		"""Class constructor.
 
 		Parameters
@@ -38,13 +39,21 @@ class Downloader:
 			Path to working directory, if you wish to use custom ("permanent") temporary directory.
 		max_threads : int
 			Number of concurrent threads for downloading of files.
+		max_disk_space : int
+			Maximum space on disk used (>=1000 MB).
 		"""
+		self._parser = parser
+		parser._downloader = self
 		self._link_file = link_file
 		self._file_queue = queue.Queue()
 		self._threads = []
 		self._running = True
 		self._done = False
 		self.max_threads = max_threads
+		self.max_disk_space = max_disk_space - 500
+		self._current_size = 0
+		self._current_files = []
+		self._current_lock = Lock()
 
 		if temp_directory is not None:
 			self.temp_directory = temp_directory
@@ -54,13 +63,26 @@ class Downloader:
 			self._obj_temp_directory = TemporaryDirectory()
 			self.temp_directory = self._obj_temp_directory.name
 
-		os.makedirs(self.temp_directory + '/' + Downloader.SUBDIR_NAME, exist_ok=True)
+		self._parser._after_attach()
+		d = self.temp_directory + '/' + Downloader.SUBDIR_NAME
+		rmtree(d, ignore_errors=True)
+		os.makedirs(d)
 
 	def _isdone(self, outfile):
 		if outfile is None:  # stat
 			return os.path.exists(self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml')
 		else:
 			return os.path.exists(self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + outfile)
+
+	def _check_size(self, fname):
+		self._current_size += os.path.getsize(fname) / (1024 ** 2)
+		self._current_files.append(fname)
+
+		if self._current_size > self.max_disk_space or len(self._current_files) == 20:
+			logging.debug('Disk space limit reachet, waking parser...')
+			self._parser._queue.put((self._current_files[:], ''))
+			self._current_size = 0
+			self._current_files = []
 
 	def _thread_process_queue(self, threadId):
 		while self._running:
@@ -70,13 +92,19 @@ class Downloader:
 
 			if data[1] is None:
 				fname2 = self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml'
+				isStat = True
 			else:
 				fname2 = self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + data[1]
+				isStat = False
 			fname1 = fname2 + '.gz'
 
 			try:
 				download_file(data[0], fname1)
 				uncompress(fname1, fname2)
+
+				if not isStat:
+					with self._current_lock:
+						self._check_size(fname2)
 
 				logging.debug('Done %s', data[1])
 			except Exception as e:
@@ -121,15 +149,17 @@ class Downloader:
 				self._file_queue.put((data.downlink, data.outfile))
 
 	def _main_thread(self):
-		filling = Thread(target=self._thread_fill_queue)
-		filling.start()
+		self._parser_thread = Thread(target=self._parser.run)
+		self._parser_thread.start()
+		self._filling_thread = Thread(target=self._thread_fill_queue)
+		self._filling_thread.start()
 
 		for i in range(self.max_threads):
 			t = Thread(target=self._thread_process_queue, args=(i,))
 			t.start()
 			self._threads.append(t)
 
-		filling.join()
+		self._filling_thread.join()
 
 		# self._file_queue.join()
 		# not using join because it blocks and doesn't support timeout and
@@ -144,10 +174,17 @@ class Downloader:
 		for t in self._threads:
 			t.join()
 
+		self._parser._queue.put((self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml', Downloader.STAT_NAME + '.xml'))
+		self._parser._queue.put(None)
+
+		self._parser_thread.join()
+
+		logging.debug('Parser finished')
+
 		if self._running:
 			self._done = True
 
-	def download(self):
+	def run(self):
 		"""Start the downloading and uncompressing of XML files.
 
 		Takes around 20 minutes with 6 threads using 1GB RAM at peaks.
@@ -161,6 +198,11 @@ class Downloader:
 		except KeyboardInterrupt:
 			print('Stopping download (can take a few seconds to stop working threads)')
 			self._running = False
+			if self._filling_thread.is_alive():
+				self._filling_thread.join()
+			if self._parser_thread.is_alive():
+				self._parser._queue.put(None)
+				self._parser_thread.join()
 
 			if not self._file_queue.empty():
 				with self._file_queue.mutex:
@@ -169,6 +211,7 @@ class Downloader:
 				for i in range(self.max_threads):
 					self._file_queue.put(None)
 				for t in self._threads:
-					t.join()
+					if t.is_alive():
+						t.join()
 
 			raise  # re-raise KeyboartInterrupt
