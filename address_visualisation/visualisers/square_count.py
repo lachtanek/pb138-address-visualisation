@@ -1,11 +1,14 @@
 #!/usr/bin/python3
+"""
+Module with visualiser of count of squares in area in database.
+"""
 
 from address_visualisation import Visualiser
-from address_visualisation.transformToFeatureCollection import feature_collection_from_areas
+from address_visualisation.transform_to_feature_collection import feature_collection_from_areas
 
 class SquareCountVisualiser(Visualiser):
 	"""
-	Visualiser which finds towns with least address places in database xml and turns information about them into geojson format.
+	Visualiser which finds towns with most squares in database xml and turns information about them into geojson format.
 
 	...
 	Methods

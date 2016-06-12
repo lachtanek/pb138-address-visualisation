@@ -1,7 +1,12 @@
 #!/usr/bin/python3
+
+"""
+Module with visualiser of smallest towns in database.
+"""
+
 from sys import maxsize
 from address_visualisation import Visualiser
-from address_visualisation.transformToFeatureCollection import feature_collection_from_towns
+from address_visualisation.transform_to_feature_collection import feature_collection_from_towns
 
 class SmallestTownsVisualiser(Visualiser):
     """

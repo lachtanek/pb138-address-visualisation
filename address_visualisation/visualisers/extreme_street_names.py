@@ -1,8 +1,11 @@
 #!/usr/bin/python3
+"""
+Module with visualiser of streets with extreme names in database.
+"""
 
-from address_visualisation import Visualiser
-from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
 from sys import maxsize
+from address_visualisation import Visualiser
+from address_visualisation.transform_to_feature_collection import feature_collection_from_streets
 
 class ExtremeStreetNamesVisualiser(Visualiser):
 	"""
@@ -21,7 +24,7 @@ class ExtremeStreetNamesVisualiser(Visualiser):
 		Finds extreme (shortest and longest) street name in each region in xml tree and returns information about its location.
 
 		For each region, it searches through xml tree for streets in region and checks their names.
-		If their name is shorter than minimum or longer than maximum of region, 
+		If their name is shorter than minimum or longer than maximum of region,
 		method saves information about it into `min_values`/`max_values` on the position of region.
 
 		Returns

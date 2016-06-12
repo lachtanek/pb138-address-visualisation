@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+Module with visualiser of streets with profane names in database.
+"""
 
 from address_visualisation import Visualiser
 from address_visualisation.features import FeatureCollection

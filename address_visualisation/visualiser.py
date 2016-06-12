@@ -1,9 +1,12 @@
+"""
+Module with abstract Visualiser
+"""
 from abc import ABC, abstractmethod
 
 class Visualiser(ABC):
 	"""
 	Class which finds information in database xml and converts it into geojson format.
-
+	
 	...
 	Attributes
 	----------
@@ -18,7 +21,7 @@ class Visualiser(ABC):
 	def __init__(self, db_tree):
 		"""
 		Class constructor.
-
+		
 		Parameters
 		----------
 		db_tree : xml.etree.cElementTree

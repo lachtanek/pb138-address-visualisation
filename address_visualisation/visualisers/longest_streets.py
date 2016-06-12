@@ -1,7 +1,10 @@
 #!/usr/bin/python3
+"""
+Module with visualiser of longest streets in database.
+"""
 
+from address_visualisation.transform_to_feature_collection import feature_collection_from_streets
 from address_visualisation import Visualiser
-from address_visualisation.transformToFeatureCollection import feature_collection_from_streets
 
 class LongestStreetsVisualiser(Visualiser):
 	"""

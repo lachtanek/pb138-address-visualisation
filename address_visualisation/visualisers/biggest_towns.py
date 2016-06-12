@@ -1,7 +1,9 @@
 #!/usr/bin/python3
-
+"""
+Module with visualiser of biggest towns in database.
+"""
 from address_visualisation import Visualiser
-from address_visualisation.transformToFeatureCollection import feature_collection_from_towns
+from address_visualisation.transform_to_feature_collection import feature_collection_from_towns
 
 class BiggestTownsVisualiser(Visualiser):
 	"""
@@ -39,10 +41,10 @@ class BiggestTownsVisualiser(Visualiser):
 
 		obce = {
 			obec.get("kod"): (
-				int(obec.find("PocetAdresnichMist").text) if obec.find("PocetAdresnichMist") else 0,
-				obec.find("Nazev").text,
-				obec.get("okres")[0:2]
-			) for obec in root.iter('Obec')
+                int(obec.find("PocetAdresnichMist").text) if obec.find("PocetAdresnichMist") else 0,
+                obec.find("Nazev").text,
+                obec.get("okres")[0:2]
+				) for obec in root.iter('Obec')
 		}
 
 		for ulice in root.iter("Ulice"):
