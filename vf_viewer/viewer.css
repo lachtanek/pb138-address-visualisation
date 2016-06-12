@@ -98,6 +98,7 @@ html, body {
 .features {
 	padding: 1em;
 	overflow: auto;
+	flex-grow: 1;
 }
 
 .features li {
