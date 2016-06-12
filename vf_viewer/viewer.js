@@ -1,5 +1,30 @@
 'use strict';
 
+class Histogram {
+	constructor(partitions) {
+		this.partitions = partitions.slice().sort();
+		this.occurences = [];
+		this.clear();
+	}
+
+	clear() {
+		for (let i = 0; i <= this.partitions.length; i++) {
+			this.occurences[i] = 0;
+		}
+	}
+
+	addValue(val) {
+		let partition = this.partitions.length;
+		for (let i = 0; i < this.partitions.length; i++) {
+			if (val <= this.partitions[i]) {
+				partition = i;
+				break;
+			}
+		}
+		this.occurences[partition]++;
+	}
+}
+
 const createSideBar = function() {
 	const sideBar = document.getElementById('sidebar');
 
@@ -55,11 +80,31 @@ const createInfoBar = function(fileName) {
 	const featList = document.createElement('ul');
 	featureHolder.appendChild(featList);
 
+	const chartEnabled = visualisations.get(fileName).histogram;
+	let chart;
+	let histogram;
+	let chartHolder;
+
+	if (chartEnabled) {
+		histogram = new Histogram(visualisations.get(fileName).histogram.partitions);
+		chartHolder = document.createElement('canvas');
+		chartHolder.classList.add('chart');
+		chartHolder.width = infoBar.offsetWidth;
+		chartHolder.height = Math.floor(infoBar.offsetWidth / 16 * 9);
+
+		infoBar.appendChild(chartHolder);
+	}
+
 	const self = {
 		setInfo: (info) => {infoHolder.innerHTML = info;},
 		clearInfo: () => {infoHolder.innerHTML = 'Hover a feature on the map or click on one in the list below to show information about the feature.';},
 		setFeatures: (features, highlightFeature) => {
 			featList.textContent = '';
+
+			if (chartEnabled) {
+				histogram.clear();
+			}
+
 			features.forEach((feature) => {
 				const li = document.createElement('li');
 				const highlight = () => {
@@ -77,9 +122,50 @@ const createInfoBar = function(fileName) {
 					}
 				});
 
+				if (chartEnabled) {
+					histogram.addValue(feature.get('measured'));
+				}
+
 				li.textContent = visualisations.get(fileName).listInfo(feature);
 				featList.appendChild(li);
 			});
+
+			if (chartEnabled) {
+				if (!chart) {
+					let labels = [];
+					for (var partition of histogram.partitions) {
+						labels.push('≤' + partition);
+					}
+					labels.push('>' + partition)
+
+					chart = new Chart(chartHolder, {
+						type: 'bar',
+						data: {
+							labels: labels,
+							datasets: [
+								{
+									backgroundColor: 'rgba(255,99,132,0.2)',
+									borderColor: 'rgba(255,99,132,1)',
+									borderWidth: 1,
+									hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+									hoverBorderColor: 'rgba(255,99,132,1)',
+									data: histogram.occurences,
+								}
+							]
+						},
+						options: {
+							legend: {
+								display: false
+							}
+						}
+					});
+				} else {
+					for (let i in chart.data.datasets[0].data) {
+						chart.data.datasets[0].data[i] = histogram.occurences[i];
+					}
+					chart.update();
+				}
+			}
 		}
 	};
 
@@ -227,9 +313,10 @@ window.onload = function() {
 
 		function updateFeatureList() {
 			const extent = map.getView().calculateExtent(map.getSize());
-			infoBar.setFeatures(geoJsonSource.getFeaturesInExtent(extent), highlightFeature);
+			const features = geoJsonSource.getFeaturesInExtent(extent);
+			infoBar.setFeatures(features, highlightFeature);
 		}
 
-		map.on('postrender', updateFeatureList);
+		geoJsonSource.once('change', () => map.on('postrender', updateFeatureList));
 	}
 };

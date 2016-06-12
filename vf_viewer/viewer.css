@@ -70,6 +70,8 @@ html, body {
 }
 
 .infobar {
+	display: flex;
+	flex-direction: column;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -92,9 +94,8 @@ html, body {
 .features {
 	padding: 1em;
 	overflow: auto;
-	height: calc(100% - 5em);
 }
 
 .features li {
-	cursor: pointer;;
+	cursor: pointer;
 }
