@@ -1,16 +1,45 @@
 'use strict';
 
 class Histogram {
-	constructor(partitions) {
-		this.partitions = partitions.slice().sort();
-		this.occurences = [];
-		this.clear();
+	constructor() {
+		this.frequencies = {};
 	}
 
 	clear() {
-		for (let i = 0; i <= this.partitions.length; i++) {
-			this.occurences[i] = 0;
+		for (let i in this.frequencies) {
+			this.frequencies[i] = 0;
 		}
+	}
+
+	addValue(val) {
+		if (this.frequencies.hasOwnProperty(val)) {
+			this.frequencies[val]++;
+		} else {
+			this.frequencies[val] = 1;
+		}
+	}
+
+	get labels() {
+		let labels = [];
+		for (let i in this.frequencies) {
+			labels.push(i);
+		}
+		return labels;
+	}
+
+	get occurences() {
+		let occurences = [];
+		for (let i in this.frequencies) {
+			occurences.push(this.frequencies[i]);
+		}
+		return occurences;
+	}
+}
+
+class PartitionedHistogram extends Histogram {
+	constructor(partitions) {
+		super();
+		this.partitions = partitions.slice().sort();
 	}
 
 	addValue(val) {
@@ -21,7 +50,33 @@ class Histogram {
 				break;
 			}
 		}
-		this.occurences[partition]++;
+		super.addValue(partition);
+	}
+
+	get labels() {
+		if (this.partitions.length == 0) {
+			return ['*'];
+		}
+
+		let labels = [];
+		for (var i = 0; i < this.partitions.length; i++) {
+			if (i == 0) {
+				labels.push('≤' + this.partitions[i]);
+			} else {
+				labels.push((this.partitions[i - 1] + 1).toString() + '–' + this.partitions[i]);
+			}
+		}
+		labels.push('>' + this.partitions[i - 1]);
+
+		return labels;
+	}
+
+	get occurences() {
+		let occurences = [];
+		for (var i = 0; i <= this.partitions.length; i++) {
+			occurences.push(this.frequencies[i] || 0);
+		}
+		return occurences;
 	}
 }
 
@@ -81,12 +136,33 @@ const createInfoBar = function(fileName) {
 	featureHolder.appendChild(featList);
 
 	const chartEnabled = visualisations.get(fileName).histogram;
-	let chart;
-	let histogram;
-	let chartHolder;
+	let histogram, plottedCategory, chart, chartHolder;
+	let chartStyle = {
+		backgroundColor: 'rgba(255,99,132,0.2)',
+		borderColor: 'rgba(255,99,132,1)',
+		borderWidth: 1,
+		hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+		hoverBorderColor: 'rgba(255,99,132,1)'
+	};
 
 	if (chartEnabled) {
-		histogram = new Histogram(visualisations.get(fileName).histogram.partitions);
+		if (visualisations.get(fileName).histogram.partitions) {
+			histogram = new PartitionedHistogram(visualisations.get(fileName).histogram.partitions);
+		} else {
+			histogram = new Histogram;
+		}
+
+		let styleProperties = visualisations.get(fileName).histogram.style;
+		if (styleProperties) {
+			for (let prop in chartStyle) {
+				if (styleProperties.hasOwnProperty(prop)) {
+					chartStyle[prop] = styleProperties[prop];
+				}
+			}
+		}
+
+		plottedCategory = visualisations.get(fileName).histogram.plottedCategory || (feature => feature.get('measured'));
+
 		chartHolder = document.createElement('canvas');
 		chartHolder.classList.add('chart');
 		chartHolder.width = infoBar.offsetWidth;
@@ -123,7 +199,7 @@ const createInfoBar = function(fileName) {
 				});
 
 				if (chartEnabled) {
-					histogram.addValue(feature.get('measured'));
+					histogram.addValue(plottedCategory(feature));
 				}
 
 				li.textContent = visualisations.get(fileName).listInfo(feature);
@@ -132,23 +208,17 @@ const createInfoBar = function(fileName) {
 
 			if (chartEnabled) {
 				if (!chart) {
-					let labels = [];
-					for (var partition of histogram.partitions) {
-						labels.push('≤' + partition);
-					}
-					labels.push('>' + partition)
-
 					chart = new Chart(chartHolder, {
 						type: 'bar',
 						data: {
-							labels: labels,
+							labels: histogram.labels,
 							datasets: [
 								{
-									backgroundColor: 'rgba(255,99,132,0.2)',
-									borderColor: 'rgba(255,99,132,1)',
-									borderWidth: 1,
-									hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-									hoverBorderColor: 'rgba(255,99,132,1)',
+									backgroundColor: chartStyle.backgroundColor,
+									borderColor: chartStyle.borderColor,
+									borderWidth: chartStyle.borderWidth,
+									hoverBackgroundColor: chartStyle.hoverBackgroundColor,
+									hoverBorderColor: chartStyle.hoverBorderColor,
 									data: histogram.occurences,
 								}
 							]

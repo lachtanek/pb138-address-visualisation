@@ -36,7 +36,17 @@ const visualisations = new Map([
 				return `Ulice: ${feature.get('name')}<br>
 				Město: ${feature.get('town')}`;
 			},
-			listInfo: streetListInfo
+			listInfo: streetListInfo,
+			histogram: {
+				plottedCategory: feature => feature.get('name'),
+				style: {
+					backgroundColor: 'rgba(0,0,0,0.2)',
+					borderColor: 'rgba(0,0,0,1)',
+					borderWidth: 1,
+					hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+					hoverBorderColor: 'rgba(255,99,132,1)'
+				}
+			}
 		}
 	],
 	[
