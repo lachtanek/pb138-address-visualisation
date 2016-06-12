@@ -27,18 +27,15 @@ const areaListInfo = function(feature) {
 	return feature.get('name');
 }
 
+const formatLength = function(length) {
+	if (length > 1000) {
+		return (Math.round(length / 100) / 10) + ' km';
+	} else {
+		return Math.round(length) + ' m'
+	}
+}
+
 const visualisations = new Map([
-	[
-		'sample_streets',
-		{
-			name: 'Ulice',
-			info: function(feature) {
-				return `${feature.getId()}: ${feature.get('name')}<br>
-				${Math.round(feature.get('length'))} m`;
-			},
-			listInfo: feature => feature.get('name')
-		}
-	],
 	[
 		'profane_streets',
 		{
@@ -47,14 +44,28 @@ const visualisations = new Map([
 				return `Ulice: ${feature.get('name')}<br>
 				Město: ${feature.get('town')}`;
 			},
-			listInfo: streetListInfo
+			listInfo: streetListInfo,
+			histogram: {
+				plottedCategory: feature => feature.get('name'),
+				style: {
+					backgroundColor: 'rgba(0,0,0,0.2)',
+					borderColor: 'rgba(0,0,0,1)',
+					borderWidth: 1,
+					hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+					hoverBorderColor: 'rgba(255,99,132,1)'
+				}
+			}
 		}
 	],
 	[
 		'longest_streets',
 		{
 			name: 'Nejdelší ulice',
-			info: (feature) => streetInfo(feature, 'Počet adresních míst'),
+			info: function(feature) {
+				return `Ulice: ${feature.get('name')}<br>
+				Město: ${feature.get('town')}<br>
+				Délka: ${formatLength(feature.get('measured'))}`;
+			},
 			listInfo: streetListInfo
 		}
 	],
@@ -71,7 +82,10 @@ const visualisations = new Map([
 		{
 			name: 'Počet náměstí',
 			info: feature => areaInfo(feature, 'Počet náměstí'),
-			listInfo: areaListInfo
+			listInfo: areaListInfo,
+			histogram: {
+				partitions: [10, 20, 30, 40, 50, 60, 70, 80, 90]
+			}
 		}
 	],
 	[

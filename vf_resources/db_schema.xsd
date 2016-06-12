@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+  <xsd:element name="VymennyFormat" type="VymennyFormatType">
+    <xsd:unique name="unique-statkod">
+      <xsd:selector xpath="Data/Staty/Stat"/>
+      <xsd:field xpath="@kod"/>
+    </xsd:unique>
+
+    <xsd:unique name="unique-krajkod">
+      <xsd:selector xpath="Data/Kraje/Kraj"/>
+      <xsd:field xpath="@kod"/>
+    </xsd:unique>
+
+    <xsd:unique name="unique-okreskod">
+      <xsd:selector xpath="Data/Okresy/Okres"/>
+      <xsd:field xpath="@kod"/>
+    </xsd:unique>
+
+    <xsd:unique name="unique-obeckod">
+      <xsd:selector xpath="Data/Obce/Obec"/>
+      <xsd:field xpath="@kod"/>
+    </xsd:unique>
+
+    <xsd:unique name="unique-ulicekod">
+      <xsd:selector xpath="Data/Ulice"/>
+      <xsd:field xpath="@kod"/>
+    </xsd:unique>
+
+  </xsd:element>
+
+  <xsd:complexType name="DataType">
+    <xsd:sequence>
+      <xsd:element type="StatyType" name="Staty" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="KrajeType" name="Kraje" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="OkresyType" name="Okresy" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="ObceType" name="Obce" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="UliceType" name="Ulice" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="StatyType">
+    <xsd:sequence>
+      <xsd:element type="StatType" name="Stat" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="KrajeType">
+    <xsd:sequence>
+      <xsd:element type="KrajType" name="Kraj" maxOccurs="unbounded" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="OkresyType">
+    <xsd:sequence>
+      <xsd:element type="OkresType" name="Okres" maxOccurs="unbounded" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ObceType">
+    <xsd:sequence>
+      <xsd:element type="ObecType" name="Obec" maxOccurs="unbounded" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+
+  <xsd:complexType name="UliceType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Nazev" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="PocetAdresnichMist" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="GeometrieType" name="Geometrie" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="obec" use="required"/>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="VymennyFormatType">
+    <xsd:sequence>
+      <xsd:element type="DataType" name="Data" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="StatType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Nazev" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="GeometrieType" name="Geometrie" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="KrajType">
+    <xsd:sequence>
+      <xsd:element name="Nazev" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="GeometrieType" name="Geometrie" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="OkresType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Nazev" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="GeometrieType" name="Geometrie" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kraj" use="required"/>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="ObecType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Nazev" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="GeometrieType" name="Geometrie" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="xsd:nonNegativeInteger" name="PocetAdresnichMist" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="kod" use="required"/>
+    <xsd:attribute type="xsd:nonNegativeInteger" name="okres" use="required"/>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="GeometrieType">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="PosList" maxOccurs="unbounded" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

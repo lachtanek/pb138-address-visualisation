@@ -1,81 +1,83 @@
+"""
+Module with auxiliary methods.
+"""
 import gzip
 from math import sqrt
 from urllib import request
 
 BUFF_SIZE = 4 * 1024 * 1024
 
-
 def download_file(address, target):
 	"""
 	Downloads file - copies content on url address to target file.
-	
+
 	Parameters
 	----------
 	address : url
 		URL address to download from
 	target : string
 		path to downloaded file
-	
+
 	Raises
 	------
 	Exception
 		Download failed.
 	"""
 	with request.urlopen(address) as sock:
-		with open(target, 'wb') as writeF:
+		with open(target, 'wb') as write_f:
 			while True:
 				data = sock.read(BUFF_SIZE)
 				if not data:
 					break
 
-				writeF.write(data)
+				write_f.write(data)
 
 		return
 
 	raise Exception('Failed to download ' + address)
 
 
-def uncompress(fileName, target):
+def uncompress(file_name, target):
 	"""
 	Uncompresses file.
-	
+
 	Extracts compressed file on `fileName` filepath to `target` filepath.
-	
+
 	Parameters
 	----------
-	fileName : string
+	file_name : string
 		Path to file to uncompress.
 	target : string
 		Path to file where uncompressed data should be stored.
-		
+
 	Raises
 	------
 	Exception
 		Uncompressing failed.
 	"""
-	with gzip.open(fileName) as gzf:
-		with open(target, 'wb') as writeF:
+	with gzip.open(file_name) as gzf:
+		with open(target, 'wb') as write_f:
 			while True:
 				data = gzf.read(BUFF_SIZE)
 				if not data:
 					break
 
-				writeF.write(data)
+				write_f.write(data)
 
 		return
 
-	raise Exception('Failed to uncompress ' + fileName)
+	raise Exception('Failed to uncompress ' + file_name)
 
 
 def segment_length(seg):
 	"""
 	Measures length of line represented by list of tuples with coordinates.
-	
+
 	Parameters
 	----------
 	seg : list of tuples of float
 		Line represented by list of tuples with coordinates.
-	
+
 	Returns
 	-------
 	length : float
@@ -91,12 +93,12 @@ def segment_length(seg):
 def multi_segment_length(segs):
 	"""
 	Measures length of multiline represented by list of lists of tuples with coordinates.
-	
+
 	Parameters
 	----------
 	segs : list of lists of tuples of float
 		Multiline represented by list of lines.
-	
+
 	Returns
 	-------
 	float
@@ -108,12 +110,12 @@ def multi_segment_length(segs):
 def parse_segment(seg):
 	"""
 	Parses line represented by string to list of points(tuples with coordinates).
-	
+
 	Parameters
 	----------
 	seg : string
 		String containing coordinates of line, like "0.0 0.0 3.0 3.0"
-	
+
 	Returns
 	-------
 	points : list of tuples of float
@@ -131,12 +133,12 @@ def parse_segment(seg):
 def parse_street_lines(segs):
 	"""
 	Parses multiline represented by list of strings to list of points(tuples with coordinates).
-	
+
 	Parameters
 	----------
 	segs : list of strings
 		Multiline represented by list of lines.
-		
+
 	Returns
 	-------
 	list of list of tuples of float
@@ -147,7 +149,7 @@ def parse_street_lines(segs):
 def get_color(measured_value, min_value, max_value):
 	"""
 	Returns fullness of colour to use in geojson.Feature based on position of measured_value in range of value.
-	
+
 	Parameters
 	----------
 	measured_value : int
@@ -156,7 +158,7 @@ def get_color(measured_value, min_value, max_value):
 		Minimal value in range.
 	max_value : int
 		Maximal value in range.
-	
+
 	Returns
 	-------
 	int
@@ -168,4 +170,3 @@ def get_color(measured_value, min_value, max_value):
 		if measured_value <= (min_value + i*differ):
 			return i * 50
 		i = i + 1
-		

@@ -1,5 +1,85 @@
 'use strict';
 
+class Histogram {
+	constructor() {
+		this.frequencies = {};
+	}
+
+	clear() {
+		for (let i in this.frequencies) {
+			this.frequencies[i] = 0;
+		}
+	}
+
+	addValue(val) {
+		if (this.frequencies.hasOwnProperty(val)) {
+			this.frequencies[val]++;
+		} else {
+			this.frequencies[val] = 1;
+		}
+	}
+
+	get labels() {
+		let labels = [];
+		for (let i in this.frequencies) {
+			labels.push(i);
+		}
+		return labels;
+	}
+
+	get occurences() {
+		let occurences = [];
+		for (let i in this.frequencies) {
+			occurences.push(this.frequencies[i]);
+		}
+		return occurences;
+	}
+}
+
+class PartitionedHistogram extends Histogram {
+	constructor(partitions) {
+		super();
+		this.partitions = partitions.slice().sort();
+	}
+
+	addValue(val) {
+		let partition = this.partitions.length;
+		for (let i = 0; i < this.partitions.length; i++) {
+			if (val <= this.partitions[i]) {
+				partition = i;
+				break;
+			}
+		}
+		super.addValue(partition);
+	}
+
+	get labels() {
+		if (this.partitions.length == 0) {
+			return ['*'];
+		}
+
+		let labels = [];
+		for (var i = 0; i < this.partitions.length; i++) {
+			if (i == 0) {
+				labels.push('≤' + this.partitions[i]);
+			} else {
+				labels.push((this.partitions[i - 1] + 1).toString() + '–' + this.partitions[i]);
+			}
+		}
+		labels.push('>' + this.partitions[i - 1]);
+
+		return labels;
+	}
+
+	get occurences() {
+		let occurences = [];
+		for (var i = 0; i <= this.partitions.length; i++) {
+			occurences.push(this.frequencies[i] || 0);
+		}
+		return occurences;
+	}
+}
+
 const createSideBar = function() {
 	const sideBar = document.getElementById('sidebar');
 
@@ -52,14 +132,68 @@ const createInfoBar = function(fileName) {
 	featureHolder.classList.add('features');
 	featureHolder.appendChild(header);
 
+	const emptyMessage = document.createElement('p');
+	emptyMessage.textContent = 'There are no features in the visible area. Try zooming out or moving the map view.';
+	emptyMessage.classList.add('hidden');
+	featureHolder.appendChild(emptyMessage);
+
 	const featList = document.createElement('ul');
 	featureHolder.appendChild(featList);
+
+	const chartEnabled = visualisations.get(fileName).histogram;
+	let histogram, plottedCategory, chart, chartHolder;
+	let chartStyle = {
+		backgroundColor: 'rgba(255,99,132,0.2)',
+		borderColor: 'rgba(255,99,132,1)',
+		borderWidth: 1,
+		hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+		hoverBorderColor: 'rgba(255,99,132,1)'
+	};
+
+	if (chartEnabled) {
+		if (visualisations.get(fileName).histogram.partitions) {
+			histogram = new PartitionedHistogram(visualisations.get(fileName).histogram.partitions);
+		} else {
+			histogram = new Histogram;
+		}
+
+		let styleProperties = visualisations.get(fileName).histogram.style;
+		if (styleProperties) {
+			for (let prop in chartStyle) {
+				if (styleProperties.hasOwnProperty(prop)) {
+					chartStyle[prop] = styleProperties[prop];
+				}
+			}
+		}
+
+		plottedCategory = visualisations.get(fileName).histogram.plottedCategory || (feature => feature.get('measured'));
+
+		chartHolder = document.createElement('canvas');
+		chartHolder.classList.add('chart');
+		chartHolder.width = infoBar.offsetWidth;
+		chartHolder.height = Math.floor(infoBar.offsetWidth / 16 * 9);
+
+		infoBar.appendChild(chartHolder);
+	}
 
 	const self = {
 		setInfo: (info) => {infoHolder.innerHTML = info;},
 		clearInfo: () => {infoHolder.innerHTML = 'Hover a feature on the map or click on one in the list below to show information about the feature.';},
 		setFeatures: (features, highlightFeature) => {
 			featList.textContent = '';
+
+			if (chartEnabled) {
+				histogram.clear();
+			}
+
+			if (features.length == 0) {
+				header.classList.add('hidden');
+				emptyMessage.classList.remove('hidden');
+			} else {
+				header.classList.remove('hidden');
+				emptyMessage.classList.add('hidden');
+			}
+
 			features.forEach((feature) => {
 				const li = document.createElement('li');
 				const highlight = () => {
@@ -77,9 +211,51 @@ const createInfoBar = function(fileName) {
 					}
 				});
 
+				if (chartEnabled) {
+					histogram.addValue(plottedCategory(feature));
+				}
+
 				li.textContent = visualisations.get(fileName).listInfo(feature);
 				featList.appendChild(li);
 			});
+
+			if (chartEnabled) {
+				if (!chart) {
+					chart = new Chart(chartHolder, {
+						type: 'bar',
+						data: {
+							labels: histogram.labels,
+							datasets: [
+								{
+									backgroundColor: chartStyle.backgroundColor,
+									borderColor: chartStyle.borderColor,
+									borderWidth: chartStyle.borderWidth,
+									hoverBackgroundColor: chartStyle.hoverBackgroundColor,
+									hoverBorderColor: chartStyle.hoverBorderColor,
+									data: histogram.occurences,
+								}
+							]
+						},
+						options: {
+							legend: {
+								display: false
+							},
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero: true
+									}
+								}]
+							}
+						}
+					});
+				} else {
+					for (let i in chart.data.datasets[0].data) {
+						chart.data.datasets[0].data[i] = histogram.occurences[i];
+					}
+					chart.update();
+				}
+			}
 		}
 	};
 
@@ -92,7 +268,6 @@ window.onload = function() {
 	const sideBar = createSideBar();
 
 	if (!fileName) {
-		document.body.classList.add('front');
 		sideBar.expand();
 	} else if (!visualisations.has(fileName)) {
 		alert('Unknown visualisation.');
@@ -101,8 +276,8 @@ window.onload = function() {
 		const infoBar = createInfoBar(fileName);
 
 		document.title = 'Address visualisation – ' + visualisations.get(fileName).name;
-		document.body.classList.remove('front');
 		sideBar.collapse();
+		setTimeout(() => document.body.classList.remove('preload'), 250);
 
 		proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
 
@@ -228,9 +403,10 @@ window.onload = function() {
 
 		function updateFeatureList() {
 			const extent = map.getView().calculateExtent(map.getSize());
-			infoBar.setFeatures(geoJsonSource.getFeaturesInExtent(extent), highlightFeature);
+			const features = geoJsonSource.getFeaturesInExtent(extent);
+			infoBar.setFeatures(features, highlightFeature);
 		}
 
-		map.on('postrender', updateFeatureList);
+		geoJsonSource.once('change', () => map.on('postrender', updateFeatureList));
 	}
 };

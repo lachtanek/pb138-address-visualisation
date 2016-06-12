@@ -3,7 +3,7 @@ Methods for transformation of list of values into FeatureCollection
 """
 from geojson import Feature, MultiLineString, Polygon
 from .features import FeatureCollection
-from .helpers import multi_segment_length, parse_street_lines, get_color
+from .helpers import multi_segment_length, parse_street_lines
 
 class Street:
 	"""
@@ -153,13 +153,15 @@ def feature_collection_from_areas(values, country_tree, collection_title):
 	"""
 	areas_collection = []
 	sorted_values = sorted(values, key=lambda area: area[Area.measured])
+	rank = 20
 	for area in values:
 		area_positions = country_tree.getroot().findall(".//Okres[@kod='"+area[Area.code]+"']/Geometrie/PosList")
 		boundaries = parse_street_lines(area_positions)
-		color = get_color(area[Area.measured], sorted_values[0][Area.measured], sorted_values[len(sorted_values)-1][Area.measured])
+
 		polygon = Polygon(boundaries)
-		style = {'fill': 'rgba(' + str(color)+ ', 0, 0, 0.8)'}
+		style = {'fill': 'rgba(' + str(rank) + ', 0, 0, 0.8)'}
 		properties = {'name': area[Area.area_name], 'measured': area[Area.measured], 'style': style}
+		rank = rank + (220 // len(sorted_values))
 
 		area_feature = Feature(geometry=polygon, properties=properties, id=int(area[Area.code]))
 		areas_collection.append(area_feature)
