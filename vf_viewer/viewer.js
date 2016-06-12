@@ -92,7 +92,6 @@ window.onload = function() {
 	const sideBar = createSideBar();
 
 	if (!fileName) {
-		document.body.classList.add('front');
 		sideBar.expand();
 	} else if (!visualisations.has(fileName)) {
 		alert('Unknown visualisation.');
@@ -101,8 +100,8 @@ window.onload = function() {
 		const infoBar = createInfoBar(fileName);
 
 		document.title = 'Address visualisation – ' + visualisations.get(fileName).name;
-		document.body.classList.remove('front');
 		sideBar.collapse();
+		setTimeout(() => document.body.classList.remove('preload'), 250);
 
 		proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
 

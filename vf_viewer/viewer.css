@@ -17,6 +17,10 @@ html, body {
 	font-family: Ubuntu, 'Helvetica Neue', sans-serif;
 }
 
+.preload .sidebar {
+	transition: none !important;
+}
+
 .view {
 	position: absolute;
 	left: var(--toggle-width);
@@ -32,6 +36,7 @@ html, body {
 	padding-right: var(--toggle-width);
 	background: var(--sidebar-background);
 	color: var(--sidebar-foreground);
+	transition: transform 0.2s;
 }
 
 .sidebar.collapsed {
