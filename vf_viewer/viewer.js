@@ -150,7 +150,7 @@ window.onload = function() {
 		}
 
 		const geoJsonSource = new ol.source.Vector({
-			url: '../vf_visualiser/visualisations/' + fileName + '.json',
+			url: '../vf_resources/visualisations/' + fileName + '.json',
 			format: new ol.format.GeoJSON()
 		});
 
