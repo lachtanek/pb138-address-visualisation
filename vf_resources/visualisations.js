@@ -27,6 +27,14 @@ const areaListInfo = function(feature) {
 	return feature.get('name');
 }
 
+const formatLength = function(length) {
+	if (length > 1000) {
+		return (Math.round(length / 100) / 10) + ' km';
+	} else {
+		return Math.round(length) + ' m'
+	}
+}
+
 const visualisations = new Map([
 	[
 		'profane_streets',
@@ -53,7 +61,11 @@ const visualisations = new Map([
 		'longest_streets',
 		{
 			name: 'Nejdelší ulice',
-			info: (feature) => streetInfo(feature, 'Počet adresních míst'),
+			info: function(feature) {
+				return `Ulice: ${feature.get('name')}<br>
+				Město: ${feature.get('town')}<br>
+				Délka: ${formatLength(feature.get('measured'))}`;
+			},
 			listInfo: streetListInfo
 		}
 	],
