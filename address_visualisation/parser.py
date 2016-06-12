@@ -13,7 +13,7 @@ class SaxonParser:
 	"""Used for XSLT transformation of files in "RUIAN Vymenny Format" format."""
 
 	def __init__(
-		self, downloader, output, xsl_stat='vf_simplify/simplify_stat.xsl', xsl_obec='vf_simplify/simplify_obec.xsl',
+		self, downloader, output, xsl_stat='vf_resources/simplify_stat.xsl', xsl_obec='vf_resources/simplify_obec.xsl',
 		saxon_max_threads=2, saxon_path='saxon9he.jar'
 	):
 		"""Class constructor.
