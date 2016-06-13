@@ -19,8 +19,9 @@ Transformace
 
 Visualisace
 ===========
-- blah
-- blah
+- 7 vizualizérù
+- Vstup - xml databáze
+- Výstup - GeoJSON soubory
 
 
 Viewer
