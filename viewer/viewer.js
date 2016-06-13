@@ -431,6 +431,31 @@ class InfoBar extends Emitter {
 }
 
 /**
+ * A helper function for comparing two arrays.
+ *
+ * @param {Array} a
+ * @param {Array} b
+ * @returns {Boolean} – Are the arrays same?
+ */
+const areSame = (a, b) => {
+	if (a === null || b === null) {
+		return a === b;
+	}
+
+	if (a.length !== b.length) {
+		return false;
+	}
+
+	for (let i = 0; i < a.length; ++i) {
+		if (a[i] !== b[i]) {
+			return false;
+		}
+	}
+
+	return true;
+};
+
+/**
  * Class representing a canvas that will display the map layers
  * as well as draw the geographical features.
  */
@@ -443,6 +468,7 @@ class MapView extends Emitter {
 	 */
 	constructor(dataSource, target) {
 		super();
+		this.featList = null;
 		this.highlight = null;
 		this.geoJsonSource = new ol.source.Vector({
 			url: dataSource,
@@ -507,9 +533,12 @@ class MapView extends Emitter {
 		const extent = this.map.getView().calculateExtent(this.map.getSize());
 		const features = this.geoJsonSource.getFeaturesInExtent(extent);
 
-		const evt = new Event('update-features');
-		evt.features = features;
-		this.dispatchEvent(evt);
+		if (!areSame(this.featList, features)) {
+			const evt = new Event('update-features');
+			evt.features = features;
+			this.dispatchEvent(evt);
+			this.featList = features;
+		}
 	}
 
 	/**
