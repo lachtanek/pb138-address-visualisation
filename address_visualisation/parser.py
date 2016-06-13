@@ -49,10 +49,10 @@ class SaxonParser:
 		os.makedirs(d)
 
 	def _run_saxon(self, saxon_in, saxon_out=None):
-		xsl = self._xsl_obec
+		xsl = self._xsl_stat
 		if saxon_out is None:
 			saxon_out = ''
-			xsl = self._xsl_stat
+			xsl = self._xsl_obec
 
 		call([
 			'java', '-Xmx' + str(self.saxon_max_ram) + 'G', '-cp', self.saxon_path, 'net.sf.saxon.Transform',
