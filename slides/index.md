@@ -1,17 +1,12 @@
 ---
-title: Projekt vizualizace adres
-author: Jakub Hrabec
-author: Alice Nohejlová
-author: Jan Tojnar
-author: Jana Zahradníčková
+title: Vizualizace adresních míst<br><small>PB138</small>
+author: Jakub Hrabec, Alice Nohejlová, Jan Tojnar, Jana Zahradníčková
 date: 2016-06-14
 ...
 
-PB138
 
 Demo
 ====
-
 
 Downloader
 ==========
