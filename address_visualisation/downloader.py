@@ -185,9 +185,12 @@ class Downloader:
 		logging.debug('Parser finished')
 
 	def run(self):
-		"""Start the downloading and uncompressing of XML files.
+		"""Start the downloading and uncompressing XML files and runs Parser.
 
-		Takes around 20 minutes with 6 threads using 1GB RAM at peaks.
+		Raises
+		------
+		KeyboardInterrupt
+			stops working threadns and re-raises exception.
 		"""
 		print('Downloading and parsing XML files (this will take long time, depending on number of threads)')
 		if len(os.listdir(self.temp_directory + '/' + Downloader.SUBDIR_NAME)) > 0:
