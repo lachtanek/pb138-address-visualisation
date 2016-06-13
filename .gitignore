@@ -1,5 +1,5 @@
-vf_resources/tmp
-vf_resources/visualisations/*
+resources/tmp
+resources/visualisations/*
 *.pyc
 __pycache__
-vf_visualiser/visualisations/*
+visualiser/visualisations/*

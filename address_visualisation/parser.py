@@ -18,7 +18,7 @@ class SaxonParser:
 	SUBDIR_NAME = 'parser'
 
 	def __init__(
-		self, output, xsl_stat='vf_resources/simplify_stat.xsl', xsl_obec='vf_resources/simplify_obec.xsl',
+		self, output, xsl_stat='resources/simplify_stat.xsl', xsl_obec='resources/simplify_obec.xsl',
 		saxon_max_threads=2, saxon_path='saxon9he.jar'
 	):
 		"""Class constructor.

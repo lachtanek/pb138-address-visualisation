@@ -452,7 +452,7 @@ window.onload = function() {
 		}
 
 		const geoJsonSource = new ol.source.Vector({
-			url: '../vf_resources/visualisations/' + fileName + '.json',
+			url: '../resources/visualisations/' + fileName + '.json',
 			format: new ol.format.GeoJSON()
 		});
 
