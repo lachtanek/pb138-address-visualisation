@@ -30,6 +30,8 @@ This project was created for [PB138](https://is.muni.cz/predmet/fi/jaro2016/PB13
 Start a HTTP server `python3 -m http.server` and visit <http://localhost:8000/viewer/>
 
 ## Dependencies
+- [Java](https://java.com/en/download/)
+- [Saxon 9 HE](http://saxon.sourceforge.net/)
 - [python3.0+](https://www.python.org/downloads/)
 - [python-geojson](https://pypi.python.org/pypi/geojson) – required for visualisation
 
