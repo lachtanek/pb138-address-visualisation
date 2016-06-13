@@ -26,10 +26,13 @@ class Downloader:
 	FNAME_VERSION_RE = compile(r'(\d+?)_([^_]+?)_(?:(\d+)_)?.*')
 
 	SUBDIR_NAME = 'download'
-	STAT_NAME = 'stat'
+	STATE_FILE_NAME = 'stat'
 
-	def __init__(self, parser, link_file, temp_directory=None, max_threads=2):
-		"""Class constructor.
+	def __init__(self, parser, link_file, temp_directory=None, max_threads=2, max_download_size_mb=1024):
+		"""When you run Downloader, it runs Parser, too.
+
+		For maximum performance of Downloader you need to find good balance between max_threads, max_download_size_mb and
+		Parser's max_threads, taking into account your connection speed and processor speed (and available RAM).
 
 		Parameters
 		----------
@@ -39,6 +42,8 @@ class Downloader:
 			Path to working directory, if you wish to use custom ("permanent") temporary directory.
 		max_threads : int
 			Number of concurrent threads for downloading of files.
+		max_download_size_mb : int
+			When this limit is reached, parser starts to work.
 		"""
 		self._parser = parser
 		parser._downloader = self
@@ -50,6 +55,7 @@ class Downloader:
 		self._current_size = 0
 		self._current_files = []
 		self._current_lock = Lock()
+		self.max_download_size_mb = max_download_size_mb
 
 		if temp_directory is not None:
 			self.temp_directory = temp_directory
@@ -67,7 +73,7 @@ class Downloader:
 
 	def _isdone(self, outfile):
 		if outfile is None:  # stat
-			return os.path.exists(self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml')
+			return os.path.exists(self.temp_directory + '/' + Downloader.STATE_FILE_NAME + '.full.xml')
 		else:
 			return os.path.exists(self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + outfile)
 
@@ -76,7 +82,7 @@ class Downloader:
 			self._current_size += os.path.getsize(fname) / (1024 ** 2)
 			self._current_files.append(fname)
 
-		if force or self._current_size > 1024:
+		if force or self._current_size > self.max_download_size_mb:
 			logging.debug('Waking parser')
 
 			if len(self._current_files) > 0:
@@ -92,18 +98,18 @@ class Downloader:
 				break
 
 			if data[1] is None:
-				fname2 = self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml'
-				isStat = True
+				fname2 = self.temp_directory + '/' + Downloader.STATE_FILE_NAME + '.full.xml'
+				isState = True
 			else:
 				fname2 = self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + data[1]
-				isStat = False
+				isState = False
 			fname1 = fname2 + '.gz'
 
 			try:
 				download_file(data[0], fname1)
 				uncompress(fname1, fname2)
 
-				if not isStat:
+				if not isState:
 					with self._current_lock:
 						self._check_size(fname2)
 
@@ -177,7 +183,7 @@ class Downloader:
 		for t in self._threads:
 			t.join()
 
-		self._parser.queue.put((self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml', Downloader.STAT_NAME + '.xml'))
+		self._parser.queue.put((self.temp_directory + '/' + Downloader.STATE_FILE_NAME + '.full.xml', Downloader.STATE_FILE_NAME + '.xml'))
 		self._parser.queue.put(None)
 
 		self._parser_thread.join()
@@ -185,12 +191,12 @@ class Downloader:
 		logging.debug('Parser finished')
 
 	def run(self):
-		"""Start the downloading and uncompressing XML files and runs Parser.
+		"""Start downloading and uncompressing XML files and run Parser.
 
 		Raises
 		------
 		KeyboardInterrupt
-			stops working threadns and re-raises exception.
+			Stops working threads and re-raises exception.
 		"""
 		print('Downloading and parsing XML files (this will take long time, depending on number of threads)')
 		if len(os.listdir(self.temp_directory + '/' + Downloader.SUBDIR_NAME)) > 0:

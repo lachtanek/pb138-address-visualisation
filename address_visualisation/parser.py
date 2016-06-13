@@ -18,24 +18,24 @@ class SaxonParser:
 	SUBDIR_NAME = 'parser'
 
 	def __init__(
-		self, output, xsl_stat='resources/simplify_stat.xsl', xsl_obec='resources/simplify_obec.xsl',
+		self, output, xsl_state='resources/simplify_stat.xsl', xsl_city='resources/simplify_obec.xsl',
 		saxon_max_threads=2, saxon_path='saxon9he.jar'
 	):
 		"""Class constructor.
 
 		Parameters
 		----------
-		xsl_stat : string
+		xsl_state : string
 			Path to "stat" XSL transformation.
-		xsl_obec : string
+		xsl_city : string
 			Path to "obec" XSL transformation.
 		saxon_max_threads : int
 			RAM allowed is saxon_max_threads * 1.
 		saxon_path : string
 		"""
 		self._downloader = None
-		self._xsl_stat = xsl_stat
-		self._xsl_obec = xsl_obec
+		self._xsl_state = xsl_state
+		self._xsl_city = xsl_city
 		self._output_file = output
 		self._done = False
 		self.queue = Queue()
@@ -49,10 +49,10 @@ class SaxonParser:
 		os.makedirs(d)
 
 	def _run_saxon(self, saxon_in, saxon_out=None):
-		xsl = self._xsl_stat
+		xsl = self._xsl_state
 		if saxon_out is None:
 			saxon_out = ''
-			xsl = self._xsl_obec
+			xsl = self._xsl_city
 
 		call([
 			'java', '-Xmx' + str(self.saxon_max_ram) + 'G', '-cp', self.saxon_path, 'net.sf.saxon.Transform',
@@ -64,9 +64,10 @@ class SaxonParser:
 		])
 
 	def run(self):
-		"""Start the process of transforming XML files.
+		"""Start the transformation controlling thread.
 
-		Takes about 20 minutes with 6 threads and 6GB RAM at peaks.
+		Transformation is run whenever an valid item is added into Parser.queue.
+		Don't run this method directly unless you know what you're doing.
 		"""
 		while self._downloader._running:
 			data = self.queue.get()
@@ -90,7 +91,7 @@ class SaxonParser:
 			self.queue.task_done()
 
 	def merge(self, delete_temp=True):
-		"""Merge."""
+		"""Merge downloaded XML files."""
 		xml_files = glob(self._downloader.temp_directory + '/*.xml')
 		xml_element_tree = ElementTree.parse(self._downloader.temp_directory + '/' + Downloader.STAT_NAME + '.xml')
 		insertion_point = xml_element_tree.find("./Data")
