@@ -1,13 +1,15 @@
 # pb138-address-visualisation
 
-Goal of this project is to create a tool that lets you analyze, process and visualize statistical information from country addresses (ex. street with longest name, most common street name, etc).
+Goal of this project is to create a tool that lets you analyse, process and visualize statistical information from country addresses (ex. street with longest name, most common street name, etc).
+
 This is a school project.
-Mainly works with Czech address registry (RUIAN "Výměnný formát"), but it should be extensible enough to use any input (if you write your own parser) or generate any output (if you create your own generator).
+
+Mainly works with Czech address registry (RUIAN "Výměnný formát"), but it should be extensible enough to use any input (if you write your own parser) or generate any output (if you create your own visualiser).
 
 ## Modules
 - Parser
 - Visualisers
-- Generator
+- Viewer
 
 ### Parser
 - written in Python
@@ -29,4 +31,11 @@ Mainly works with Czech address registry (RUIAN "Výměnný formát"), but it sh
 Start a HTTP server `python3 -m http.server` and visit <http://localhost:8000/vf_viewer/>
 
 ## Dependencies
-- [python-geojson](https://pypi.python.org/pypi/geojson)
+- [python-geojson](https://pypi.python.org/pypi/geojson) – required for visualisation
+
+## Acknowledgements
+* [OpenLayers](http://openlayers.org/) – drawing the geographical displaying the map
+* [Chart.js](http://www.chartjs.org/) – drawing the histogram
+* [Proj4js](http://proj4js.org/) – projecting the geographical data from EPSG:5514
+* [OpenStreetMap](https://www.openstreetmap.org/) – map layers
+* [python-geojson](https://pypi.python.org/pypi/geojson) – Python GeoJSON bindings
