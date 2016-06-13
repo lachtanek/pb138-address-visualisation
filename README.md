@@ -2,9 +2,9 @@
 
 Goal of this project is to create a tool that lets you analyse, process and visualize statistical information from country addresses (ex. street with longest name, most common street name, etc).
 
-This is a school project.
-
 Mainly works with Czech address registry (RUIAN "Výměnný formát"), but it should be extensible enough to use any input (if you write your own Downloader) or generate any output (if you create your own Viewer). You can also write your own Visualiser to try and find some interesting statistics.
+
+This project was created for [PB138](https://is.muni.cz/predmet/fi/jaro2016/PB138) course and its code is available under [MIT license](http://choosealicense.com/licenses/mit/).
 
 ## Modules
 - Downloader
