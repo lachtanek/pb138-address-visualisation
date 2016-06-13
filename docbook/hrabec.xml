@@ -1,0 +1,8 @@
+<chapter>
+	<title>Jakub hrabec - zpráva o projektu</title>
+	<para>Můj podíl na projektu je tvorba modulu, který dokáže stáhnout, pomocí XSLT transformovat a spojit do XML databáze soubory z RÚIAN datového registru (dále Downloader) a také zadávání úkolů v rámci vedení.</para>
+	<para>Původně byl použit modul python-lxml pro XSLT transformaci, ale z důvodu dlouhé doby tvorby databáze (cca 3 hodiny při 5 vláknech) jsem byl nucen použít Saxon XSLT Processor od společnosti Saxonica. Čas pro tvorbu databáze se poté zkrátil asi na 40 minut při 3 threadech pro stahování a 4 pro Saxon (nejdéle trvají transformace, pro představu nejdéle trvá Praha - 10 minut, původní XML má 1GB).</para>
+	<para>Byla použita úplná datová sada, protože jsme potřebovali geometrie a počty adresních míst pro ulice. Data jsou RÚIANem poskytována formou odkazů na jednotlivé XML soubory pro obce (6258 souborů obcí + soubor státu) komprimovaných pomocí GZIP, kompletní sada má po rozbalení ~40GB.</para>
+	<para>Na projektu jsem si vyzkoušel práci s XSLT, XML databází a s velkými objemy dat a samozřejmě práci v týmu. Také jsem si znovu trochu prohloubil znalosti Pythonu. Práce na projektu pro mě byla přínosem.</para>
+	<para>Testy probíhaly na stroji s procesorem Intel Core2 Duo E8500 @ 3.16GHz, 8GB RAM a připojením k internetu s rychlostí stahování ~120Mb/s.</para>
+</chapter>
