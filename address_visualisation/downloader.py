@@ -28,7 +28,7 @@ class Downloader:
 	SUBDIR_NAME = 'download'
 	STAT_NAME = 'stat'
 
-	def __init__(self, parser, link_file, temp_directory=None, max_threads=2, max_disk_space=4 * 1024):
+	def __init__(self, parser, link_file, temp_directory=None, max_threads=2):
 		"""Class constructor.
 
 		Parameters
@@ -39,8 +39,6 @@ class Downloader:
 			Path to working directory, if you wish to use custom ("permanent") temporary directory.
 		max_threads : int
 			Number of concurrent threads for downloading of files.
-		max_disk_space : int
-			Maximum space on disk used (>=1000 MB).
 		"""
 		self._parser = parser
 		parser._downloader = self
@@ -48,9 +46,7 @@ class Downloader:
 		self._file_queue = queue.Queue()
 		self._threads = []
 		self._running = True
-		self._done = False
 		self.max_threads = max_threads
-		self.max_disk_space = max_disk_space - 500
 		self._current_size = 0
 		self._current_files = []
 		self._current_lock = Lock()
@@ -64,6 +60,7 @@ class Downloader:
 			self.temp_directory = self._obj_temp_directory.name
 
 		self._parser._after_attach()
+
 		d = self.temp_directory + '/' + Downloader.SUBDIR_NAME
 		rmtree(d, ignore_errors=True)
 		os.makedirs(d)
@@ -74,13 +71,17 @@ class Downloader:
 		else:
 			return os.path.exists(self.temp_directory + '/' + Downloader.SUBDIR_NAME + '/' + outfile)
 
-	def _check_size(self, fname):
-		self._current_size += os.path.getsize(fname) / (1024 ** 2)
-		self._current_files.append(fname)
+	def _check_size(self, fname, force=False):
+		if fname is not None:
+			self._current_size += os.path.getsize(fname) / (1024 ** 2)
+			self._current_files.append(fname)
 
-		if self._current_size > self.max_disk_space:
-			logging.debug('Disk space limit reachet, waking parser...')
-			self._parser._queue.put((self._current_files[:], ''))
+		if force or self._current_size > 1024:
+			logging.debug('Waking parser')
+
+			if len(self._current_files) > 0:
+				self._parser.queue.put((self._current_files[:], ''))
+
 			self._current_size = 0
 			self._current_files = []
 
@@ -168,21 +169,20 @@ class Downloader:
 			sleep(100)
 
 		logging.debug('All threads finished')
+		with self._current_lock:
+			self._check_size(None, True)
 
 		for i in range(self.max_threads):
 			self._file_queue.put(None)
 		for t in self._threads:
 			t.join()
 
-		self._parser._queue.put((self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml', Downloader.STAT_NAME + '.xml'))
-		self._parser._queue.put(None)
+		self._parser.queue.put((self.temp_directory + '/' + Downloader.STAT_NAME + '.full.xml', Downloader.STAT_NAME + '.xml'))
+		self._parser.queue.put(None)
 
 		self._parser_thread.join()
 
 		logging.debug('Parser finished')
-
-		if self._running:
-			self._done = True
 
 	def run(self):
 		"""Start the downloading and uncompressing of XML files.
@@ -201,7 +201,7 @@ class Downloader:
 			if self._filling_thread.is_alive():
 				self._filling_thread.join()
 			if self._parser_thread.is_alive():
-				self._parser._queue.put(None)
+				self._parser.queue.put(None)
 				self._parser_thread.join()
 
 			if not self._file_queue.empty():

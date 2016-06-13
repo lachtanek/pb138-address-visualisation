@@ -38,7 +38,7 @@ class SaxonParser:
 		self._xsl_obec = xsl_obec
 		self._output_file = output
 		self._done = False
-		self._queue = Queue()
+		self.queue = Queue()
 		self.saxon_max_threads = saxon_max_threads
 		self.saxon_path = saxon_path
 		self.saxon_max_ram = saxon_max_threads  # * 1
@@ -69,7 +69,7 @@ class SaxonParser:
 		Takes about 20 minutes with 6 threads and 6GB RAM at peaks.
 		"""
 		while self._downloader._running:
-			data = self._queue.get()
+			data = self.queue.get()
 			if data is None:
 				break
 
@@ -87,7 +87,7 @@ class SaxonParser:
 			for f in glob(self._downloader.temp_directory + '/' + SaxonParser.SUBDIR_NAME + '/*'):
 				os.unlink(f)
 
-			self._queue.task_done()
+			self.queue.task_done()
 
 	def merge(self, delete_temp=True):
 		"""Merge."""
