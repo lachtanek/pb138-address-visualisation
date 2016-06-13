@@ -291,6 +291,8 @@ class InfoBar extends Emitter {
 	 */
 	constructor(infoBar, visualisation) {
 		super();
+		this.highlight = null;
+
 		this.visualisation = visualisation;
 
 		this.infoHolder = document.createElement('div');
@@ -406,9 +408,11 @@ class InfoBar extends Emitter {
 	 * @emits InfoBar#select-feature
 	 */
 	requestFeatureSelection(feature) {
-		const evt = new Event('select-feature');
-		evt.feature = feature;
-		this.dispatchEvent(evt);
+		if (feature !== this.highlight) {
+			const evt = new Event('select-feature');
+			evt.feature = feature;
+			this.dispatchEvent(evt);
+		}
 	}
 
 	/**
@@ -422,6 +426,7 @@ class InfoBar extends Emitter {
 		} else {
 			this.clearInfo();
 		}
+		this.highlight = feature;
 	}
 }
 
@@ -514,9 +519,11 @@ class MapView extends Emitter {
 	 * @emits MapView#select-feature
 	 */
 	requestFeatureSelection(feature) {
-		const evt = new Event('select-feature');
-		evt.feature = feature;
-		this.dispatchEvent(evt);
+		if (feature !== this.highlight) {
+			const evt = new Event('select-feature');
+			evt.feature = feature;
+			this.dispatchEvent(evt);
+		}
 	}
 
 	/**
@@ -525,15 +532,13 @@ class MapView extends Emitter {
 	 * @param {ol.Feature}
 	 */
 	selectFeature(feature) {
-		if (feature !== this.highlight) {
-			if (this.highlight) {
-				this.featureOverlay.getSource().removeFeature(this.highlight);
-			}
-			if (feature) {
-				this.featureOverlay.getSource().addFeature(feature);
-			}
-			this.highlight = feature;
+		if (this.highlight) {
+			this.featureOverlay.getSource().removeFeature(this.highlight);
 		}
+		if (feature) {
+			this.featureOverlay.getSource().addFeature(feature);
+		}
+		this.highlight = feature;
 	}
 
 	/**
