@@ -264,11 +264,25 @@ class HistoChart {
 	}
 }
 
+
+/**
+ * Abstract class used for event handling
+ * Taken from http://stackoverflow.com/a/24216547/160386
+ */
+class Emitter {
+	constructor() {
+		this.eventTarget = document.createDocumentFragment();
+		['addEventListener', 'dispatchEvent', 'removeEventListener']
+		.forEach(method => this[method] = this.eventTarget[method].bind(this.eventTarget));
+	}
+}
+
+
 /**
  * Class representing a sidebar where a list of currently visible features,
  * as well as informations about the selected feature are displayed.
  */
-class InfoBar {
+class InfoBar extends Emitter {
 	/**
 	 * Create an info sidebar.
 	 *
@@ -276,6 +290,7 @@ class InfoBar {
 	 * @param {Object} visualisation – Currently active visualisation.
 	 */
 	constructor(infoBar, visualisation) {
+		super();
 		this.visualisation = visualisation;
 
 		this.infoHolder = document.createElement('div');
@@ -341,9 +356,8 @@ class InfoBar {
 	 * Update the list of features.
 	 *
 	 * @param {Array[ol.Feature]} features – List of features to be listed.
-	 * @param {Function} highlightFeature – A function that will highlight the feature selected in the list.
 	 */
-	setFeatures(features, highlightFeature) {
+	setFeatures(features) {
 		this.featList.textContent = '';
 
 		if (this.chartEnabled) {
@@ -360,18 +374,15 @@ class InfoBar {
 
 		features.forEach((feature) => {
 			const li = document.createElement('li');
-			const highlight = () => {
-				highlightFeature(feature);
-			};
 
 			li.setAttribute('role', 'button');
 			li.setAttribute('tabindex', '0');
 			li.feature = feature;
-			li.addEventListener('click', highlight);
+			li.addEventListener('click', () => this.requestFeatureSelection(feature));
 			li.addEventListener('keypress', (e) => {
 				if (e.key == 'Spacebar' || e.key == ' ' || e.key == 'Enter') {
 					e.preventDefault();
-					highlight();
+					this.requestFeatureSelection(feature);
 				}
 			});
 
@@ -387,88 +398,65 @@ class InfoBar {
 			this.chart.update(this.histogram);
 		}
 	}
+
+	/**
+	 * Emits an event requesting to app to select a feature.
+	 *
+	 * @param {ol.Feature} feature
+	 * @emits InfoBar#select-feature
+	 */
+	requestFeatureSelection(feature) {
+		const evt = new Event('select-feature');
+		evt.feature = feature;
+		this.dispatchEvent(evt);
+	}
+
+	/**
+	 * If a feature is passed, information about it will be displayed.
+	 *
+	 * @param {ol.Feature} feature
+	 */
+	selectFeature(feature) {
+		if (feature) {
+			this.setInfo(this.visualisation.info(feature))
+		} else {
+			this.clearInfo();
+		}
+	}
 }
 
-window.onload = function() {
-	const fileName = window.location.search.toString().replace(/^\?/, '');
-	const sideBar = new SideBar(document.getElementById('sidebar'));
-
-	if (!fileName) {
-		sideBar.expand();
-	} else if (!visualisations.has(fileName)) {
-		alert('Unknown visualisation.');
-		window.location.search = '';
-	} else {
-		const currentVisualiser = visualisations.get(fileName);
-		const infoBar = new InfoBar(document.getElementById('infobar'), currentVisualiser);
-
-		document.title = 'Address visualisation – ' + currentVisualiser.name;
-		sideBar.collapse();
-		setTimeout(() => document.body.classList.remove('preload'), 250);
-
-		proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
-
-		function styleFunction(feature) {
-			let style;
-			let fillColor = 'rgba(240, 0, 0, 0.3)';
-			let strokeColor = 'rgba(240, 0, 0, 1)';
-
-			let styleProperty = feature.get('style');
-			if (styleProperty) {
-				if (styleProperty.fill) {
-					fillColor = styleProperty.fill;
-				}
-				if (styleProperty.stroke) {
-					strokeColor = styleProperty.stroke;
-				}
-			}
-
-			if (feature.getGeometry().getType() === 'Point') {
-				style = new ol.style.Style({
-					image: new ol.style.Circle({
-						radius: 5,
-						fill: new ol.style.Fill({
-							color: fillColor,
-						}),
-						stroke: new ol.style.Stroke({
-							color: strokeColor,
-							width: 10
-						})
-					})
-				});
-			} else {
-				style = new ol.style.Style({
-					fill: new ol.style.Fill({
-						color: fillColor,
-					}),
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 10
-					})
-				});
-			}
-
-			return style;
-		}
-
-		const geoJsonSource = new ol.source.Vector({
-			url: '../resources/visualisations/' + fileName + '.json',
+/**
+ * Class representing a canvas that will display the map layers
+ * as well as draw the geographical features.
+ */
+class MapView extends Emitter {
+	/**
+	 * Create a map view
+	 *
+	 * @param {String} dataSource – Location of GeoJSON file.
+	 * @param {Element} target – Element for rendering map.
+	 */
+	constructor(dataSource, target) {
+		super();
+		this.highlight = null;
+		this.geoJsonSource = new ol.source.Vector({
+			url: dataSource,
 			format: new ol.format.GeoJSON()
 		});
 
-		const map = new ol.Map({
+		this.map = new ol.Map({
 			layers: [
 				new ol.layer.Tile({
 					source: new ol.source.OSM()
 				}),
 				new ol.layer.Image({
 					source: new ol.source.ImageVector({
-						source: geoJsonSource,
-						style: styleFunction
+						source: this.geoJsonSource,
+						style: this.styleFunction
 					})
 				})
 			],
-			target: 'view',
+			target: target,
 			view: new ol.View({
 				center: ol.proj.fromLonLat([15.5, 49.75]),
 				zoom: 8,
@@ -476,9 +464,9 @@ window.onload = function() {
 			})
 		});
 
-		const featureOverlay = new ol.layer.Vector({
+		this.featureOverlay = new ol.layer.Vector({
 			source: new ol.source.Vector(),
-			map: map,
+			map: this.map,
 			style: new ol.style.Style({
 				stroke: new ol.style.Stroke({
 					color: '#f0f000',
@@ -490,50 +478,227 @@ window.onload = function() {
 			})
 		});
 
-		function getFeatureUnderCursor(pixel) {
-			return map.forEachFeatureAtPixel(pixel, function(feature) {
-				return feature;
-			});
-		}
-
-		let highlight;
-		function highlightFeature(feature) {
-			if (feature) {
-				infoBar.setInfo(currentVisualiser.info(feature))
-			} else {
-				infoBar.clearInfo();
-			}
-
-			if (feature !== highlight) {
-				if (highlight) {
-					featureOverlay.getSource().removeFeature(highlight);
-				}
-				if (feature) {
-					featureOverlay.getSource().addFeature(feature);
-				}
-				highlight = feature;
-			}
-
-		};
-
-		map.on('pointermove', function(evt) {
+		this.map.on('pointermove', evt => {
 			if (evt.dragging) {
 				return;
 			}
-			const pixel = map.getEventPixel(evt.originalEvent);
-			highlightFeature(getFeatureUnderCursor(pixel));
+			const pixel = this.map.getEventPixel(evt.originalEvent);
+			this.requestFeatureSelection(this.getFeatureUnderCursor(pixel));
 		});
 
-		map.on('click', function(evt) {
-			highlightFeature(getFeatureUnderCursor(evt.pixel));
+		this.map.on('click', evt => {
+			this.requestFeatureSelection(this.getFeatureUnderCursor(evt.pixel));
 		});
 
-		function updateFeatureList() {
-			const extent = map.getView().calculateExtent(map.getSize());
-			const features = geoJsonSource.getFeaturesInExtent(extent);
-			infoBar.setFeatures(features, highlightFeature);
+		this.geoJsonSource.once('change', () => this.map.on('postrender', () => this.updateFeatureList()));
+	}
+
+	/**
+	 * Request the feature list to be updated.
+	 *
+	 * @emits MapView#update-features
+	 */
+	updateFeatureList() {
+		const extent = this.map.getView().calculateExtent(this.map.getSize());
+		const features = this.geoJsonSource.getFeaturesInExtent(extent);
+
+		const evt = new Event('update-features');
+		evt.features = features;
+		this.dispatchEvent(evt);
+	}
+
+	/**
+	 * Emits an event requesting to app to select a feature.
+	 *
+	 * @param {ol.Feature} feature
+	 * @emits MapView#select-feature
+	 */
+	requestFeatureSelection(feature) {
+		const evt = new Event('select-feature');
+		evt.feature = feature;
+		this.dispatchEvent(evt);
+	}
+
+	/**
+	 * If a feature is passed, it will be highlighted on the map.
+	 *
+	 * @param {ol.Feature}
+	 */
+	selectFeature(feature) {
+		if (feature !== this.highlight) {
+			if (this.highlight) {
+				this.featureOverlay.getSource().removeFeature(this.highlight);
+			}
+			if (feature) {
+				this.featureOverlay.getSource().addFeature(feature);
+			}
+			this.highlight = feature;
+		}
+	}
+
+	/**
+	 * Creates style for displaying a feature on the map.
+	 *
+	 * @param {ol.Feature}
+	 * @returns {ol.style.Style}
+	 */
+	styleFunction(feature) {
+		let style;
+		let fillColor = 'rgba(240, 0, 0, 0.3)';
+		let strokeColor = 'rgba(240, 0, 0, 1)';
+
+		let styleProperty = feature.get('style');
+		if (styleProperty) {
+			if (styleProperty.fill) {
+				fillColor = styleProperty.fill;
+			}
+			if (styleProperty.stroke) {
+				strokeColor = styleProperty.stroke;
+			}
 		}
 
-		geoJsonSource.once('change', () => map.on('postrender', updateFeatureList));
+		if (feature.getGeometry().getType() === 'Point') {
+			style = new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: 5,
+					fill: new ol.style.Fill({
+						color: fillColor,
+					}),
+					stroke: new ol.style.Stroke({
+						color: strokeColor,
+						width: 10
+					})
+				})
+			});
+		} else {
+			style = new ol.style.Style({
+				fill: new ol.style.Fill({
+					color: fillColor,
+				}),
+				stroke: new ol.style.Stroke({
+					color: strokeColor,
+					width: 10
+				})
+			});
+		}
+
+		return style;
 	}
+
+	/**
+	 * Returns the feature located on the specified pixel.
+	 *
+	 * @param {ol.Pixel}
+	 * @returns {o.Feature}
+	 */
+	getFeatureUnderCursor(pixel) {
+		return this.map.forEachFeatureAtPixel(pixel, feature => feature);
+	}
+}
+
+/**
+ * Main application class
+ */
+class Viewer {
+	/**
+	 * Main function of the application.
+	 * It prepares the side bars as well as map view and connects them using events.
+	 *
+	 * @param {Array[Object]} visualisations
+	 * @param {String} fileName
+	 * @param {Element} container
+	 */
+	constructor(visualisations, fileName, container) {
+		const sideBar = this.createSideBar(visualisations, container);
+
+		if (!fileName) {
+			sideBar.expand();
+		} else if (!visualisations.has(fileName)) {
+			alert('Unknown visualisation.');
+			window.location.search = '';
+		} else {
+			const visualisation = visualisations.get(fileName);
+			this.infoBar = this.createInfoBar(visualisation, container);
+			this.infoBar.addEventListener('select-feature', evt => this.selectFeature(evt.feature));
+
+			this.setTitle(visualisation.name);
+			sideBar.collapse();
+
+			proj4.defs('urn:ogc:def:crs:EPSG::5514','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs');
+
+			this.mapView = this.createMapView(fileName, container);
+		}
+	}
+
+	/**
+	 * Bootstraps a sidebar.
+	 *
+	 * @param {Array[Object]} visualisations
+	 * @param {Element} container
+	 * @returns {SideBar}
+	 */
+	createSideBar(visualisations, container) {
+		const sideBarElement = document.createElement('div');
+		sideBarElement.classList.add('sidebar');
+		container.appendChild(sideBarElement);
+		return new SideBar(sideBarElement, visualisations);
+	}
+
+	/**
+	 * Bootstraps an infobar.
+	 *
+	 * @param {Object} visualisation
+	 * @param {Element} container
+	 * @returns {InfoBar}
+	 */
+	createInfoBar(visualisation, container) {
+		const infoBarElement = document.createElement('div');
+		infoBarElement.classList.add('infobar');
+		container.appendChild(infoBarElement);
+		return new InfoBar(infoBarElement, visualisation);
+	}
+
+	/**
+	 * Bootstraps a map view.
+	 *
+	 * @param {String} fileName
+	 * @param {Element} container
+	 * @returns {MapView}
+	 */
+	createMapView(fileName, container) {
+		const mapViewElement = document.createElement('div');
+		mapViewElement.classList.add('view');
+		container.appendChild(mapViewElement);
+
+		const mapView = new MapView('../resources/visualisations/' + fileName + '.json', mapViewElement);
+		mapView.addEventListener('update-features', evt => this.infoBar.setFeatures(evt.features));
+		mapView.addEventListener('select-feature', evt => this.selectFeature(evt.feature));
+
+		return mapView;
+	}
+
+	/**
+	 * Sets the document title
+	 */
+	setTitle(title) {
+		document.title = 'Address visualisation – ' + title;
+	}
+
+	/**
+	 * Tell the map view and info bar to select given feature.
+	 *
+	 * @param {ol.Feature}
+	 */
+	selectFeature(feature) {
+		this.infoBar.selectFeature(feature);
+		this.mapView.selectFeature(feature);
+	}
+}
+
+/**
+ * Main function of the application, fired after the DOM was loaded.
+ */
+window.onload = () => {
+	const fileName = window.location.search.toString().replace(/^\?/, '');
+	const app = new Viewer(visualisations, fileName, document.body);
 };
