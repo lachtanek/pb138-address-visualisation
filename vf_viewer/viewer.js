@@ -177,6 +177,94 @@ class SideBar {
 }
 
 /**
+ * A graphical representation of a Histogram using Chart.js.
+ */
+class HistoChart {
+	/**
+	 * Create a chart.
+	 *
+	 * @param {Canvas} canvas – A canvas element used for painting the chart.
+	 */
+	constructor(canvas, style) {
+		this.chart = null;
+		this.chartHolder = canvas;
+
+		this.initStyle(style);
+	}
+
+	/**
+	 * Initialise a chart style with specified properties.
+	 *
+	 * Following properties are supported:
+	 * - backgroundColor
+	 * - borderColor
+	 * - borderWidth
+	 * - hoverBackgroundColor
+	 * - hoverBorderColor
+	 *
+	 * @param {Object} style – A dictionary defining values of the properties.
+	 */
+	initStyle(style = {}) {
+		this.style = {
+			backgroundColor: 'rgba(255,99,132,0.2)',
+			borderColor: 'rgba(255,99,132,1)',
+			borderWidth: 1,
+			hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+			hoverBorderColor: 'rgba(255,99,132,1)'
+		};
+
+		for (let prop in this.style) {
+			if (style.hasOwnProperty(prop)) {
+				this.style[prop] = style[prop];
+			}
+		}
+	}
+
+	/**
+	 * Update the chart data.
+	 *
+	 * @param {Histogram} histogram – A histogram that should be visualised.
+	 */
+	update(histogram) {
+		if (!this.chart) {
+			this.chart = new Chart(this.chartHolder, {
+				type: 'bar',
+				data: {
+					labels: histogram.labels,
+					datasets: [
+						{
+							backgroundColor: this.style.backgroundColor,
+							borderColor: this.style.borderColor,
+							borderWidth: this.style.borderWidth,
+							hoverBackgroundColor: this.style.hoverBackgroundColor,
+							hoverBorderColor: this.style.hoverBorderColor,
+							data: histogram.occurrences,
+						}
+					]
+				},
+				options: {
+					legend: {
+						display: false
+					},
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			});
+		} else {
+			for (let i in this.chart.data.datasets[0].data) {
+				this.chart.data.datasets[0].data[i] = histogram.occurrences[i];
+			}
+			this.chart.update();
+		}
+	}
+}
+
+/**
  * Class representing a sidebar where a list of currently visible features,
  * as well as informations about the selected feature are displayed.
  */
@@ -212,17 +300,6 @@ class InfoBar {
 
 		this.chartEnabled = visualisation.histogram;
 		this.histogram = null;
-		this.plottedCategory = null;
-		this.chart = null;
-		this.chartHolder = null;
-
-		this.chartStyle = {
-			backgroundColor: 'rgba(255,99,132,0.2)',
-			borderColor: 'rgba(255,99,132,1)',
-			borderWidth: 1,
-			hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-			hoverBorderColor: 'rgba(255,99,132,1)'
-		};
 
 		if (this.chartEnabled) {
 			if (visualisation.histogram.partitions) {
@@ -231,23 +308,16 @@ class InfoBar {
 				this.histogram = new Histogram;
 			}
 
-			let styleProperties = visualisation.histogram.style;
-			if (styleProperties) {
-				for (let prop in this.chartStyle) {
-					if (styleProperties.hasOwnProperty(prop)) {
-						this.chartStyle[prop] = styleProperties[prop];
-					}
-				}
-			}
-
 			this.plottedCategory = visualisation.histogram.plottedCategory || (feature => feature.get('measured'));
 
-			this.chartHolder = document.createElement('canvas');
-			this.chartHolder.classList.add('chart');
-			this.chartHolder.width = infoBar.offsetWidth;
-			this.chartHolder.height = Math.floor(infoBar.offsetWidth / 16 * 9);
+			const chartHolder = document.createElement('canvas');
+			chartHolder.classList.add('chart');
+			chartHolder.width = infoBar.offsetWidth;
+			chartHolder.height = Math.floor(infoBar.offsetWidth / 16 * 9); // Chart will follow 16:9 ratio
 
-			infoBar.appendChild(this.chartHolder);
+			this.chart = new HistoChart(chartHolder, visualisation.histogram.style);
+
+			infoBar.appendChild(chartHolder);
 		}
 	}
 
@@ -314,41 +384,7 @@ class InfoBar {
 		});
 
 		if (this.chartEnabled) {
-			if (!this.chart) {
-				this.chart = new Chart(this.chartHolder, {
-					type: 'bar',
-					data: {
-						labels: this.histogram.labels,
-						datasets: [
-							{
-								backgroundColor: this.chartStyle.backgroundColor,
-								borderColor: this.chartStyle.borderColor,
-								borderWidth: this.chartStyle.borderWidth,
-								hoverBackgroundColor: this.chartStyle.hoverBackgroundColor,
-								hoverBorderColor: this.chartStyle.hoverBorderColor,
-								data: this.histogram.occurrences,
-							}
-						]
-					},
-					options: {
-						legend: {
-							display: false
-						},
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: true
-								}
-							}]
-						}
-					}
-				});
-			} else {
-				for (let i in this.chart.data.datasets[0].data) {
-					this.chart.data.datasets[0].data[i] = this.histogram.occurrences[i];
-				}
-				this.chart.update();
-			}
+			this.chart.update(this.histogram);
 		}
 	}
 }
