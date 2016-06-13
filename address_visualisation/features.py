@@ -1,9 +1,12 @@
+"""
+Module with custom geojson FeatureCollection.
+"""
 class FeatureCollection:
 	"""
 	Creates geojson.FeatureCollection with custom structure.
-	
+
 	...
-	
+
 	Attributes
 	----------
 	name : string
@@ -14,7 +17,7 @@ class FeatureCollection:
 	def __init__(self, name, features):
 		"""
 		Class constructor.
-		
+
 		Parameters
 		----------
 		name : string
