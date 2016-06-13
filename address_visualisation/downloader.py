@@ -80,7 +80,7 @@ class Downloader:
 			logging.debug('Waking parser')
 
 			if len(self._current_files) > 0:
-				self._parser.queue.put((self._current_files[:], ''))
+				self._parser.queue.put((self._current_files[:], None))
 
 			self._current_size = 0
 			self._current_files = []
