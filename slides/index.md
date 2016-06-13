@@ -5,20 +5,16 @@ date: 2016-06-14
 ...
 
 
-Demo
-====
-
 Downloader
 ==========
-> - blah
-> - [RÜIAN](http://vdp.cuzk.cz/)
+- Práce s větším objemem dat
+- Jak řešit rychlost vs. nároky?
 
 
 Transformace
 ============
-- blah
-- blah
-- blah
+- [RÚIAN](http://vdp.cuzk.cz/)
+- Jak se měnila databáze?
 
 
 Visualisace
@@ -33,8 +29,8 @@ Viewer
 - blah
 - blah
 
-Diskuse
-=======
+Demo
+====
 
 Poděkování
 ==========
@@ -43,3 +39,7 @@ Poděkování
 - [Proj4js](http://proj4js.org/) – projecting the geographical data from EPSG:5514
 - [OpenStreetMap](https://www.openstreetmap.org/) – map layers
 - [python-geojson](https://pypi.python.org/pypi/geojson) – Python GeoJSON bindings
+- [RÚIAN](http://www.cuzk.cz/ruian.aspx) – address database source
+
+Diskuse
+=======
