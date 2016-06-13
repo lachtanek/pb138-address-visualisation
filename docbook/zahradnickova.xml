@@ -1,29 +1,12 @@
 <chapter>
-<title> PB138: Vizualizace adresních míst - Závěrečná zpráva, Jana Zahradníčková (433598) </title>
-<para>
-Mým úkolem bylo upravit data dostupná z výměnného formátu ČUZK do podoby pro zpracování vizualizací.
-</para>
-<para>
-Data poskytovaná ČUZK obsahují velké množství nepotřebných informací a soubory jsou tak velmi objemné. Také obsahují poměrně podrobné hierarchické členění, které pro naše účely není potřeba.
-Cílem tedy bylo zjednodušit hierarchii územních celků a odstranit nepotřebná data.
-</para>
-<para>
-Ke zpracování byla použita kompletní datová sada, protože obsahuje seznam souřadnic hranice polygonu nebo křivky, které jsou nutné pro vykreslení do mapy. Z hierchie byl zachován jen stát, kraj, okres, obec, ulice a adresní místo.
-</para>
-<para>
-Výměnný formát rozděluje hierarchické celky do dvou oddělených kategorií, a to "Stát až ZSJ" (1 XML soubor) a "Obec a podřazené" (1 XML soubor pro každou obec).  Z prvního souboru byly použity údaje o státu, krajích, okresech a obcích, z druhého informace o jednotlivých ulicích a adresních místech.
-</para>
-<para>
-K zjednodušení poskytovaných XML souborů byla použita XSLT transformace pro jednotlivé kategorie XML souborů.
-</para>
-<para>
-V transformaci souboru s vyššími územními celky šlo jen o odstranění nepotřebných dat a změnu propojení jednotlivých celků pomocí atributů místo původních zanořených elementů. Důvodem bylo pohodlnější zpracování a také menší velikost výsledného souboru.
-</para>
-<para>
-Transformace souborů nižších územních celků byla složitější, jelikož jsou dva typy obcí - obce, které mají ulice a obce, které ulice nemají. Také těchto souborů je velké množství a tak bylo třeba vhodně zvolit, jak dostupná data zjednodušit. Po dohodě v týmu jsme dospěli k tomu, že zachováme pouze počet adresních míst na ulici, resp. počet adresních míst pro obec, která ulice nemá.
-</para>
-<para>
-Veškeré XLST transformace a XML Schemata k výsledním XML dokumentům byla vytvořena v IntelliJ IDEA 15. K transformaci a ověření schemat pro potřeby testování byly použity kódy přiložené k domácím úkolům v programovacím jazyce Java. Zvolené vývojové prostředí však mělo jeden velký nedostatek - nedokázalo zobrazit velké XML soubory.
-</para>
-
+	<title>PB138: Vizualizace adresních míst – Závěrečná zpráva, Jana Zahradníčková (433598)</title>
+	<para>Mým úkolem bylo upravit data dostupná z výměnného formátu ČUZK do podoby pro zpracování vizualizací.</para>
+	<para>Data poskytovaná ČUZK obsahují velké množství nepotřebných informací a soubory jsou tak velmi objemné. Také obsahují poměrně podrobné hierarchické členění, které pro naše účely není potřeba.
+	Cílem tedy bylo zjednodušit hierarchii územních celků a odstranit nepotřebná data.</para>
+	<para>Ke zpracování byla použita kompletní datová sada, protože obsahuje seznam souřadnic hranice polygonu nebo křivky, které jsou nutné pro vykreslení do mapy. Z hierchie byl zachován jen stát, kraj, okres, obec, ulice a adresní místo.</para>
+	<para>Výměnný formát rozděluje hierarchické celky do dvou oddělených kategorií, a to „Stát až ZSJ“ (jeden XML soubor) a „Obec a podřazené“ (jeden XML soubor pro každou obec). Z prvního souboru byly použity údaje o státu, krajích, okresech a obcích, z druhého informace o jednotlivých ulicích a adresních místech.</para>
+	<para>K zjednodušení poskytovaných XML souborů byla použita XSLT transformace pro jednotlivé kategorie XML souborů.</para>
+	<para>V transformaci souboru s vyššími územními celky šlo jen o odstranění nepotřebných dat a změnu propojení jednotlivých celků pomocí atributů místo původních zanořených elementů. Důvodem bylo pohodlnější zpracování a také menší velikost výsledného souboru.</para>
+	<para>Transformace souborů nižších územních celků byla složitější, jelikož jsou dva typy obcí – obce, které mají ulice a obce, které ulice nemají. Také těchto souborů je velké množství a tak bylo třeba vhodně zvolit, jak dostupná data zjednodušit. Po dohodě v týmu jsme dospěli k tomu, že zachováme pouze počet adresních míst na ulici, resp. počet adresních míst pro obec, která ulice nemá.</para>
+	<para>Veškeré XLST transformace a XML Schemata k výsledním XML dokumentům byla vytvořena v IntelliJ IDEA 15. K transformaci a ověření schemat pro potřeby testování byly použity kódy přiložené k domácím úkolům v programovacím jazyce Java. Zvolené vývojové prostředí však mělo jeden velký nedostatek – nedokázalo zobrazit velké XML soubory.</para>
 </chapter>
