@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+Runs logging and visualiserRegistry for available visualisers.
+"""
 import address_visualisation as AV
 import logging
 

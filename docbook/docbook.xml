@@ -1,41 +1,31 @@
-<?xml version="1.0" encoding="windows-1250"?>
-<!DOCTYPE book  DOCBOOK_DTD
-[
-<!ENTITY hrabec SYSTEM "hrabec.xml">
-<!ENTITY tojnar SYSTEM "tojnar.xml">
-<!ENTITY nohejlova SYSTEM "nohejlova.xml">
-<!ENTITY zahradnickova SYSTEM "zahradnickova.xml">
-]>
 <?xml-stylesheet href="./docbook.css" type="text/css"?>
-<book>
-  <title>PB138 Address Visualisation Project</title>
-  <authorgroup>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0">
+	<title>PB138 Address Visualisation Project</title>
+	<authorgroup>
+		<author>
+			<firstname>Jakub</firstname>
+			<surname>Hrabec</surname>
+		</author>
 
-      <author>
-        <firstname>Jakub</firstname>
-        <surname>Hrabec</surname>
-      </author>
+		<author>
+			<firstname>Jan</firstname>
+			<surname>Tojnar</surname>
+		</author>
 
-      <author>
-        <firstname>Jan</firstname>
-        <surname>Tojnar</surname>
-      </author>
+		<author>
+			<firstname>Alice</firstname>
+			<surname>NohejlovĂˇ</surname>
+		</author>
 
-      <author>
-        <firstname>Alice</firstname>
-        <surname>Nohejlová</surname>
-      </author>
-      
-      <author>
-        <firstname>Jana</firstname>
-        <surname>Zahradníčková</surname>
-      </author>
+		<author>
+			<firstname>Jana</firstname>
+			<surname>ZahradnĂ­Ă¨kovĂˇ</surname>
+		</author>
+	</authorgroup>
 
-    </authorgroup>
-    
-    &hrabec;
-    &tojnar
-    &nohejlova
-    &zahradnickova
+	<xi:include href="hrabec.xml" />
+	<xi:include href="tojnar.xml" />
+	<xi:include href="nohejlova.xml" />
+	<xi:include href="zahradnickova.xml" />
 </book>
 
