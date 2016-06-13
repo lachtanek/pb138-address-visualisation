@@ -1,9 +1,8 @@
 <?xml-stylesheet href="./docbook.css" type="text/css"?>
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0">
-	<title>PB138 Address Visualisation Project - Final reports</title>
-	
-	<bookinfo>
-		<subtitle>PB138 Projekt vizualizace adres - Závěrečné zprávy</subtitle>
+
+	<info>
+		<title>PB138 Projekt vizualizace adres - Závěrečné zprávy</title>
 
 		<authorgroup>
 			<author>
@@ -34,7 +33,7 @@
 				</personname>
 			</author>
 		</authorgroup>
-	</bookinfo>
+	</info>
 
 	<xi:include href="hrabec.xml" />
 	<xi:include href="tojnar.xml" />
