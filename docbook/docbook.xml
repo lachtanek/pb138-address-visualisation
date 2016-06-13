@@ -1,27 +1,37 @@
 <?xml-stylesheet href="./docbook.css" type="text/css"?>
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0">
 	<title>PB138 Address Visualisation Project</title>
-	<authorgroup>
-		<author>
-			<firstname>Jakub</firstname>
-			<surname>Hrabec</surname>
-		</author>
+	<info>
+		<authorgroup>
+			<author>
+				<personname>
+					<firstname>Jakub</firstname>
+					<surname>Hrabec</surname>
+				</personname>
+			</author>
 
-		<author>
-			<firstname>Jan</firstname>
-			<surname>Tojnar</surname>
-		</author>
+			<author>
+				<personname>
+					<firstname>Jan</firstname>
+					<surname>Tojnar</surname>
+				</personname>
+			</author>
 
-		<author>
-			<firstname>Alice</firstname>
-			<surname>Nohejlová</surname>
-		</author>
+			<author>
+				<personname>
+					<firstname>Alice</firstname>
+					<surname>Nohejlová</surname>
+				</personname>
+			</author>
 
-		<author>
-			<firstname>Jana</firstname>
-			<surname>Zahradníèková</surname>
-		</author>
-	</authorgroup>
+			<author>
+				<personname>
+					<firstname>Jana</firstname>
+					<surname>Zahradníčková</surname>
+				</personname>
+			</author>
+		</authorgroup>
+	</info>
 
 	<xi:include href="hrabec.xml" />
 	<xi:include href="tojnar.xml" />

@@ -1,29 +1,29 @@
 <chapter>
-<title> PB138: Vizualizace adresních míst - Závìreèná zpráva, Jana Zahradníèková (433598) </title>
+<title> PB138: Vizualizace adresnÃ­ch mÃ­st - ZÃ¡vÄ›reÄnÃ¡ zprÃ¡va, Jana ZahradnÃ­ÄkovÃ¡ (433598) </title>
 <para>
-Mım úkolem bylo upravit data dostupná z vımìnného formátu ÈUZK do podoby pro zpracování vizualizací.
+MÃ½m Ãºkolem bylo upravit data dostupnÃ¡ z vÃ½mÄ›nnÃ©ho formÃ¡tu ÄŒUZK do podoby pro zpracovÃ¡nÃ­ vizualizacÃ­.
 </para>
 <para>
-Data poskytovaná ÈUZK obsahují velké mnoství nepotøebnıch informací a soubory jsou tak velmi objemné. Také obsahují pomìrnì podrobné hierarchické èlenìní, které pro naše úèely není potøeba.
-Cílem tedy bylo zjednodušit hierarchii územních celkù a odstranit nepotøebná data. 
+Data poskytovanÃ¡ ÄŒUZK obsahujÃ­ velkÃ© mnoÅ¾stvÃ­ nepotÅ™ebnÃ½ch informacÃ­ a soubory jsou tak velmi objemnÃ©. TakÃ© obsahujÃ­ pomÄ›rnÄ› podrobnÃ© hierarchickÃ© ÄlenÄ›nÃ­, kterÃ© pro naÅ¡e ÃºÄely nenÃ­ potÅ™eba.
+CÃ­lem tedy bylo zjednoduÅ¡it hierarchii ÃºzemnÃ­ch celkÅ¯ a odstranit nepotÅ™ebnÃ¡ data.
 </para>
 <para>
-Ke zpracování byla pouita kompletní datová sada, protoe obsahuje seznam souøadnic hranice polygonu nebo køivky, které jsou nutné pro vykreslení do mapy. Z hierchie byl zachován jen stát, kraj, okres, obec, ulice a adresní místo.
+Ke zpracovÃ¡nÃ­ byla pouÅ¾ita kompletnÃ­ datovÃ¡ sada, protoÅ¾e obsahuje seznam souÅ™adnic hranice polygonu nebo kÅ™ivky, kterÃ© jsou nutnÃ© pro vykreslenÃ­ do mapy. Z hierchie byl zachovÃ¡n jen stÃ¡t, kraj, okres, obec, ulice a adresnÃ­ mÃ­sto.
 </para>
 <para>
-Vımìnnı formát rozdìluje hierarchické celky do dvou oddìlenıch kategorií, a to "Stát a ZSJ" (1 XML soubor) a "Obec a podøazené" (1 XML soubor pro kadou obec).  Z prvního souboru byly pouity údaje o státu, krajích, okresech a obcích, z druhého informace o jednotlivıch ulicích a adresních místech. 
+VÃ½mÄ›nnÃ½ formÃ¡t rozdÄ›luje hierarchickÃ© celky do dvou oddÄ›lenÃ½ch kategoriÃ­, a to "StÃ¡t aÅ¾ ZSJ" (1 XML soubor) a "Obec a podÅ™azenÃ©" (1 XML soubor pro kaÅ¾dou obec).  Z prvnÃ­ho souboru byly pouÅ¾ity Ãºdaje o stÃ¡tu, krajÃ­ch, okresech a obcÃ­ch, z druhÃ©ho informace o jednotlivÃ½ch ulicÃ­ch a adresnÃ­ch mÃ­stech.
 </para>
 <para>
-K zjednodušení poskytovanıch XML souborù byla pouita XSLT transformace pro jednotlivé kategorie XML souborù.
+K zjednoduÅ¡enÃ­ poskytovanÃ½ch XML souborÅ¯ byla pouÅ¾ita XSLT transformace pro jednotlivÃ© kategorie XML souborÅ¯.
 </para>
 <para>
-V transformaci souboru s vyššími územními celky šlo jen o odstranìní nepotøebnıch dat a zmìnu propojení jednotlivıch celkù pomocí atributù místo pùvodních zanoøenıch elementù. Dùvodem bylo pohodlnìjší zpracování a také menší velikost vısledného souboru.
+V transformaci souboru s vyÅ¡Å¡Ã­mi ÃºzemnÃ­mi celky Å¡lo jen o odstranÄ›nÃ­ nepotÅ™ebnÃ½ch dat a zmÄ›nu propojenÃ­ jednotlivÃ½ch celkÅ¯ pomocÃ­ atributÅ¯ mÃ­sto pÅ¯vodnÃ­ch zanoÅ™enÃ½ch elementÅ¯. DÅ¯vodem bylo pohodlnÄ›jÅ¡Ã­ zpracovÃ¡nÃ­ a takÃ© menÅ¡Ã­ velikost vÃ½slednÃ©ho souboru.
 </para>
 <para>
-Transformace souborù niších územních celkù byla sloitìjší, jeliko jsou dva typy obcí - obce, které mají ulice a obce, které ulice nemají. Také tìchto souborù je velké mnoství a tak bylo tøeba vhodnì zvolit, jak dostupná data zjednodušit. Po dohodì v tımu jsme dospìli k tomu, e zachováme pouze poèet adresních míst na ulici, resp. poèet adresních míst pro obec, která ulice nemá. 
+Transformace souborÅ¯ niÅ¾Å¡Ã­ch ÃºzemnÃ­ch celkÅ¯ byla sloÅ¾itÄ›jÅ¡Ã­, jelikoÅ¾ jsou dva typy obcÃ­ - obce, kterÃ© majÃ­ ulice a obce, kterÃ© ulice nemajÃ­. TakÃ© tÄ›chto souborÅ¯ je velkÃ© mnoÅ¾stvÃ­ a tak bylo tÅ™eba vhodnÄ› zvolit, jak dostupnÃ¡ data zjednoduÅ¡it. Po dohodÄ› v tÃ½mu jsme dospÄ›li k tomu, Å¾e zachovÃ¡me pouze poÄet adresnÃ­ch mÃ­st na ulici, resp. poÄet adresnÃ­ch mÃ­st pro obec, kterÃ¡ ulice nemÃ¡.
 </para>
 <para>
-Veškeré XLST transformace a XML Schemata k vısledním XML dokumentùm byla vytvoøena v IntelliJ IDEA 15. K transformaci a ovìøení schemat pro potøeby testování byly pouity kódy pøiloené k domácím úkolùm v programovacím jazyce Java. Zvolené vıvojové prostøedí však mìlo jeden velkı nedostatek - nedokázalo zobrazit velké XML soubory.
+VeÅ¡kerÃ© XLST transformace a XML Schemata k vÃ½slednÃ­m XML dokumentÅ¯m byla vytvoÅ™ena v IntelliJ IDEA 15. K transformaci a ovÄ›Å™enÃ­ schemat pro potÅ™eby testovÃ¡nÃ­ byly pouÅ¾ity kÃ³dy pÅ™iloÅ¾enÃ© k domÃ¡cÃ­m ÃºkolÅ¯m v programovacÃ­m jazyce Java. ZvolenÃ© vÃ½vojovÃ© prostÅ™edÃ­ vÅ¡ak mÄ›lo jeden velkÃ½ nedostatek - nedokÃ¡zalo zobrazit velkÃ© XML soubory.
 </para>
 
 </chapter>
