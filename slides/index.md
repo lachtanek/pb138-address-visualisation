@@ -4,17 +4,18 @@ author: Jakub Hrabec, Alice Nohejlová, Jan Tojnar, Jana Zahradníčková
 date: 2016-06-14
 ...
 
-
-Downloader
-==========
-- Práce s větším objemem dat
-- Jak řešit rychlost vs. nároky?
-
+Demo
+====
 
 Transformace
 ============
-- [RÚIAN](http://vdp.cuzk.cz/)
-- Jak se měnila databáze?
+> - [RÚIAN](http://vdp.cuzk.cz/)
+> - Jak se měnila databáze?
+
+Downloader
+==========
+> - Práce s větším objemem dat
+> - Jak řešit rychlost vs. nároky?
 
 
 Visualisace
@@ -32,9 +33,6 @@ Viewer
 > - vykreslování histogramů + seznam prvků
 > - 9.5 min → 3.7 sec
 > - refactoring
-
-Demo
-====
 
 Poděkování
 ==========
