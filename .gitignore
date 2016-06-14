@@ -1,5 +1,7 @@
-resources/tmp
-resources/visualisations/*
 *.pyc
 __pycache__
-visualiser/visualisations/*
+
+resources/tmp
+report/report.tmp.xml
+report/report.pdf
+report/report.html
