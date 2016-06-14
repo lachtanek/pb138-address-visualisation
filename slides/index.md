@@ -20,15 +20,18 @@ Transformace
 Visualisace
 ===========
 - 7 vizualizérů
-- Vstup - xml databáze
-- Výstup - GeoJSON soubory
+- Vstup – XML databáze
+- Výstup – GeoJSON soubory
 
 
 Viewer
 ======
-
-- blah
-- blah
+> - GeoJSON → znázornění na mapě
+> - mapové vrstvy
+> - první visualisér
+> - vykreslování histogramů + seznam prvků
+> - 9.5 min → 3.7 sec
+> - refactoring
 
 Demo
 ====
