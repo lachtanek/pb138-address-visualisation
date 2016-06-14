@@ -28,7 +28,7 @@ Viewer
 ======
 > - výstup visualisérů → znázornění na mapě
 > - mapové vrstvy
-> - první visualisér
+> - kód projektu + první visualisér
 > - vykreslování histogramů + seznam prvků
 > - 9.5 min → 3.7 sec
 > - refactoring
