@@ -26,7 +26,7 @@ Visualisace
 
 Viewer
 ======
-> - GeoJSON → znázornění na mapě
+> - výstup visualisérů → znázornění na mapě
 > - mapové vrstvy
 > - první visualisér
 > - vykreslování histogramů + seznam prvků
